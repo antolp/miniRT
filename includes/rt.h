@@ -1,5 +1,17 @@
-#ifndef HEADER_H
-# define HEADER_H
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   rt.h                                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
+/*   Updated: 2025/07/15 16:47:45 by anle-pag         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef RT_H
+# define RT_H
 
 # include <X11/keysym.h>
 # include <X11/X.h>
@@ -12,12 +24,64 @@
 
 # include "mlx.h"
 # include "scene.h"
-# include "libft.h"
+
 
 # define M_PI 3.14159265358979323846
+# define WIDTH 800
+# define HEIGHT 600
+
+# include "scene.h"
+
 
 // A SUPPR
 # include <stdio.h>
+# include <sys/time.h>
+
+//used for pixel rendering in MiniLibX
+//see mlx_put_image_to_window() in mlx docs
+typedef struct s_img
+{
+	void	*img;			//image pointer
+	char	*addr;			//pixel data
+	int		bits_per_pixel;
+	int		line_length;
+	int		endian;
+}	t_img;
+
+typedef enum e_render_mode
+{
+	RENDER_REALTIME,
+	RENDER_HIGH_QUALITY,
+	RENDER_TEST
+}	t_render_mode;
+
+typedef struct s_renderer
+{
+	void			*mlx;
+	void			*win;
+	t_img			img;
+	t_render_mode	mode;
+	int				resolution_scale;	//potentially useful (antialiasing, real time mode)
+	bool			is_rendering;		//(redundant on single threaded logic)
+	bool			render_done;
+}	t_renderer;
+
+
+
+bool		init_renderer(t_renderer *r, int width, int height, char *title);
+bool		init_scene(t_scene *s);
+int			key_hook(int keycode, void *param);
+
+
+void		put_pixel(t_img *img, int x, int y, t_color color);
+int			render_loop(void *param);
+void		render_test_frame(int frame);
+t_renderer	*g_renderer(t_renderer *set);
+
+
+//renderer
+
+
 
 
 

@@ -1,23 +1,24 @@
-NAME     = miniRT
-OBJDIR   = .obj
-SRCS     = srcs/main.c
-
-OBJS     = $(SRCS:%.c=$(OBJDIR)/%.o)
-
-
-
-LIBFT_DIR = libft
-LIBFT     = $(LIBFT_DIR)/libft.a
-
-MLX_DIR   = minilibx-linux
-MLX       = $(MLX_DIR)/libmlx.a
+NAME		= miniRT
+OBJDIR		= .obj
+SRCS		= srcs/main.c srcs/init.c srcs/vector.c srcs/cli.c \
+			  srcs/render/render_test.c srcs/render/render.c
+OBJS		= $(SRCS:%.c=$(OBJDIR)/%.o)
 
 
 
-CC       = cc
-CFLAGS   = -Wall -Wextra -Werror -g
-INCLUDES = -I./includes -I$(LIBFT_DIR)/includes -I$(MLX_DIR) 
-LDFLAGS  = -L$(LIBFT_DIR) -lft -L$(MLX_DIR) -lmlx -lX11 -lXext -lm
+LIBFT_DIR	= libft
+LIBFT		= $(LIBFT_DIR)/libft.a
+
+MLX_DIR		= minilibx-linux
+MLX			= $(MLX_DIR)/libmlx.a
+
+
+
+CC			= cc
+# CFLAGS	= -Wall -Wextra -Werror -fsanitize=address -g 
+CFLAGS		= -Wall -Wextra -Werror -g 
+INCLUDES	= -I./includes -I$(LIBFT_DIR) -I$(MLX_DIR) -Ilibft/includes
+LDFLAGS		= -L$(LIBFT_DIR) -lft -L$(MLX_DIR) -lmlx -lX11 -lXext -lm
 
 all: $(NAME)
 
