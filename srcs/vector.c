@@ -102,7 +102,6 @@ t_vec3	vec_normalize(t_vec3 v)
     return (t_vec3){v.x / len, v.y / len, v.z / len};
 }
 
-
 //Computes the reflection of a direction vector across a surface normal.
 //Both dir and normal are assumed to be normalized.
 //
@@ -113,10 +112,9 @@ t_vec3	vec_normalize(t_vec3 v)
 //the formula reflects D across the plane defined by N, like light bouncing off a mirror
 //useful to simulate reflection, and blinn-phong spec highlight
 //
+//	https://www.fabrizioduroni.it/blog/post/2017/08/25/how-to-calculate-reflection-vector
 //	https://www.youtube.com/watch?v=naaeH1qbjdQ
-//
 t_vec3	vec_reflect(t_vec3 dir, t_vec3 normal)
 {
-    // Assumes both dir and normal are normalized
     return vec_sub(dir, vec_mul(normal, 2.0 * vec_dot(dir, normal)));
 }
