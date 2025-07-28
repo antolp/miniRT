@@ -1,7 +1,7 @@
 NAME		= miniRT
 OBJDIR		= .obj
 SRCS		= srcs/main.c srcs/init.c srcs/vector.c srcs/cli.c \
-			  srcs/render/render_test.c srcs/render/render.c
+			  srcs/render/render_test.c srcs/render/render.c srcs/render/ray_trace.c
 OBJS		= $(SRCS:%.c=$(OBJDIR)/%.o)
 
 

@@ -79,8 +79,8 @@ typedef struct s_object
 	t_object_type	type;
 	void			*shape; // Cast to specific object struct
 	t_material		*material;
-	bool			(*intersect)(struct s_object *, const t_ray *, void *hit);
-	void			(*get_normal)(struct s_object *obj, const void *hit,
+	bool			(*intersect)(struct s_object *, const t_ray *, int *t);
+	void			(*get_normal)(struct s_object *obj, t_vec3 *hit,
 			t_vec3 *out_normal);
 }	t_object;
 

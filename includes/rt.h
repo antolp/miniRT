@@ -18,6 +18,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <limits.h>
+# include <float.h>
 # include <fcntl.h>
 # include <stdbool.h>
 # include <math.h>
@@ -77,12 +78,24 @@ void		put_pixel(t_img *img, int x, int y, t_color color);
 int			render_loop(void *param);
 void		render_test_frame(int frame);
 t_renderer	*g_renderer(t_renderer *set);
+t_scene		*g_scene(t_scene *set);
+
 
 
 //renderer
 
 
 
+//maths
+t_vec3		vec_add(t_vec3 a, t_vec3 b);
+t_vec3		vec_sub(t_vec3 a, t_vec3 b);
+t_vec3		vec_mul(t_vec3 v, double scalar);
+double		vec_length(t_vec3 v);
+double		vec_length_squared(t_vec3 v);
+double		vec_dot(t_vec3 a, t_vec3 b);
+t_vec3		vec_cross(t_vec3 a, t_vec3 b);
+t_vec3		vec_normalize(t_vec3 v);
+t_vec3		vec_reflect(t_vec3 dir, t_vec3 normal);
 
 
 #endif

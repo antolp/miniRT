@@ -43,6 +43,7 @@ typedef struct s_scene
 	t_color		ambient_color;
 	float		ambient_ratio;
 	bool		is_rendering;
+	t_color		background_color;
 }	t_scene;
 
 #endif
