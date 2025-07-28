@@ -14,7 +14,7 @@
 
 
 //intersect_plane()
-//If ray interesect plane : 
+//If ray interesect plane :
 //	-write in t the scalar of interesction point, returns true.
 //else :
 //	-returns false.
@@ -24,7 +24,7 @@
 //easily calculated through dot product.
 //t scalar is then calculated by substituting P(t) 
 //
-//P(t) mathematical function defining the ray :
+//Important premise, P(t) mathematical function defining the ray :
 //P(t) = O + t * D where :
 //	O origin of rqy (camera)
 //	D direction of ray
@@ -36,6 +36,9 @@
 //instead of working with numbers on a line, we use 3D vectors
 //as t changes, P(t) moves along the ray starting from O in the direction D
 //
+//Plane defined by :
+//	- a point Po
+//	- a normal vector N
 //Plane equation :
 //dot(P(t) - Po, N) = 0 where :
 //	Po is any point on plane (plane->point for ex)
@@ -51,10 +54,10 @@
 //finally, solving for t :
 //t = dot(P₀ - O, N) / dot(D, N)  -> that's our formula
 //
-//Practivcal example in 2D :
+//Practical example in 2D :
 //        Y+
 //        |
-//        |             o     <- ray origin (O)
+//        |             o     <- ray origin (o)
 //        |            /
 //        |           /
 //        |          /

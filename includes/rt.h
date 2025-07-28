@@ -85,6 +85,13 @@ t_scene		*g_scene(t_scene *set);
 //renderer
 
 
+//ray-object intersection
+bool	intersect_plane(t_object *obj, const t_ray *ray, double *t);
+bool	intersect_sphere(t_object *obj, const t_ray *ray, double *t);
+
+void	get_normal_plane(t_object *obj, t_vec3 *hit_point, t_vec3 *out_normal);
+void	get_normal_sphere(t_object *obj, const void *hit_point, t_vec3 *out_normal);
+
 
 //maths
 t_vec3		vec_add(t_vec3 a, t_vec3 b);
