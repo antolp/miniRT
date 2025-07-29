@@ -57,15 +57,15 @@ void	g_test()
 
 int	main(void)
 {
-	// t_scene		scene_g;
+	t_scene		scene_g;
 	t_renderer	renderer_g;
 
 	if (!init_renderer(&renderer_g, WIDTH, HEIGHT, "rt"))
 		return (1); // need to aadd a free() mechanism 
 	g_renderer(&renderer_g);
-	// if (!init_scene(&scene_g))
-	// 	return (1); // again, need to aadd a free() mechanism
-	// g_scene(&scene_g);
+	if (!init_scene(&scene_g))
+		return (1); // again, need to aadd a free() mechanism
+	g_scene(&scene_g);
 	mlx_hook(renderer_g.win, KeyPress, KeyPressMask, key_hook, NULL);
 	// mlx_key_hook(renderer_g.mlx, key_hook, NULL);
 	mlx_loop_hook(renderer_g.mlx, render_loop, NULL);

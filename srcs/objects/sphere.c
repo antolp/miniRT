@@ -46,7 +46,7 @@ typedef struct s_quad {
 //		points at distance r from center point C")
 //
 //Now! substitution of P(t) point of intersection in sphere equation :
-//	|(O + t·D) - C|² = r²
+//	|(O + tD) - C|² = r²
 //let's difine L = O - C (vector from sphere center to ray origin)
 //refactoring :
 //  |L + t * D|² = r²
@@ -54,7 +54,7 @@ typedef struct s_quad {
 //	(L + t * D) * (L + t * D) = r²
 //	(D * D)t² + 2(L * D)t + (L * L - r²) = 0
 //we get a quadratic (2nd degree polynomial) in the form: 
-//	a·t² + b·t + c = 0
+//	a * t² + b * t + c = 0
 //where :
 //	- a = (D * D)
 //	- b = 2(L * D)
@@ -147,7 +147,7 @@ typedef struct s_quad {
 //	https://www.scratchapixel.com/lessons/3d-basic-rendering/
 //	minimal-ray-tracer-rendering-simple-shapes/ray-sphere-intersection.html
 //	(analytic solution)
-bool	intersect_sphere(t_object *obj, const t_ray *ray, double *t)
+bool	intersect_sphere(t_object *obj, t_ray *ray, double *t)
 {
 t_quad		q;
 t_vec3		l;

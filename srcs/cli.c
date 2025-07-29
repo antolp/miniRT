@@ -20,6 +20,7 @@ int	key_hook(int keycode, void *param)
 		&& r->mode != RENDER_REALTIME)
 	{
 		r->mode = RENDER_REALTIME;
+		r->has_drawn_realtime = false;
 		printf("Switched to REALTIME mode (edit)\n");
 	}
 	else if ((keycode == XK_R || keycode == XK_r)

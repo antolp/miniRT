@@ -65,6 +65,7 @@ typedef struct s_renderer
 	int				resolution_scale;	//potentially useful (antialiasing, real time mode)
 	bool			is_rendering;		//(redundant on single threaded logic)
 	bool			render_done;
+	bool			has_drawn_realtime;
 }	t_renderer;
 
 
@@ -72,25 +73,21 @@ typedef struct s_renderer
 bool		init_renderer(t_renderer *r, int width, int height, char *title);
 bool		init_scene(t_scene *s);
 int			key_hook(int keycode, void *param);
-
-
-void		put_pixel(t_img *img, int x, int y, t_color color);
-int			render_loop(void *param);
-void		render_test_frame(int frame);
 t_renderer	*g_renderer(t_renderer *set);
 t_scene		*g_scene(t_scene *set);
 
-
-
 //renderer
-
+t_color		trace_ray(t_ray *ray, int depth);
+void		put_pixel(t_img *img, int x, int y, t_color color);
+int			render_loop(void *param);
+void		render_test_frame(int frame);
 
 //ray-object intersection
-bool	intersect_plane(t_object *obj, const t_ray *ray, double *t);
-bool	intersect_sphere(t_object *obj, const t_ray *ray, double *t);
+bool	intersect_plane(t_object *obj, t_ray *ray, double *t);
+bool	intersect_sphere(t_object *obj, t_ray *ray, double *t);
 
 void	get_normal_plane(t_object *obj, t_vec3 *hit_point, t_vec3 *out_normal);
-void	get_normal_sphere(t_object *obj, const void *hit_point, t_vec3 *out_normal);
+void	get_normal_sphere(t_object *obj, t_vec3 *hit_point, t_vec3 *out_normal);
 
 
 //maths

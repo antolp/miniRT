@@ -12,17 +12,9 @@
 
 #include "rt.h"
 
-//hard-coded for now
-bool	init_scene(t_scene *s)
-{
-	(void)s;
-	return (0);
-}
-
-
 //NOTE: Valgrind may falsely report uninitialized bytes here 
 //consequence of X11 internals writev call
-//Known issue, check discord !!! may need a .supp file to feed to valgrind
+//Known issue, check 42 discord !!! may need a .supp file to feed to valgrind
 bool	init_renderer(t_renderer *r, int width, int height, char *title)
 {
 	r->mlx = mlx_init();
@@ -38,8 +30,93 @@ bool	init_renderer(t_renderer *r, int width, int height, char *title)
 			&r->img.bits_per_pixel, &r->img.line_length, &r->img.endian);
 	if (!r->img.addr)
 		return (0);
-	r->mode = RENDER_DEBUG;
+	r->mode = RENDER_HIGH_QUALITY;
 	r->resolution_scale = 1;
 	r->is_rendering = 0;
 	return (1);
+}
+
+t_list	*add_content(void *content)
+{
+	t_list	*node;
+
+	node = malloc(sizeof(t_list));
+	if (!node)
+		return (NULL);
+	node->content = content;
+	node->next = NULL;
+	return (node);
+}
+
+
+//hard-coded for now
+bool	init_scene(t_scene *s)
+{
+	t_sphere	*sphere;
+	t_plane		*plane;
+	t_object	*obj;
+	t_light		*light;
+
+	s->camera.position = (t_vec3){0, 2.3, -10};
+	s->camera.direction = (t_vec3){0, 0, 1};
+	s->camera.fov = 70;
+
+	s->ambient_color = (t_color){100, 100, 100};
+	s->ambient_ratio = 0.1f;
+	s->background_color = (t_color){0, 0, 0};
+	// s->background_color = (t_color){30, 30, 30};
+	s->is_rendering = false;
+	s->objects = NULL;
+	s->lights = NULL;
+
+	// ---------- SPHERE ----------
+	sphere = malloc(sizeof(t_sphere));
+	if (!sphere)
+		return (false);
+	sphere->center = (t_vec3){0, 2, 0};
+	sphere->radius = 2;
+	sphere->material.base_color = (t_color){255, 0, 0};
+	sphere->material.reflectivity = 0;
+	sphere->material.shininess = 0;
+	sphere->material.specular_coef = 0;
+	sphere->material.ior = 1.0;
+
+	obj = malloc(sizeof(t_object));
+	if (!obj)
+		return (false);
+	obj->type = OBJ_SPHERE;
+	obj->shape = sphere;
+	obj->material = &sphere->material;
+	obj->intersect = intersect_sphere;
+	obj->get_normal = get_normal_sphere;
+	ft_lstadd_back(&s->objects, add_content(obj));
+
+	// ---------- PLANE ----------
+	plane = malloc(sizeof(t_plane));
+	if (!plane)
+		return (false);
+	plane->point = (t_vec3){0, 0, 0};
+	plane->normal = (t_vec3){0, 1, 0};
+	plane->material.base_color = (t_color){205, 170, 170};
+
+	obj = malloc(sizeof(t_object));
+	if (!obj)
+		return (false);
+	obj->type = OBJ_PLANE;
+	obj->shape = plane;
+	obj->material = &plane->material;
+	obj->intersect = intersect_plane;
+	obj->get_normal = get_normal_plane;
+	ft_lstadd_back(&s->objects, add_content(obj));
+
+	// ---------- LIGHT ----------
+	light = malloc(sizeof(t_light));
+	if (!light)
+		return (false);
+	light->position = (t_vec3){-5, 10, -5};
+	light->intensity = 1.0;
+	light->color = (t_color){255, 255, 255};
+	ft_lstadd_back(&s->lights, add_content(light));
+
+	return (true);
 }

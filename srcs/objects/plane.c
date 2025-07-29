@@ -83,13 +83,13 @@
 //  t= 10
 //
 //  we can then, in trace_ray(), get the hit point in the scene :
-//  P(t) = O + t·D 
+//  P(t) = O + t * D 
 //  P(10) = (7, 10) + 10 × (-0.5, -1)
 //  P(10) = (7, 10) + (-5, -10)
 //  P(10) = (2, 0)
 //
 //  From the ascii drawing we can see that the intersection occurs at (2, 0) !!
-bool	intersect_plane(t_object *obj, const t_ray *ray, double *t)
+bool	intersect_plane(t_object *obj, t_ray *ray, double *t)
 {
 	t_plane	*plane;
 	double	denom;
