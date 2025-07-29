@@ -89,6 +89,9 @@ bool	intersect_sphere(t_object *obj, t_ray *ray, double *t);
 void	get_normal_plane(t_object *obj, t_vec3 *hit_point, t_vec3 *out_normal);
 void	get_normal_sphere(t_object *obj, t_vec3 *hit_point, t_vec3 *out_normal);
 
+//shading
+t_color	compute_diffuse_lighting(t_material *mat, t_vec3 point, t_vec3 normal);
+
 
 //maths
 t_vec3		vec_add(t_vec3 a, t_vec3 b);

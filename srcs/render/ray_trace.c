@@ -9,9 +9,15 @@
 /*   Updated: 2025/07/15 16:47:45 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "rt.h"
 
-//pour l'instant variables au lieu de call getset direct, pour lisibilité
+typedef struct s_hit_info
+{
+	t_vec3			hit_point;
+	t_vec3			normal;
+	t_object		*object;
+}	t_hit_info;
 
 //for each object in the scene, test the interesection
 //hit point closer if the scalar is t smaller
@@ -47,23 +53,19 @@ bool	get_closest_hit(t_ray *ray, t_vec3 *hit_point, t_vec3 *normal, t_object **h
 }
 
 //provisoire
-t_color	shade_pixel(t_ray *ray, t_object *object, t_vec3 *hit, t_vec3 *normal, int depth)
+t_color	shade_pixel(t_ray *ray, t_hit_info *hit, int depth)
 {
 	(void)ray;
-	(void)hit;
-	(void)normal;
 	(void)depth;
-	return(object->material->base_color);
+	return (compute_diffuse_lighting(hit->object->material, hit->hit_point, hit->normal));
 }
 
 t_color	trace_ray(t_ray *ray, int depth)
 {
-	t_object	*obj;
-	t_vec3		hit_point;
-	t_vec3		normal;
+	t_hit_info	hit;
 
-	if (!get_closest_hit(ray, &hit_point, &normal, &obj))
+	if (!get_closest_hit(ray, &hit.hit_point, &hit.normal, &hit.object))
 		return (g_scene(NULL)->background_color);
-	return (shade_pixel(ray, obj, &hit_point, &normal, depth));
+	// printf("%f %f %f\n",hit.hit_point.x, hit.hit_point.y, hit.hit_point.z);
+	return (shade_pixel(ray, &hit, depth));
 }
-
