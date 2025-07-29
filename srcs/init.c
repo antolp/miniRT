@@ -49,7 +49,9 @@ t_list	*add_content(void *content)
 }
 
 
-//hard-coded for now
+//hard-coded
+//NO OBJECTS CAN BE FREED as of now
+//garbage function to test scenes
 bool	init_scene(t_scene *s)
 {
 	t_sphere	*sphere;
@@ -75,7 +77,7 @@ bool	init_scene(t_scene *s)
 		return (false);
 	sphere->center = (t_vec3){0, 2, 0};
 	sphere->radius = 2;
-	sphere->material.base_color = (t_color){255, 0, 0};
+	sphere->material.base_color = (t_color){255, 255, 255};
 	sphere->material.reflectivity = 0;
 	sphere->material.shininess = 0;
 	sphere->material.specular_coef = 0;
@@ -109,14 +111,31 @@ bool	init_scene(t_scene *s)
 	obj->get_normal = get_normal_plane;
 	ft_lstadd_back(&s->objects, add_content(obj));
 
+	obj = malloc(sizeof(t_object));
+	if (!obj)
+		return (false);
+	obj->type = OBJ_PLANE;
+	obj->shape = plane;
+	obj->material = &plane->material;
+	obj->intersect = intersect_plane;
+	obj->get_normal = get_normal_plane;
+	ft_lstadd_back(&s->objects, add_content(obj));
+
 	// ---------- LIGHT ----------
 	light = malloc(sizeof(t_light));
 	if (!light)
 		return (false);
 	light->position = (t_vec3){-5, 10, -5};
-	light->intensity = 1.0;
-	light->color = (t_color){255, 255, 255};
+	light->intensity = 0.7;
+	light->color = (t_color){255, 50, 80};
 	ft_lstadd_back(&s->lights, add_content(light));
 
+		light = malloc(sizeof(t_light));
+	if (!light)
+		return (false);
+	light->position = (t_vec3){8, 7, -8};
+	light->intensity = 1.0;
+	light->color = (t_color){75, 50, 255};
+	ft_lstadd_back(&s->lights, add_content(light));
 	return (true);
 }

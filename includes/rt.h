@@ -38,6 +38,13 @@
 # include <stdio.h>
 # include <sys/time.h>
 
+typedef struct s_hit_info
+{
+	t_vec3			hit_point;
+	t_vec3			normal;
+	t_object		*object;
+}	t_hit_info;
+
 //used for pixel rendering in MiniLibX
 //see mlx_put_image_to_window() in mlx docs
 typedef struct s_img
@@ -83,6 +90,7 @@ int			render_loop(void *param);
 void		render_test_frame(int frame);
 
 //ray-object intersection
+bool	get_closest_hit(t_ray *ray, t_hit_info *hit);
 bool	intersect_plane(t_object *obj, t_ray *ray, double *t);
 bool	intersect_sphere(t_object *obj, t_ray *ray, double *t);
 

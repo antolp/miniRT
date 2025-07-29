@@ -12,19 +12,12 @@
 
 #include "rt.h"
 
-typedef struct s_hit_info
-{
-	t_vec3			hit_point;
-	t_vec3			normal;
-	t_object		*object;
-}	t_hit_info;
-
 //for each object in the scene, test the interesection
 //hit point closer if the scalar is t smaller
 //if interescted AND hit point closer to the camera than previous interesct,
 //store new the resulted hit_point
 //returns the closest object the ray has hit
-bool	get_closest_hit(t_ray *ray, t_vec3 *hit_point, t_vec3 *normal, t_object **hit_obj)
+bool	get_closest_hit(t_ray *ray, t_hit_info *hit)
 {
 	t_list		*objects;
 	t_object	*obj;
@@ -33,7 +26,7 @@ bool	get_closest_hit(t_ray *ray, t_vec3 *hit_point, t_vec3 *normal, t_object **h
 	t_vec3		temp_hit;
 
 	t_min = DBL_MAX;
-	*hit_obj = NULL; 
+	hit->object = NULL; 
 	objects = g_scene(NULL)->objects;
 	while (objects)
 	{
@@ -41,14 +34,14 @@ bool	get_closest_hit(t_ray *ray, t_vec3 *hit_point, t_vec3 *normal, t_object **h
 		if (obj->intersect(obj, ray, &t) && t > 0.001 && t < t_min)
 		{
 			t_min = t;
-			*hit_obj = obj;
+			hit->object = obj;
 		}
 		objects = objects->next;
 	}
-	if (!*hit_obj)
+	if (!hit->object)
 		return (false);
-	*hit_point = vec_add(ray->origin, vec_mul(ray->direction, t_min));
-	(*hit_obj)->get_normal(*hit_obj, hit_point, normal);
+	hit->hit_point = vec_add(ray->origin, vec_mul(ray->direction, t_min));
+	(hit->object)->get_normal(hit->object, &hit->hit_point, &hit->normal);
 	return (true);
 }
 
@@ -64,7 +57,7 @@ t_color	trace_ray(t_ray *ray, int depth)
 {
 	t_hit_info	hit;
 
-	if (!get_closest_hit(ray, &hit.hit_point, &hit.normal, &hit.object))
+	if (!get_closest_hit(ray, &hit))
 		return (g_scene(NULL)->background_color);
 	// printf("%f %f %f\n",hit.hit_point.x, hit.hit_point.y, hit.hit_point.z);
 	return (shade_pixel(ray, &hit, depth));
