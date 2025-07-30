@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init.c                                             :+:      :+:    :+:   */
+/*   render.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -75,18 +75,18 @@ void	init_camera_basis(t_camera_basis *cb, t_camera *cam,
 	cb->scale = tan(cam->fov * M_PI / 360.0);
 }
 
+
 //create_ray_for_pixel()
 //Given a pixel position on the screen (x, y) and a camera basis, computes the
 //ray starting at the camera origin that goes through that pixel on the image 
 //plane. The returned ray starts at camera position and ends at computed point.
-//
 //
 //goal is to map pixel coordinates (x, y) into Normalized Device Coordinates :
 //	- ndc_x maps [0, WIDTH] to [-1, 1] (left to right)
 //	- ndc_y maps [0, HEIGHT] to [1, -1] (top to bottom)
 //practical example :
 //	- left edge of the screen (x = 0) -> ndc_x = -1
-//	- bottom edge (y = HEIGHT) → ndc_y = -1
+//	- bottom edge (y = HEIGHT) -> ndc_y = -1
 //
 //then multiply by aspect ratio and FOV (cb->scale) to account
 //for perspective distortion and image plane size.
@@ -121,45 +121,29 @@ static	t_ray	create_ray_for_pixel(int x, int y,
 	return ((t_ray){s->camera.position, dir});
 }
 
-static void	render_full_frame(t_renderer *r, t_camera_basis *cb,
-		int width, int height)
+static void	render_full_frame(t_camera_basis *cb, t_color (*tracer)(t_ray *, int))
 {
-	int		x;
-	int		y;
-	t_ray	ray;
-	t_color	color;
+	int			x;
+	int			y;
+	t_ray		ray;
+	t_color		color;
+	t_renderer	*r;
 
 	y = 0;
-	while (y < height)
+	r = g_renderer(NULL);
+	while (y < HEIGHT)
 	{
 		x = 0;
-		while (x < width)
+		while (x < WIDTH)
 		{
 			ray = create_ray_for_pixel(x, y, cb);
-			color = trace_ray(&ray, 10);
+			color = tracer(&ray, 10);
 			put_pixel(&r->img, x, y, color);
 			x++;
 		}
-		if (y % 50 == 0)
-			printf("%d%%\n", (y * 100 / height));
+		if (r->mode == RENDER_HIGH_QUALITY && y % 50 == 0)
+			printf("%d%%\n", (y * 100 / HEIGHT));
 		y++;
-	}
-}
-
-
-
-void	draw_realtime_frame()
-{
-	t_renderer	*r;
-
-	r = g_renderer(NULL);
-	if (!r->has_drawn_realtime)
-	{
-		//here, render a low detail, fast frame by moduling ray_trace loop call
-		//e.g. bigger pixel, minimal to no shading, etc
-		//mlx_put_image_to_window(r->mlx, r->win, r->img.img, 0, 0);
-		printf("\nd\n");
-		r->has_drawn_realtime = true;
 	}
 }
 
@@ -174,13 +158,32 @@ void	render_high_quality_frame(void)
 	if (r->is_rendering || r->render_done)
 		return ;
 	init_camera_basis(&cb, &s->camera, WIDTH, HEIGHT);
-	render_full_frame(r, &cb, WIDTH, HEIGHT);
+	render_full_frame(&cb, trace_ray);
 	r->is_rendering = false;
 	r->render_done = true;
 	printf("HQ Render Finished. Press E to edit.\n");
 	mlx_put_image_to_window(r->mlx, r->win, r->img.img, 0, 0);
 }
 
+void	draw_realtime_frame()
+{
+	t_renderer	*r;
+	t_scene			*s;
+	t_camera_basis	cb;
+
+	r = g_renderer(NULL);
+	s = g_scene(NULL);
+	if (!r->has_drawn_realtime)
+	{
+		//here, render a low detail, fast frame by moduling ray_trace loop call
+		//e.g. bigger pixel, minimal to no shading, etc
+		//mlx_put_image_to_window(r->mlx, r->win, r->img.img, 0, 0);
+		init_camera_basis(&cb, &s->camera, WIDTH, HEIGHT);
+		render_full_frame(&cb, trace_fast_ray);
+		mlx_put_image_to_window(r->mlx, r->win, r->img.img, 0, 0);
+		r->has_drawn_realtime = true;
+	}
+}
 
 int	render_loop(void *param)
 {

@@ -45,7 +45,6 @@ bool	get_closest_hit(t_ray *ray, t_hit_info *hit)
 	return (true);
 }
 
-//provisoire
 t_color	shade_pixel(t_ray *ray, t_hit_info *hit, int depth)
 {
 	(void)ray;
@@ -61,4 +60,15 @@ t_color	trace_ray(t_ray *ray, int depth)
 		return (g_scene(NULL)->background_color);
 	// printf("%f %f %f\n",hit.hit_point.x, hit.hit_point.y, hit.hit_point.z);
 	return (shade_pixel(ray, &hit, depth));
+}
+
+t_color	trace_fast_ray(t_ray *ray, int none)
+{
+	t_hit_info	hit;
+
+	(void) none;
+	if (!get_closest_hit(ray, &hit))
+		return (g_scene(NULL)->background_color);
+	// printf("%f %f %f\n",hit.hit_point.x, hit.hit_point.y, hit.hit_point.z);
+	return (hit.object->material->base_color);
 }

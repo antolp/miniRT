@@ -28,8 +28,8 @@
 
 
 # define M_PI 3.14159265358979323846
-# define WIDTH 800
-# define HEIGHT 600
+# define WIDTH 1000
+# define HEIGHT 700
 
 # include "scene.h"
 
@@ -85,6 +85,7 @@ t_scene		*g_scene(t_scene *set);
 
 //renderer
 t_color		trace_ray(t_ray *ray, int depth);
+t_color		trace_fast_ray(t_ray *ray, int none);
 void		put_pixel(t_img *img, int x, int y, t_color color);
 int			render_loop(void *param);
 void		render_test_frame(int frame);

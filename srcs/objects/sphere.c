@@ -80,7 +80,7 @@ typedef struct s_quad {
 //         |        \ ,         |
 //         |         \,         |
 //         O----------\|        |
-//         | r=4      ,         |
+//         | r=4      ,\        |
 //.        |         P(t1) <--- the two intersections
 // ._      |      _.     \ 
 // ___'' -~|~- ''_________\________> X+
@@ -132,11 +132,11 @@ typedef struct s_quad {
 //	t0 ≈ 3.675 (entry) and t1 ≈ 8.325 (exit) on the ray.
 //
 //	the coordinates of these points are :
-//	P(t1) = (1, 11) + (1/3 * 8.325, -1 * 8.325)
-//		  = (3.775, 2.675)
-//	and most importantly :
 //	P(t0) = (1, 11) + (1/3 * 3.675, -1 * 3.675)
 //		  = (2.225, 7.325)
+//	and most importantly :
+//	P(t1) = (1, 11) + (1/3 * 8.325, -1 * 8.325)
+//		  = (3.775, 2.675)
 //
 //	These values do seem correct according to our ascii drawing !
 //	(Of course, during the rendering we don't compute the exit of the ray)
@@ -155,7 +155,6 @@ t_sphere	*s;
 
 s = (t_sphere *)obj->shape;
 l = vec_sub(ray->origin, s->center);
-
 q.a = vec_dot(ray->direction, ray->direction);
 q.b = 2.0 * vec_dot(l, ray->direction);
 q.c = vec_dot(l, l) - s->radius * s->radius;
