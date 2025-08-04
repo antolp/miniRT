@@ -28,6 +28,17 @@ typedef struct s_light
 	t_color	color;
 }	t_light;
 
+//camera context infos
+typedef struct s_camera_basis
+{
+	t_vec3	forward;
+	t_vec3	right;
+	t_vec3	up;
+	double	aspect_ratio;
+	double	scale;
+}	t_camera_basis;
+
+
 typedef struct s_camera
 {
 	t_vec3	position;

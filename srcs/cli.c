@@ -154,6 +154,19 @@ int	key_hook(int keycode, void *param)
 			printf("Maximum FOV reached\n");
 		r->has_drawn_realtime = false;
 	}
+	else if (keycode == XK_m)
+	{
+		if (r->supersampled == false)
+		{
+			printf("supersample on.\n");
+			r->supersampled = true;
+		}
+		else if (r->supersampled == true)
+		{
+			printf("supersample off.\n");
+			r->supersampled = false;
+		}
+	}
 	return (0);
 }
 

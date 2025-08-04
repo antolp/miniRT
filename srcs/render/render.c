@@ -13,17 +13,6 @@
 #include "rt.h"
 #define PIXEL_CENTER_OFFSET 0.5
 
-//local struct for norm purposes
-//camera context infos
-typedef struct s_camera_basis
-{
-	t_vec3	forward;
-	t_vec3	right;
-	t_vec3	up;
-	double	aspect_ratio;
-	double	scale;
-}	t_camera_basis;
-
 void	put_pixel(t_img *img, int x, int y, t_color color)
 {
 	int	offset;
@@ -102,7 +91,7 @@ void	init_camera_basis(t_camera_basis *cb, t_camera *cam,
 //https://learnopengl.com/Getting-started/Coordinate-Systems
 //https://www.scratchapixel.com/lessons/3d-basic-rendering/
 //ray-tracing-generating-camera-rays/standard-coordinate-systems.html
-static	t_ray	create_ray_for_pixel(int x, int y, 
+t_ray	create_ray_for_pixel(double x, double y, 
 		t_camera_basis *cb)
 {
 	double	ndc_x;
@@ -121,36 +110,10 @@ static	t_ray	create_ray_for_pixel(int x, int y,
 	return ((t_ray){s->camera.position, dir});
 }
 
-static void	render_full_frame(t_camera_basis *cb, t_color (*tracer)(t_ray *, int))
-{
-	int			x;
-	int			y;
-	t_ray		ray;
-	t_color		color;
-	t_renderer	*r;
-
-	y = 0;
-	r = g_renderer(NULL);
-	while (y < HEIGHT)
-	{
-		x = 0;
-		while (x < WIDTH)
-		{
-			ray = create_ray_for_pixel(x, y, cb);
-			color = tracer(&ray, 10);
-			put_pixel(&r->img, x, y, color);
-			x++;
-		}
-		if (r->mode == RENDER_HIGH_QUALITY && y % 50 == 0)
-			printf("%d%%\n", (y * 100 / HEIGHT));
-		y++;
-	}
-}
-
 void	render_high_quality_frame(void)
 {
-	t_renderer		*r;
 	t_scene			*s;
+	t_renderer		*r;
 	t_camera_basis	cb;
 
 	r = g_renderer(NULL);
@@ -158,17 +121,20 @@ void	render_high_quality_frame(void)
 	if (r->is_rendering || r->render_done)
 		return ;
 	init_camera_basis(&cb, &s->camera, WIDTH, HEIGHT);
-	render_full_frame(&cb, trace_ray);
+	if (r->supersampled == false)
+		render_full_frame(&cb);
+	if (r->supersampled == true)
+		render_supersampled_frame(&cb, 4);
 	r->is_rendering = false;
 	r->render_done = true;
 	printf("HQ Render Finished. Press E to edit.\n");
 	mlx_put_image_to_window(r->mlx, r->win, r->img.img, 0, 0);
 }
 
-void	draw_realtime_frame()
+void	render_realtime_frame()
 {
-	t_renderer	*r;
 	t_scene			*s;
+	t_renderer		*r;
 	t_camera_basis	cb;
 
 	r = g_renderer(NULL);
@@ -179,7 +145,7 @@ void	draw_realtime_frame()
 		//e.g. bigger pixel, minimal to no shading, etc
 		//mlx_put_image_to_window(r->mlx, r->win, r->img.img, 0, 0);
 		init_camera_basis(&cb, &s->camera, WIDTH, HEIGHT);
-		render_full_frame(&cb, trace_fast_ray);
+		render_downsampled_frame(&cb, 3);
 		mlx_put_image_to_window(r->mlx, r->win, r->img.img, 0, 0);
 		r->has_drawn_realtime = true;
 	}
@@ -195,7 +161,7 @@ int	render_loop(void *param)
 	if (r->mode == RENDER_TEST)
 		render_test_frame(frame++);
 	else if (r->mode == RENDER_REALTIME)
-		draw_realtime_frame();
+		render_realtime_frame();
 	else if (r->mode == RENDER_HIGH_QUALITY)
 		render_high_quality_frame();
 	return (0);

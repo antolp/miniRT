@@ -23,7 +23,6 @@ bool	get_closest_hit(t_ray *ray, t_hit_info *hit)
 	t_object	*obj;
 	double		t;
 	double		t_min;
-	t_vec3		temp_hit;
 
 	t_min = DBL_MAX;
 	hit->object = NULL; 

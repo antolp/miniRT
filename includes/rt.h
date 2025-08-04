@@ -28,8 +28,8 @@
 
 
 # define M_PI 3.14159265358979323846
-# define WIDTH 1000
-# define HEIGHT 700
+# define WIDTH 1400
+# define HEIGHT 1000
 
 # include "scene.h"
 
@@ -73,6 +73,7 @@ typedef struct s_renderer
 	bool			is_rendering;		//(redundant on single threaded logic)
 	bool			render_done;
 	bool			has_drawn_realtime;
+	bool			supersampled;
 }	t_renderer;
 
 
@@ -89,6 +90,10 @@ t_color		trace_fast_ray(t_ray *ray, int none);
 void		put_pixel(t_img *img, int x, int y, t_color color);
 int			render_loop(void *param);
 void		render_test_frame(int frame);
+void		render_full_frame(t_camera_basis *cb);
+void		render_supersampled_frame(t_camera_basis *cb, int samples);
+void		render_downsampled_frame(t_camera_basis *cb, int block_sizes);
+t_ray		create_ray_for_pixel(double x, double y,  t_camera_basis *cb);
 
 //ray-object intersection
 bool	get_closest_hit(t_ray *ray, t_hit_info *hit);
