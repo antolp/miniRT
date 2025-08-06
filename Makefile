@@ -1,9 +1,9 @@
 NAME		= miniRT
 OBJDIR		= .obj
-SRCS		= srcs/main.c srcs/init.c srcs/vector.c srcs/cli.c \
+SRCS		= srcs/main.c srcs/init.c srcs/vector.c srcs/cli.c srcs/debug.c \
 			  srcs/render/render_test.c srcs/render/render.c srcs/render/ray_trace.c \
 			  srcs/render/render_frame.c \
-			  srcs/objects/plane.c srcs/objects/sphere.c \
+			  srcs/objects/plane.c srcs/objects/sphere.c srcs/objects/cylinder.c \
 			  srcs/shading/diffuse_lights.c
 OBJS		= $(SRCS:%.c=$(OBJDIR)/%.o)
 
@@ -19,8 +19,8 @@ MLX			= $(MLX_DIR)/libmlx.a
 
 CC			= cc
 # CFLAGS	= -Wall -Wextra -Werror -fsanitize=address -g 
-CFLAGS		= -Wall -Wextra -Werror -g 
-# CFLAGS		= -g
+# CFLAGS		= -Wall -Wextra -Werror -g 
+CFLAGS		= -g
 INCLUDES	= -I./includes -I$(LIBFT_DIR) -I$(MLX_DIR) -Ilibft/includes
 LDFLAGS		= -L$(LIBFT_DIR) -lft -L$(MLX_DIR) -lmlx -lX11 -lXext -lm
 

@@ -124,7 +124,7 @@ void	render_high_quality_frame(void)
 	if (r->supersampled == false)
 		render_full_frame(&cb);
 	if (r->supersampled == true)
-		render_supersampled_frame(&cb, 4);
+		render_supersampled_frame(&cb, SAMPLE_LVL);
 	r->is_rendering = false;
 	r->render_done = true;
 	printf("HQ Render Finished. Press E to edit.\n");
