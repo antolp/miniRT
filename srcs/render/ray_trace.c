@@ -23,7 +23,6 @@ bool	get_closest_hit(t_ray *ray, t_hit_info *hit)
 	t_object	*obj;
 	double		t;
 	double		t_min;
-	t_vec3		temp_hit;
 
 	t_min = DBL_MAX;
 	hit->object = NULL; 
@@ -31,7 +30,8 @@ bool	get_closest_hit(t_ray *ray, t_hit_info *hit)
 	while (objects)
 	{
 		obj = (t_object *)objects->content;
-		if (obj->intersect(obj, ray, &t) && t > 0.001 && t < t_min)
+		t = t_min;
+		if (obj->intersect(obj, ray, &t) && t > 1e-4 && t < t_min)
 		{
 			t_min = t;
 			hit->object = obj;
@@ -45,7 +45,6 @@ bool	get_closest_hit(t_ray *ray, t_hit_info *hit)
 	return (true);
 }
 
-//provisoire
 t_color	shade_pixel(t_ray *ray, t_hit_info *hit, int depth)
 {
 	(void)ray;
@@ -61,4 +60,15 @@ t_color	trace_ray(t_ray *ray, int depth)
 		return (g_scene(NULL)->background_color);
 	// printf("%f %f %f\n",hit.hit_point.x, hit.hit_point.y, hit.hit_point.z);
 	return (shade_pixel(ray, &hit, depth));
+}
+
+t_color	trace_fast_ray(t_ray *ray, int none)
+{
+	t_hit_info	hit;
+
+	(void) none;
+	if (!get_closest_hit(ray, &hit))
+		return (g_scene(NULL)->background_color);
+	// printf("%f %f %f\n",hit.hit_point.x, hit.hit_point.y, hit.hit_point.z);
+	return (hit.object->material->base_color);
 }

@@ -12,17 +12,6 @@
 
 #include "rt.h"
 
-//local struct for norm compliance on quadratic computation
-typedef struct s_quad {
-	double	a; 
-	double	b; 
-	double	c;
-	double	d;
-	double	sqrt_d;
-	double	t0;
-	double	t1;
-}	t_quad;
-
 //intersect_sphere()
 //If the ray intersects the sphere:
 //  - Computes the smallest valid intersection distance t
@@ -51,14 +40,14 @@ typedef struct s_quad {
 //refactoring :
 //  |L + t * D|² = r²
 //dot product expansion (just like in plane intersection):
-//	(L + t * D) * (L + t * D) = r²
-//	(D * D)t² + 2(L * D)t + (L * L - r²) = 0
+//	(L + t * D) . (L + t * D) = r²
+//	(D . D)t² + 2(L . D)t + (L . L - r²) = 0
 //we get a quadratic (2nd degree polynomial) in the form: 
 //	a * t² + b * t + c = 0
 //where :
-//	- a = (D * D)
-//	- b = 2(L * D)
-//	- c = (L * L - r²)
+//	- a = D . D
+//	- b = 2(L . D)
+//	- c = L . L - r²
 //
 //solve it using the discriminant:
 //	delta = b² - 4ac
@@ -73,18 +62,18 @@ typedef struct s_quad {
 //        Y+
 //         |
 //         |  o     <-
-//         |   \ 
-//        _|_   \ 
+//         |   \                    .
+//        _|_   \   .               .
 //    ~'`  |  `'~P(t0) <--------  ray origin (o)
 //, `      |       \,           |
 //         |        \ ,         |
 //         |         \,         |
 //         O----------\|        |
-//         | r=4      ,         |
+//         | r=4      ,\        |
 //.        |         P(t1) <--- the two intersections
-// ._      |      _.     \ 
+// ._      |      _.     \          .
 // ___'' -~|~- ''_________\________> X+
-//         |               \ 
+//         |               \         .
 //         |  (scale : 1x = 3 chars, 1y = 1 char)
 //        Y-			
 //	o = 1, 11;
@@ -95,17 +84,17 @@ typedef struct s_quad {
 //	from the formulas :
 //	L = (1, 11) - (0, 4) = (1, 7)
 //
-//	a = dot((1/3, -1), (1/3, -1)) 
+//	a = (1/3, -1) . (1/3, -1)
 //	  = (1/3)² + (-1)² 
 //	  = 1/9 + 1 
 //	  = 10/9
 //
-//	b = 2 * dot((1, 7), (1/3, -1)) 
+//	b = 2 * ((1, 7) . (1/3, -1))
 //	  = 2 * [(1)*(1/3) + 7*(-1)] 
 //	  = 2 * (1/3 - 7) 
 //	  = -40/3
 //
-//	c = dot((1, 7), (1, 7)) - 16
+//	c = (1, 7) . (1, 7) - 16
 //	  = (1² + 7²) - 16 
 //	  = (1 + 49) - 16 
 //	  = 34
@@ -132,11 +121,11 @@ typedef struct s_quad {
 //	t0 ≈ 3.675 (entry) and t1 ≈ 8.325 (exit) on the ray.
 //
 //	the coordinates of these points are :
-//	P(t1) = (1, 11) + (1/3 * 8.325, -1 * 8.325)
-//		  = (3.775, 2.675)
-//	and most importantly :
 //	P(t0) = (1, 11) + (1/3 * 3.675, -1 * 3.675)
 //		  = (2.225, 7.325)
+//	and most importantly :
+//	P(t1) = (1, 11) + (1/3 * 8.325, -1 * 8.325)
+//		  = (3.775, 2.675)
 //
 //	These values do seem correct according to our ascii drawing !
 //	(Of course, during the rendering we don't compute the exit of the ray)
@@ -155,7 +144,6 @@ t_sphere	*s;
 
 s = (t_sphere *)obj->shape;
 l = vec_sub(ray->origin, s->center);
-
 q.a = vec_dot(ray->direction, ray->direction);
 q.b = 2.0 * vec_dot(l, ray->direction);
 q.c = vec_dot(l, l) - s->radius * s->radius;
@@ -165,9 +153,9 @@ if (q.d < 0)
 q.sqrt_d = sqrt(q.d);
 q.t0 = (-q.b - q.sqrt_d) / (2 * q.a);
 q.t1 = (-q.b + q.sqrt_d) / (2 * q.a);
-if (q.t0 > 0.001)
+if (q.t0 > 1e-4)
 	*t = q.t0;
-else if (q.t1 > 0.001)
+else if (q.t1 > 1e-4)
 	*t = q.t1;
 else
 	return (false);

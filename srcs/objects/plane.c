@@ -40,7 +40,7 @@
 //	- a point Po
 //	- a normal vector N
 //Plane equation :
-//dot(P(t) - Po, N) = 0 where :
+//P(t) - Po . N = 0 where :
 //	Po is any point on plane (plane->point for ex)
 //	P(t) is a point on the ray (t scalar, e.g. how far in ray vector)
 //	N normal vector
@@ -48,11 +48,11 @@
 //(dot product = 0)
 //
 //Now !! substitution of P(t) point of intersection in plane equation :
-//dot((O + t * D - Po), N) = 0 
+//(O + t * D - Po) . N = 0 
 //refactoring (dot product is commutative) :
-//dot((O - Po), N) + t * dot(D, N) = 0
+//(O - Po) . N + t * (D . N) = 0
 //finally, solving for t :
-//t = dot(P₀ - O, N) / dot(D, N)  -> that's our formula
+//t = (Po - O) . N / (D . N)  -> that's our formula
 //
 //Practical example in 2D :
 //        Y+
@@ -77,8 +77,8 @@
 //  N = 0, 1;
 //
 //	from the formula :
-//  t = dot(P0 - O, N) / dot(D, N)
-//  t = dot((-7, -10), (0, 1)) /dot((-0.5, -1), (0, 1))
+//  t = (P0 - O) . N / (D . N)
+//  t = (-7, -10) . (0, 1) / (-0.5, -1) . (0, 1)
 //  t = -10 / -1
 //  t= 10
 //
@@ -101,7 +101,7 @@ bool	intersect_plane(t_object *obj, t_ray *ray, double *t)
 		return (false);
 	p_to_o = vec_sub(plane->point, ray->origin);
 	*t = vec_dot(p_to_o, plane->normal) / denom;
-	if (*t < 0.001)
+	if (*t < 1e-4)
 		return (false);
 	return (true);
 }

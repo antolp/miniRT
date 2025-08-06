@@ -16,7 +16,7 @@
 //This header is used to declare small types used
 //throughout the code of the program
 
-//3 dimensional vector
+//3 dimensional vector/point
 typedef struct s_vec3
 {
 	double	x;
@@ -59,5 +59,36 @@ typedef enum e_texture_type
 	TEXTURE_CHECKERBOARD,
 	TEXTURE_BUMPMAP
 }	t_texture_type;
+
+//struct for norm compliance on quadratic computation
+typedef struct s_quad {
+	double	a; 
+	double	b; 
+	double	c;
+	double	d;
+	double	sqrt_d;
+	double	t0;
+	double	t1;
+}	t_quad;
+
+//same for cylinder cap and body intersection computation
+typedef struct s_cap_vars
+{
+	t_vec3	center;
+	t_vec3	normal;
+	double	denom;
+	double	t;
+	t_vec3	p;
+	int		i;
+}	t_cap_vars;
+
+typedef struct s_cyl_side_vars
+{
+	t_vec3	c_to_o;
+	t_vec3	d;
+	t_vec3	axis;
+	t_vec3	d_perp;
+	t_vec3	cto_perp;
+}	t_cyl_side_vars;
 
 #endif

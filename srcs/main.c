@@ -12,9 +12,6 @@
 
 #include "rt.h"
 
-#define WIDTH 800
-#define HEIGHT 600
-
 //getset immutable alternative
 //checking set makes the function rebindable if not called with NULL
 //checking !r makes the function return r everytime after first passed set ptr

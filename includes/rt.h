@@ -28,8 +28,9 @@
 
 
 # define M_PI 3.14159265358979323846
-# define WIDTH 800
-# define HEIGHT 600
+# define SAMPLE_LVL 3
+# define WIDTH 1000
+# define HEIGHT 700
 
 # include "scene.h"
 
@@ -73,6 +74,7 @@ typedef struct s_renderer
 	bool			is_rendering;		//(redundant on single threaded logic)
 	bool			render_done;
 	bool			has_drawn_realtime;
+	bool			supersampled;
 }	t_renderer;
 
 
@@ -85,17 +87,24 @@ t_scene		*g_scene(t_scene *set);
 
 //renderer
 t_color		trace_ray(t_ray *ray, int depth);
+t_color		trace_fast_ray(t_ray *ray, int none);
 void		put_pixel(t_img *img, int x, int y, t_color color);
 int			render_loop(void *param);
 void		render_test_frame(int frame);
+void		render_full_frame(t_camera_basis *cb);
+void		render_supersampled_frame(t_camera_basis *cb, int samples);
+void		render_downsampled_frame(t_camera_basis *cb, int block_sizes);
+t_ray		create_ray_for_pixel(double x, double y,  t_camera_basis *cb);
 
 //ray-object intersection
 bool	get_closest_hit(t_ray *ray, t_hit_info *hit);
 bool	intersect_plane(t_object *obj, t_ray *ray, double *t);
 bool	intersect_sphere(t_object *obj, t_ray *ray, double *t);
+bool	intersect_cylinder(t_object *obj, t_ray *ray, double *t);
 
 void	get_normal_plane(t_object *obj, t_vec3 *hit_point, t_vec3 *out_normal);
 void	get_normal_sphere(t_object *obj, t_vec3 *hit_point, t_vec3 *out_normal);
+void	get_normal_cylinder(t_object *obj, t_vec3 *hit_point, t_vec3 *out_normal);
 
 //shading
 t_color	compute_diffuse_lighting(t_material *mat, t_vec3 point, t_vec3 normal);
@@ -111,6 +120,11 @@ double		vec_dot(t_vec3 a, t_vec3 b);
 t_vec3		vec_cross(t_vec3 a, t_vec3 b);
 t_vec3		vec_normalize(t_vec3 v);
 t_vec3		vec_reflect(t_vec3 dir, t_vec3 normal);
+
+
+//debug
+void	print_color(char *s, t_color c);
+void	print_vec3(char *s, t_vec3 v);
 
 
 #endif
