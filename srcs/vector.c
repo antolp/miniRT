@@ -48,7 +48,6 @@ double	vec_length_squared(t_vec3 v)
     return v.x * v.x + v.y * v.y + v.z * v.z;
 }
 
-// 
 //returns the dot product of vectors a and b.
 //it's a scalar value defined as: a.x * b.x + a.y * b.y + a.z * b.z
 //extremely useful when dealing witgh angle calculations, projections, lighting 
@@ -105,7 +104,7 @@ t_vec3	vec_normalize(t_vec3 v)
 //Computes the reflection of a direction vector across a surface normal.
 //Both dir and normal are assumed to be normalized.
 //
-//uses the formula: R = D - 2 * (D ⋅ N) * N
+//uses the formula: R = D - 2 * (D . N) * N
 //where :
 //	- D is the incoming direction vector (comming from the cam hitting the surface)
 //	- N is the surface normal vector at the point of contact (normalized)

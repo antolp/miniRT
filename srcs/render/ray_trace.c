@@ -30,7 +30,8 @@ bool	get_closest_hit(t_ray *ray, t_hit_info *hit)
 	while (objects)
 	{
 		obj = (t_object *)objects->content;
-		if (obj->intersect(obj, ray, &t) && t > 0.001 && t < t_min)
+		t = t_min;
+		if (obj->intersect(obj, ray, &t) && t > 1e-4 && t < t_min)
 		{
 			t_min = t;
 			hit->object = obj;

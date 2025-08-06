@@ -15,8 +15,10 @@
 //is_in_shadow()
 //if you can cast a ray from light to hit_point, and intersect any object
 //the point is in the shadow of that object.
-//scale that with lighting component and you have decent (relatively) cheap shadows.
+//scale that with lighting component and you get decent relatively cheap shadow
 //(cheap means it doesnt need a lot of computing power)
+//adding a very small sample of light dir avoids shadow acnee and doesn't seem
+//to impact performance. 
 bool	is_in_shadow(t_vec3 point, t_vec3 light_pos)
 {
 	t_ray		shadow_ray;
@@ -27,10 +29,8 @@ bool	is_in_shadow(t_vec3 point, t_vec3 light_pos)
 	light_dir = vec_sub(light_pos, point);
 	light_dist = vec_length(light_dir);
 	light_dir = vec_normalize(light_dir);
-
-	shadow_ray.origin = vec_add(point, light_dir); //vec_mul(light_dir, 0.001));
+	shadow_ray.origin = vec_add(point, vec_mul(light_dir, 1e-4));
 	shadow_ray.direction = light_dir;
-
 	if (get_closest_hit(&shadow_ray, &hit))
 	{
 		double dist_to_hit = vec_length(vec_sub(hit.hit_point, shadow_ray.origin));
