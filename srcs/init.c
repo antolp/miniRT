@@ -49,11 +49,11 @@ t_list	*add_content(void *content)
 	return (node);
 }
  
-
-// //shadow on sphere
+// //shadow on spheres
 bool	init_scene(t_scene *s)
 {
 	t_sphere	*sphere;
+	t_sphere	*sphere1;
 	t_cylinder	*cylinder;
 	t_plane		*plane;
 	t_plane		*plane1;
@@ -74,10 +74,6 @@ bool	init_scene(t_scene *s)
 	s->is_rendering = false;
 	s->objects = NULL;
 	s->lights = NULL;
-	
-	
-	
-
 
 	// ---------- SPHERE ----------
 	sphere = malloc(sizeof(t_sphere));
@@ -101,14 +97,35 @@ bool	init_scene(t_scene *s)
 	obj->get_normal = get_normal_sphere;
 	ft_lstadd_back(&s->objects, add_content(obj));
 
-		// ---------- CYLINDER ----------
+		sphere1 = malloc(sizeof(t_sphere));
+	if (!sphere)
+		return (false);
+	sphere1->center = (t_vec3){6, 0, 3};
+	sphere1->radius = 5;
+	sphere1->material.base_color = (t_color){100, 255, 200};
+	sphere1->material.reflectivity = 0;
+	sphere1->material.shininess = 0;
+	sphere1->material.specular_coef = 0;
+	sphere1->material.ior = 1.0;
+
+	obj = malloc(sizeof(t_object));
+	if (!obj)
+		return (false);
+	obj->type = OBJ_SPHERE;
+	obj->shape = sphere1;
+	obj->material = &sphere1->material;
+	obj->intersect = intersect_sphere;
+	obj->get_normal = get_normal_sphere;
+	ft_lstadd_back(&s->objects, add_content(obj));
+
+	// ---------- CYLINDER ----------
 	cylinder = malloc(sizeof(t_cylinder));
 	if (!cylinder)
 		return (false);
-	cylinder->center = (t_vec3){-5, -1, -5};
+	cylinder->center = (t_vec3){5, -2, -5};
 	cylinder->axis = vec_normalize((t_vec3){0.3, 1, -0.2}),
 	cylinder->radius = 0.5;
-	cylinder->height = 7;
+	cylinder->height = 9;
 	cylinder->material.base_color = (t_color){100, 100, 200};
 	cylinder->material.reflectivity = 0;
 	cylinder->material.shininess = 0;
@@ -162,13 +179,12 @@ bool	init_scene(t_scene *s)
 	light = malloc(sizeof(t_light));
 	if (!light)
 		return (false);
-	light->position = (t_vec3){-6, -8, -7};
+	light->position = (t_vec3){-21, 12, -7};
 	light->intensity = 0.7;
 	light->color = (t_color){75, 50, 255};
 	ft_lstadd_back(&s->lights, add_content(light));
 	
-
-		// ---------- PLANE ----------
+	// ---------- PLANE ----------
 	plane = malloc(sizeof(t_plane));
 	if (!plane)
 		return (false);
@@ -188,20 +204,6 @@ bool	init_scene(t_scene *s)
 	
 	return (1);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // //hard-coded
 // //NO OBJECTS CAN BE FREED as of now

@@ -58,6 +58,8 @@ t_color	trace_ray(t_ray *ray, int depth)
 
 	if (!get_closest_hit(ray, &hit))
 		return (g_scene(NULL)->background_color);
+	if (vec_dot(hit.normal, ray->direction) > 0)
+		hit.normal = vec_mul(hit.normal, -1);
 	// printf("%f %f %f\n",hit.hit_point.x, hit.hit_point.y, hit.hit_point.z);
 	return (shade_pixel(ray, &hit, depth));
 }
