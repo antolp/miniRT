@@ -32,9 +32,6 @@
 # define WIDTH 1000
 # define HEIGHT 700
 
-# include "scene.h"
-
-
 // A SUPPR
 # include <stdio.h>
 # include <sys/time.h>

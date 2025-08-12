@@ -58,8 +58,8 @@ bool	init_scene(t_scene *s)
 	t_object	*obj;
 	t_light		*light;
 
-	s->camera.position = (t_vec3){0, 15, -10};
-	s->camera.direction = (t_vec3){0, -0.2, 1};
+	s->camera.position = (t_vec3){15, 5, -20};
+	s->camera.direction = (t_vec3){-1, -0.2, 0};
 	s->camera.fov = 70;
 
 	// s->ambient_color = (t_color){250, 200, 200};
@@ -94,7 +94,7 @@ bool	init_scene(t_scene *s)
 	sphere = malloc(sizeof(t_sphere));
 	if (!sphere)
 		return (false);
-	sphere->center = (t_vec3){0, 10, 0};
+	sphere->center = (t_vec3){0, 1, 0};
 	sphere->radius = 1;
 	obj = malloc(sizeof(t_object));
 	if (!obj)
@@ -114,7 +114,7 @@ bool	init_scene(t_scene *s)
 	light = malloc(sizeof(t_light));
 	if (!light)
 		return (false);
-	light->position = (t_vec3){-3, 20, 20};
+	light->position = (t_vec3){15, 20, -1};
 	light->intensity = 0.9;
 	light->color = (t_color){255, 255, 255};
 	ft_lstadd_back(&s->lights, add_content(light));

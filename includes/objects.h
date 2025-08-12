@@ -78,7 +78,6 @@ typedef struct s_triangle
 	t_vec3		p2;
 }	t_triangle;
 
-
 //polymorphic wrapper struct for objects
 typedef struct s_object
 {
