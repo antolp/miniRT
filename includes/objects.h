@@ -73,6 +73,17 @@ typedef struct s_cone
 	t_material	material;
 }	t_cone;
 
+//vertices must be defined in anti-clockwise order from Camera from view !!
+//(or, won't be facing camera, no shading)
+typedef struct s_triangle
+{
+	t_vec3		v0;
+	t_vec3		v1;
+	t_vec3		v2;
+	t_material	material;
+}	t_triangle;
+
+
 //polymorphic wrapper struct for objects
 typedef struct s_object
 {

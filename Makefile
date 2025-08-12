@@ -4,6 +4,7 @@ SRCS		= srcs/main.c srcs/init.c srcs/vector.c srcs/cli.c srcs/debug.c \
 			  srcs/render/render_test.c srcs/render/render.c srcs/render/ray_trace.c \
 			  srcs/render/render_frame.c \
 			  srcs/objects/plane.c srcs/objects/sphere.c srcs/objects/cylinder.c \
+			  srcs/objects/cone.c srcs/objects/triangle.c \
 			  srcs/shading/diffuse_lights.c
 OBJS		= $(SRCS:%.c=$(OBJDIR)/%.o)
 
