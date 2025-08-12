@@ -122,7 +122,7 @@ static bool	is_point_within_cylinder_height(t_vec3 point, t_cylinder *cyl)
 }
 
 //helper for norm
-void	compute_quad(t_quad *q, t_cyl_side_vars v, double radius)
+static void	compute_quad(t_quad *q, t_cyl_side_vars v, double radius)
 {
 	q->a = vec_dot(v.d_perp, v.d_perp);
 	q->b = 2.0 * vec_dot(v.d_perp, v.cto_perp);

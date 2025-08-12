@@ -110,4 +110,19 @@ typedef struct s_cone_cap_vars
 	double	t;
 }	t_cone_cap_vars;
 
+//finally triangles
+typedef struct s_tri_vars
+{
+	t_vec3	edge1;
+	t_vec3	edge2;
+	t_vec3	pvec;
+	t_vec3	tvec;
+	t_vec3	qvec;
+	double	det;
+	double	inv_det;
+	double	u;
+	double	v;
+	double	tcand;
+}	t_tri_vars;
+
 #endif

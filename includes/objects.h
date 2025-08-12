@@ -77,9 +77,9 @@ typedef struct s_cone
 //(or, won't be facing camera, no shading)
 typedef struct s_triangle
 {
-	t_vec3		v0;
-	t_vec3		v1;
-	t_vec3		v2;
+	t_vec3		p0;
+	t_vec3		p1;
+	t_vec3		p2;
 	t_material	material;
 }	t_triangle;
 
