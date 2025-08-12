@@ -45,14 +45,12 @@ typedef struct s_sphere
 {
 	t_vec3		center;
 	double		radius;
-	t_material	material;
 }	t_sphere;
 
 typedef struct s_plane
 {
 	t_vec3		point;
 	t_vec3		normal;
-	t_material	material;
 }	t_plane;
 
 typedef struct s_cylinder
@@ -61,7 +59,6 @@ typedef struct s_cylinder
 	t_vec3		axis;
 	double		radius;
 	double		height;
-	t_material	material;
 }	t_cylinder;
 
 typedef struct s_cone
@@ -70,7 +67,6 @@ typedef struct s_cone
 	t_vec3		axis;
 	double		angle;
 	double		height;
-	t_material	material;
 }	t_cone;
 
 //vertices must be defined in anti-clockwise order from Camera from view !!
@@ -80,7 +76,6 @@ typedef struct s_triangle
 	t_vec3		p0;
 	t_vec3		p1;
 	t_vec3		p2;
-	t_material	material;
 }	t_triangle;
 
 
@@ -89,7 +84,7 @@ typedef struct s_object
 {
 	t_object_type	type;
 	void			*shape; // Cast to specific object struct
-	t_material		*material;
+	t_material		material;
 	bool			(*intersect)(struct s_object *, t_ray *, double *t);
 	void			(*get_normal)(struct s_object *obj, t_vec3 *hit,
 			t_vec3 *out_normal);
