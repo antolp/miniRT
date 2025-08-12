@@ -98,14 +98,18 @@ t_ray		create_ray_for_pixel(double x, double y,  t_camera_basis *cb);
 
 //ray-object intersection
 bool	get_closest_hit(t_ray *ray, t_hit_info *hit);
+
 bool	intersect_plane(t_object *obj, t_ray *ray, double *t);
 bool	intersect_sphere(t_object *obj, t_ray *ray, double *t);
 bool	intersect_cylinder(t_object *obj, t_ray *ray, double *t);
+bool	intersect_cone(t_object *obj, t_ray *ray, double *t);
+bool	intersect_triangle(t_object *obj, t_ray *ray, double *t);
 
+void	get_normal_triangle(t_object *obj, t_vec3 *hit_point, t_vec3 *out_normal);
 void	get_normal_plane(t_object *obj, t_vec3 *hit_point, t_vec3 *out_normal);
 void	get_normal_sphere(t_object *obj, t_vec3 *hit_point, t_vec3 *out_normal);
 void	get_normal_cylinder(t_object *obj, t_vec3 *hit_point, t_vec3 *out_normal);
-
+void	get_normal_cone(t_object *obj, t_vec3 *hit_point, t_vec3 *out_normal);
 //shading
 t_color	compute_diffuse_lighting(t_material *mat, t_vec3 point, t_vec3 normal);
 

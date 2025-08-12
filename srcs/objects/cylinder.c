@@ -109,6 +109,8 @@ static bool	intersect_cylinder_caps(t_ray *ray, t_cylinder *cyl,
 	return (false);
 }
 
+//hit must lie between apex (0) and base (height)
+//use dot product to compare vector projection
 static bool	is_point_within_cylinder_height(t_vec3 point, t_cylinder *cyl)
 {
 	t_vec3	v;
@@ -117,6 +119,15 @@ static bool	is_point_within_cylinder_height(t_vec3 point, t_cylinder *cyl)
 	v = vec_sub(point, cyl->center);
 	proj = vec_dot(v, cyl->axis);
 	return (proj >= 0.0 && proj <= cyl->height);
+}
+
+//helper for norm
+static void	compute_quad(t_quad *q, t_cyl_side_vars v, double radius)
+{
+	q->a = vec_dot(v.d_perp, v.d_perp);
+	q->b = 2.0 * vec_dot(v.d_perp, v.cto_perp);
+	q->c = vec_dot(v.cto_perp, v.cto_perp) - radius * radius;
+	q->d = q->b * q->b - 4.0 * q->a * q->c;
 }
 
 //intersect_infinite_cylinder_side()
@@ -192,10 +203,7 @@ static bool	intersect_infinite_cylinder_side(t_ray *ray, t_cylinder *cyl,
 	v.d = ray->direction;
 	v.d_perp = vec_sub(v.d, vec_mul(v.axis, vec_dot(v.d, v.axis)));
 	v.cto_perp = vec_sub(v.c_to_o, vec_mul(v.axis, vec_dot(v.c_to_o, v.axis)));
-	q.a = vec_dot(v.d_perp, v.d_perp);
-	q.b = 2.0 * vec_dot(v.d_perp, v.cto_perp);
-	q.c = vec_dot(v.cto_perp, v.cto_perp) - cyl->radius * cyl->radius;
-	q.d = q.b * q.b - 4.0 * q.a * q.c;
+	compute_quad(&q, v, cyl->radius);
 	if (q.d < 0.0)
 		return (false);
 	q.sqrt_d = sqrt(q.d);

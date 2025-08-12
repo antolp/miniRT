@@ -91,4 +91,38 @@ typedef struct s_cyl_side_vars
 	t_vec3	cto_perp;
 }	t_cyl_side_vars;
 
+//cones structs
+typedef struct s_cone_side_vars
+{
+	t_vec3	co;     // O - apex, apex concidered center of cone
+	t_vec3	d;      // ray direction
+	double	cos2;   // cos(angle)^2
+	double	dv;     // dot(d, axis)
+	double	cov;    // dot(co, axis)
+}	t_cone_side_vars;
+
+typedef struct s_cone_cap_vars
+{
+	t_vec3	center; // base center
+	t_vec3	normal; // axis
+	double	radius; // base radius = height * tan(angle)
+	double	denom;  // dot(ray->direction, normal)
+	double	t;
+}	t_cone_cap_vars;
+
+//finally triangles
+typedef struct s_tri_vars
+{
+	t_vec3	edge1;
+	t_vec3	edge2;
+	t_vec3	pvec;
+	t_vec3	tvec;
+	t_vec3	qvec;
+	double	det;
+	double	inv_det;
+	double	u;
+	double	v;
+	double	tcand;
+}	t_tri_vars;
+
 #endif

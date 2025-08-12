@@ -49,6 +49,8 @@ t_color	shade_pixel(t_ray *ray, t_hit_info *hit, int depth)
 {
 	(void)ray;
 	(void)depth;
+	if (vec_dot(hit->normal, ray->direction) >= 0)
+		hit->normal = vec_mul(hit->normal, -1);
 	return (compute_diffuse_lighting(hit->object->material, hit->hit_point, hit->normal));
 }
 
@@ -58,8 +60,6 @@ t_color	trace_ray(t_ray *ray, int depth)
 
 	if (!get_closest_hit(ray, &hit))
 		return (g_scene(NULL)->background_color);
-	if (vec_dot(hit.normal, ray->direction) > 0)
-		hit.normal = vec_mul(hit.normal, -1);
 	// printf("%f %f %f\n",hit.hit_point.x, hit.hit_point.y, hit.hit_point.z);
 	return (shade_pixel(ray, &hit, depth));
 }
