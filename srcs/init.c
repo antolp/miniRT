@@ -33,6 +33,7 @@ bool	init_renderer(t_renderer *r, int width, int height, char *title)
 	r->mode = RENDER_HIGH_QUALITY;
 	r->resolution_scale = 1;
 	r->is_rendering = 0;
+	r->render_done = 0;
 	r->supersampled = false;
 	return (1);
 }
