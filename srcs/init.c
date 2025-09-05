@@ -35,6 +35,7 @@ bool	init_renderer(t_renderer *r, int width, int height, char *title)
 	r->is_rendering = 0;
 	r->render_done = 0;
 	r->supersampled = false;
+	r->shading_flags = DEFAULT_FLAGS;
 	return (1);
 }
 
@@ -50,63 +51,36 @@ t_list	*add_content(void *content)
 	return (node);
 }
 
-// //studying shadows on a simple scene
+// sphere, specular highlight (like in the subject)
 bool	init_scene(t_scene *s)
 {
 	t_sphere	*sphere;
-	t_triangle	*tri;
-	t_plane		*plane;
 	t_object	*obj;
 	t_light		*light;
 
-	s->camera.position = (t_vec3){15, 5, -20};
-	s->camera.direction = (t_vec3){-1, -0.2, 0};
+	s->camera.position = (t_vec3){0, 2.3, -10};
+	s->camera.direction = (t_vec3){-0.3, 0, 1};
 	s->camera.fov = 70;
 
-	// s->ambient_color = (t_color){250, 200, 200};
-	s->ambient_color = (t_color){0, 0, 0};
-	s->ambient_ratio = 0;
-	s->background_color = (t_color){0, 0, 0};
 	s->is_rendering = false;
 	s->objects = NULL;
 	s->lights = NULL;
 
-	// ---------- triangle ----------
-	tri = malloc(sizeof(t_triangle));
-	if (!tri)
-		return (false);
-	tri->p0 = (t_vec3){-14, 13, -1};
-	tri->p1 = (t_vec3){-12, 0, 2};
-	tri->p2 = (t_vec3){-9, 1, -9};
-	obj = malloc(sizeof(t_object));
-	if (!obj)
-		return (false);
-	obj->type = OBJ_TRIANGLE;
-	obj->shape = tri;
-	obj->material.base_color = (t_color){255, 200, 200};
-	obj->material.reflectivity = 0;
-	obj->material.shininess = 0;
-	obj->material.specular_coef = 0;
-	obj->material.ior = 1.0;
-	obj->intersect = intersect_triangle;
-	obj->get_normal = get_normal_triangle;
-	ft_lstadd_back(&s->objects, add_content(obj));
-
+	// ---------- SPHERE ----------
 	sphere = malloc(sizeof(t_sphere));
 	if (!sphere)
 		return (false);
-	sphere->center = (t_vec3){0, 1, 0};
-	sphere->radius = 1;
+	sphere->center = (t_vec3){-3, 3, 2};
+	sphere->radius = 3;
 	obj = malloc(sizeof(t_object));
 	if (!obj)
 		return (false);
 	obj->type = OBJ_SPHERE;
 	obj->shape = sphere;
-	obj->material.base_color = (t_color){255, 0, 0};
+	obj->material.base_color = (t_color){0, 0, 200};
 	obj->material.reflectivity = 0;
-	obj->material.shininess = 0;
-	obj->material.specular_coef = 0;
-	obj->material.ior = 1.0;
+	obj->material.shininess = 20;
+	obj->material.specular_strength = 1.3;
 	obj->intersect = intersect_sphere;
 	obj->get_normal = get_normal_sphere;
 	ft_lstadd_back(&s->objects, add_content(obj));
@@ -115,40 +89,18 @@ bool	init_scene(t_scene *s)
 	light = malloc(sizeof(t_light));
 	if (!light)
 		return (false);
-	light->position = (t_vec3){15, 20, -1};
-	light->intensity = 0.9;
+	light->position = (t_vec3){-5, 9, -12};
+	light->intensity = 0.57;
 	light->color = (t_color){255, 255, 255};
 	ft_lstadd_back(&s->lights, add_content(light));
 
-	// light = malloc(sizeof(t_light));
-	// if (!light)
-	// 	return (false);
-	// light->position = (t_vec3){3, 20, 20};
-	// light->intensity = 0.8;
-	// light->color = (t_color){255, 255, 255};
-	// ft_lstadd_back(&s->lights, add_content(light));
-	
-	// ---------- PLANE ----------
-	plane = malloc(sizeof(t_plane));
-	if (!plane)
-		return (false);
-	plane->point = (t_vec3){0, 0, 0};
-	plane->normal = (t_vec3){0, 1, 0};
-	obj = malloc(sizeof(t_object));
-	if (!obj)
-		return (false);
-	obj->type = OBJ_PLANE;
-	obj->shape = plane;
-	obj->material.base_color = (t_color){255, 255, 255};
-	obj->intersect = intersect_plane;
-	obj->get_normal = get_normal_plane;
-	ft_lstadd_back(&s->objects, add_content(obj));
-
+	s->ambient_color = (t_color){255, 255, 255};
+	s->ambient_ratio = 0.01;
+	s->background_color = (t_color){0, 0, 0};
 	return (1);
 }
 
-
-// // every objects, two planes
+// // // every objects, two planes
 // bool	init_scene(t_scene *s)
 // {
 // 	t_sphere	*sphere;
@@ -189,7 +141,7 @@ bool	init_scene(t_scene *s)
 // 	obj->material.base_color = (t_color){255, 200, 200};
 // 	obj->material.reflectivity = 0;
 // 	obj->material.shininess = 0;
-// 	obj->material.specular_coef = 0;
+// 	obj->material.specular_strength = 1;
 // 	obj->material.ior = 1.0;
 // 	obj->intersect = intersect_sphere;
 // 	obj->get_normal = get_normal_sphere;
@@ -209,7 +161,7 @@ bool	init_scene(t_scene *s)
 // 	obj->material.base_color = (t_color){100, 255, 200};
 // 	obj->material.reflectivity = 0;
 // 	obj->material.shininess = 0;
-// 	obj->material.specular_coef = 0;
+// 	obj->material.specular_strength = 1;
 // 	obj->material.ior = 1.0;
 // 	obj->intersect = intersect_sphere;
 // 	obj->get_normal = get_normal_sphere;
@@ -232,7 +184,7 @@ bool	init_scene(t_scene *s)
 // 	obj->material.base_color = (t_color){100, 100, 200};
 // 	obj->material.reflectivity = 0;
 // 	obj->material.shininess = 0;
-// 	obj->material.specular_coef = 0;
+// 	obj->material.specular_strength = 0.2;
 // 	obj->material.ior = 1.0;
 // 	obj->intersect = intersect_cylinder;
 // 	obj->get_normal = get_normal_cylinder;
@@ -256,7 +208,7 @@ bool	init_scene(t_scene *s)
 // 	obj->material.base_color = (t_color){100, 200, 200};
 // 	obj->material.reflectivity = 0;
 // 	obj->material.shininess = 0;
-// 	obj->material.specular_coef = 0;
+// 	obj->material.specular_strength = 1;
 // 	obj->material.ior = 1.0;obj->intersect = intersect_cone;
 // 	obj->get_normal = get_normal_cone;
 // 	ft_lstadd_back(&s->objects, add_content(obj));
@@ -277,7 +229,7 @@ bool	init_scene(t_scene *s)
 // 	obj->material.base_color = (t_color){255, 200, 200};
 // 	obj->material.reflectivity = 0;
 // 	obj->material.shininess = 0;
-// 	obj->material.specular_coef = 0;
+// 	obj->material.specular_strength = 1;
 // 	obj->material.ior = 1.0;
 // 	obj->intersect = intersect_triangle;
 // 	obj->get_normal = get_normal_triangle;
@@ -320,6 +272,7 @@ bool	init_scene(t_scene *s)
 // 	obj->type = OBJ_PLANE;
 // 	obj->shape = plane;
 // 	obj->material.base_color = (t_color){255, 255, 255};
+// 	obj->material.specular_strength = 0;
 // 	obj->intersect = intersect_plane;
 // 	obj->get_normal = get_normal_plane;
 // 	ft_lstadd_back(&s->objects, add_content(obj));
@@ -335,6 +288,7 @@ bool	init_scene(t_scene *s)
 // 	obj->type = OBJ_PLANE;
 // 	obj->shape = plane1;
 // 	obj->material.base_color = (t_color){255, 255, 255};
+// 	obj->material.specular_strength = 0;
 // 	obj->intersect = intersect_plane;
 // 	obj->get_normal = get_normal_plane;
 // 	ft_lstadd_back(&s->objects, add_content(obj));

@@ -89,7 +89,6 @@ t_color	compute_diffuse_lighting(t_material *mat, t_vec3 point, t_vec3 normal)
 
 	scene = g_scene(NULL);
 	color = compute_ambient_light(mat, scene);
-
 	node = scene->lights;
 	while (node)
 	{

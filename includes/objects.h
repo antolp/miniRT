@@ -33,12 +33,11 @@ typedef struct s_texture
 
 typedef struct s_material
 {
-	t_color			base_color;
-	double			reflectivity;
-	double			shininess;
-	double			specular_coef;
-	double			ior;
-	t_texture		texture;
+	t_color		base_color;
+	double		shininess;			// [10, ~200] specular exponent (Blinn-Phong)
+	double		specular_strength;	// [0, ~1], intensity of highlight
+	double		reflectivity;		// [0, 1], used only if reflective
+	double		ior;				// index of refraction, used only if refractive
 }	t_material;
 
 typedef struct s_sphere

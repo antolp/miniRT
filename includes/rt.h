@@ -25,12 +25,12 @@
 
 # include "mlx.h"
 # include "scene.h"
-
+# include "shading.h"
 
 # define M_PI 3.14159265358979323846
 # define SAMPLE_LVL 3
-# define WIDTH 1000
-# define HEIGHT 700
+# define WIDTH 600
+# define HEIGHT 600
 
 // A SUPPR
 # include <stdio.h>
@@ -72,6 +72,7 @@ typedef struct s_renderer
 	bool			render_done;
 	bool			has_drawn_realtime;
 	bool			supersampled;
+	int				shading_flags;
 }	t_renderer;
 
 
@@ -107,9 +108,15 @@ void	get_normal_plane(t_object *obj, t_vec3 *hit_point, t_vec3 *out_normal);
 void	get_normal_sphere(t_object *obj, t_vec3 *hit_point, t_vec3 *out_normal);
 void	get_normal_cylinder(t_object *obj, t_vec3 *hit_point, t_vec3 *out_normal);
 void	get_normal_cone(t_object *obj, t_vec3 *hit_point, t_vec3 *out_normal);
-//shading
-t_color	compute_diffuse_lighting(t_material *mat, t_vec3 point, t_vec3 normal);
 
+//shading
+t_color	shade_pixel(t_ray *ray, t_hit_info *hit, int depth);
+bool	is_in_shadow(t_vec3 point, t_vec3 light_pos);
+t_color	color_add(t_color a, t_color b);
+t_color	color_lerp(t_color c1, t_color c2, double t);
+
+t_color	compute_diffuse_lighting(t_material *mat, t_vec3 point, t_vec3 normal);
+t_color	compute_specular_lighting(t_material *m, t_vec3 p, t_vec3 n, t_vec3 view_dir);
 
 //maths
 t_vec3		vec_add(t_vec3 a, t_vec3 b);

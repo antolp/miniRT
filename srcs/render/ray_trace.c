@@ -45,16 +45,6 @@ bool	get_closest_hit(t_ray *ray, t_hit_info *hit)
 	return (true);
 }
 
-t_color	shade_pixel(t_ray *ray, t_hit_info *hit, int depth)
-{
-	(void)ray;
-	(void)depth;
-
-	if (vec_dot(hit->normal, ray->direction) >= 0)
-		hit->normal = vec_mul(hit->normal, -1);
-	return (compute_diffuse_lighting(&hit->object->material, hit->hit_point, hit->normal));
-}
-
 t_color	trace_ray(t_ray *ray, int depth)
 {
 	t_hit_info	hit;
