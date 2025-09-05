@@ -14,17 +14,21 @@
 
 static void	get_cap_info(t_cylinder *cyl, int i, t_vec3 *center, t_vec3 *normal)
 {
+	t_vec3	axis_n;
+
+	axis_n = vec_normalize(cyl->axis);
 	if (i == 0)
 	{
-		*center = cyl->center;
-		*normal = vec_mul(cyl->axis, -1);
+		*center = cyl->center;                 // base center
+		*normal = vec_mul(axis_n, -1.0);       // base normal points outward
 	}
 	else
 	{
-		*center = vec_add(cyl->center, vec_mul(cyl->axis, cyl->height));
-		*normal = cyl->axis;
+		*center = vec_add(cyl->center, vec_mul(axis_n, cyl->height)); // top center
+		*normal = axis_n;                      // top normal
 	}
 }
+
 
 //check_cap()
 //the real ray-cap intersection check function
@@ -70,21 +74,23 @@ static void	get_cap_info(t_cylinder *cyl, int i, t_vec3 *center, t_vec3 *normal)
 //
 //If the point is inside the radius and t is positive,
 //we update *t_hit and return true
-static bool	check_cap(t_ray *ray, t_cylinder *cyl,
-	t_cap_vars *v, double *t_hit)
+static bool	check_cap_hit(t_ray *ray, t_cylinder *cyl, t_cap_vars *v)
 {
 	v->denom = vec_dot(ray->direction, v->normal);
-	if (fabs(v->denom) < 1e-4)
+	if (fabs(v->denom) < 1e-6)
 		return (false);
 	v->t = vec_dot(vec_sub(v->center, ray->origin), v->normal) / v->denom;
-	if (v->t <= 1e-4 || v->t >= *t_hit)
+	if (v->t <= 1e-4 || v->t >= v->best_t)
 		return (false);
 	v->p = vec_add(ray->origin, vec_mul(ray->direction, v->t));
 	if (vec_length_squared(vec_sub(v->p, v->center)) > cyl->radius * cyl->radius)
 		return (false);
-	*t_hit = v->t;
+	v->best_t = v->t;
+	v->best_p = v->p;
+	v->found = true;
 	return (true);
 }
+
 
 //intersect_cylinder_caps()
 //tests the intersection between ray and the top and bottom "caps", circular faces
@@ -96,17 +102,19 @@ static bool	intersect_cylinder_caps(t_ray *ray, t_cylinder *cyl,
 	t_cap_vars	v;
 
 	v.i = 0;
+	v.found = false;
+	v.best_t = *t_hit;
 	while (v.i < 2)
 	{
 		get_cap_info(cyl, v.i, &v.center, &v.normal);
-		if (check_cap(ray, cyl, &v, t_hit))
-		{
-			*hit_point = v.p;
-			return (true);
-		}
+		check_cap_hit(ray, cyl, &v);
 		v.i++;
 	}
-	return (false);
+	if (!v.found)
+		return (false);
+	*t_hit = v.best_t;
+	*hit_point = v.best_p;
+	return (true);
 }
 
 //hit must lie between apex (0) and base (height)
