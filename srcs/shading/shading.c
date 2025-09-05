@@ -50,12 +50,14 @@ t_color	shade_pixel(t_ray *ray, t_hit_info *hit, int depth)
 	if (vec_dot(hit->normal, ray->direction) >= 0)
 		hit->normal = vec_mul(hit->normal, -1);
 	final_color = compute_diffuse_lighting(&hit->object->material, hit->hit_point, hit->normal);
-	if ((g_renderer(NULL)->shading_flags & FLAG_SPECULAR) != 0u)
+	if ((g_renderer(NULL)->shading_flag & FLAG_SPECULAR) != 0u)
 	{
 		view_dir = vec_normalize(vec_mul(ray->direction, -1.0));
 		final_color = color_add(final_color,
 				compute_specular_lighting(&hit->object->material,
 					hit->hit_point, hit->normal, view_dir));
 	}
+	if (g_renderer(NULL)->shading_flag & FLAG_REFLECTION)
+    	final_color = compute_reflection(&hit->object->material, ray, hit, final_color, depth);
 	return (final_color);
 }

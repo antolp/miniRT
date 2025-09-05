@@ -46,7 +46,9 @@ static bool	should_skip_light(t_vec3 p, t_light *light, unsigned int flags)
 //   spec = pow(spec_angle, shininess)
 //higher shininess values result in sharper highlights.
 //Finally scales the result by light intensity, material specular strength,
-//and light color (honestly not sure about this, may need some tweaking)
+//and light color
+//https://en.wikipedia.org/wiki/Specular_highlight
+//https://en.wikipedia.org/wiki/Blinn%E2%80%93Phong_reflection_model
 static t_color	compute_specular_component(t_material *m, t_vec3 p,
 		t_vec3 n, t_vec3 view_dir, t_light *light)
 {
@@ -59,8 +61,7 @@ static t_color	compute_specular_component(t_material *m, t_vec3 p,
 	light_dir = vec_normalize(vec_sub(light->position, p));
 	reflect_dir = vec_reflect(vec_mul(light_dir, -1.0), n);
 	spec_angle = vec_dot(view_dir, reflect_dir);
-	if (spec_angle < 0.0)
-		spec_angle = 0.0;
+	spec_angle = fmax(spec_angle, 0.0);
 	spec = pow(spec_angle, m->shininess) * light->intensity;
 	spec *= m->specular_strength;
 	c.r = (int)(light->color.r * spec);
@@ -84,7 +85,7 @@ t_color	compute_specular_lighting(t_material *m, t_vec3 p,
 	while (node)
 	{
 		light = (t_light *)node->content;
-		if (should_skip_light(p, light, g_renderer(NULL)->shading_flags))
+		if (should_skip_light(p, light, g_renderer(NULL)->shading_flag))
 		{
 			node = node->next;
 			continue;
