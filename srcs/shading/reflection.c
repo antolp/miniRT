@@ -46,27 +46,37 @@ double	get_fresnel_weight(t_material *m, t_ray *ray, t_hit_info *hit)
 	return (fmax(0.0, fmin(1.0, weight)));
 }
 
+//used in refraction too
+//mult by eps avoids weird artefacts, especially when no supersampling
+t_ray	compute_reflected_ray(t_ray *ray, t_hit_info *hit)
+{
+	t_ray			reflect_ray;
+	t_vec3			reflect_dir;
+
+	reflect_dir = vec_normalize(vec_reflect(ray->direction, hit->normal));
+	reflect_ray.origin = vec_add(hit->hit_point, vec_mul(reflect_dir, 0.001));
+	reflect_ray.direction = reflect_dir;
+	return (reflect_ray);
+}
+
 //took reflection from old codebase
 //we trace a new ray from intersection point with a reflected direction
 //hit something, return weighted from fresnel (will reflect more the higher the
 //angle of incidence)
 t_color	compute_reflection(t_material *m, t_ray *ray, t_hit_info *hit,
-							t_color current, int depth)
+							t_color current)
 {
 	t_ray			reflect_ray;
-	t_vec3			reflect_dir;
 	t_color			reflected;
 	double			cos_theta;
 	double			weight;
 
-	if (depth <= 0)
+	if (ray->depth <= 0)
 		return (current);
 	if ((g_renderer(NULL)->shading_flag & FLAG_REFLECTION) == 0u)
 		return (current);
-	reflect_dir = vec_normalize(vec_reflect(ray->direction, hit->normal));
-	reflect_ray.origin = vec_add(hit->hit_point, vec_mul(reflect_dir, 0.001));
-	reflect_ray.direction = reflect_dir;
 	weight = get_fresnel_weight(m, ray, hit);
-	reflected = trace_ray(&reflect_ray, depth - 1);
+	reflect_ray = compute_reflected_ray(ray, hit);
+	reflected = trace_ray(&reflect_ray, ray->depth-1);
 	return (color_lerp(current, reflected, weight));
 }

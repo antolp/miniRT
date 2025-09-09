@@ -50,10 +50,10 @@
 //	- c = L . L - r²
 //
 //solve it using the discriminant:
-//	delta = b² - 4ac
-//	- if delta < 0 -> no (real) solution, no intersection
-//	- if delta = 0 -> ray tangent to the sphere, one intersection
-//	- if delta > 0 -> two intersections (enter and exit the sphere)
+//	θ = b² - 4ac
+//	- if θ < 0 -> no (real) solution, no intersection
+//	- if θ = 0 -> ray tangent to the sphere, one intersection
+//	- if θ > 0 -> two intersections (enter and exit the sphere)
 //
 //We can then finally get the value of t from the determinant using the
 //quadratic formula : t = (-b -/+ sqrt(d)) / (2a);
@@ -100,21 +100,21 @@
 //	  = 34
 //
 //	now, for the discriminant :
-//	delta = b² - 4ac
+//	θ = b² - 4ac
 //		  = (-40/3)² - (4 * (10/9) * 34)
 //		  = (1600 / 9) - (1360 / 9)
 //		  = 80 / 3
 //
-//	delta positive, there's indeed two intersections !!	
+//	θ positive, there's indeed two intersections !!	
 //	in advance :
 //		sqrt(80/3) ≈ 5.164
 //		2a = 2 * (10/9) = 20 / 9
 //	Now compute two solutions (or scalar):
-//	t0 = (-b - sqrt(delta)) / 2a
+//	t0 = (-b - sqrt(θ)) / 2a
 //	   = (40/3 - 5.164) / (20/9)
 //	   ≈ 3.675
 //
-//	t1 = (-b + sqrt(delta)) / 2a
+//	t1 = (-b + sqrt(θ)) / 2a
 //	   = (13.33 + 5.164) / (20/9)
 //	   ≈ 8.325
 //	The ray intersects the sphere at position:

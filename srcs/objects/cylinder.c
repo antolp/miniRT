@@ -191,10 +191,10 @@ static void	compute_quad(t_quad *q, t_cyl_side_vars v, double radius)
 //  - c = L_perp . L_perp - r²
 //
 //solve it using the discriminant:
-//	delta = b² - 4ac
-//	- if delta < 0 -> no (real) solution, no intersection
-//	- if delta = 0 -> ray tangent to the sphere, one intersection
-//	- if delta > 0 -> two intersections (enter and exit the sphere)
+//	θ = b² - 4ac
+//	- if θ < 0 -> no (real) solution, no intersection
+//	- if θ = 0 -> ray tangent to the sphere, one intersection
+//	- if θ > 0 -> two intersections (enter and exit the sphere)
 //
 //We can then finally get the value of t from the determinant using the
 //quadratic formula : t = (-b -/+ sqrt(d)) / (2a);

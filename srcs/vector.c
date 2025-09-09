@@ -116,7 +116,7 @@ t_vec3	vec_normalize(t_vec3 v)
 //the formula reflects D across the plane defined by N, like light 
 //bouncing off a mirror
 //useful to simulate reflection, and blinn-phong spec highlight
-//
+//drawing it on paper makes the maths obvious
 //	https://www.fabrizioduroni.it/blog/post/2017/08/25/
 //	how-to-calculate-reflection-vector
 //	https://www.youtube.com/watch?v=naaeH1qbjdQ

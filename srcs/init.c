@@ -54,14 +54,20 @@ t_list	*add_content(void *content)
 
 
 
-// --- FEATURE HIGHLIGHT : reflection + fresnel ---
-// two reflective spheres
+
+//--- FEATURE HIGHLIGHT : three material properties ---
 //
-//playing with refl and ior :
-//	plastic	: shine =  16; spec = 0.3; refl = 0.3; ior = 1.00;
-//	glossy	: shine =  32; spec = 1.0; refl = 1.0; ior = 1.52;
-//	shiny	: shine = 128; spec = 1.0; refl = 1.0; ior = 2.42;
-//	metal	: shine = 256; spec = 1.0; refl = 1.0; ior = 0.01;
+//refraction based on refractivity and ior
+//refractivity only defines how tinted the glass is, lower is more tinted
+//0.0001 means clear glass, 1 means completely tinted  
+//	slightly disruptive glass : ior = 1.001 to 1,03;
+//this fakes the effect of an empty object made of glass.
+//
+//other values are buggy and thus experimental, but still interesting
+//	completely solid glass ball : ior = 1.3 to 1.52;
+//very dense "crystal" : ior = 1.8 to 1.9. works best with squarish shape
+//a solid glass ball or cylinder will act like a lense, that's the reason
+//the image formed by a sphere of ior 1.52 looks "inverted".
 bool	init_scene(t_scene *s)
 {
 	t_sphere	*sphere;
@@ -70,49 +76,117 @@ bool	init_scene(t_scene *s)
 	t_object	*obj;
 	t_light		*light;
 
-	s->camera.position = (t_vec3){3.00, 7.68, -15.15};
-	s->camera.direction = vec_normalize((t_vec3){-0.05, 0.01, 1.00});
-	s->camera.fov = 50;
+	s->camera.position = (t_vec3){-1, 6.7, -6.9};
+	s->camera.direction = (t_vec3){-0.51, -0.51, 1};
+	s->camera.fov = 70;
 
 	s->is_rendering = false;
 	s->objects = NULL;
 	s->lights = NULL;
 
-	// ---------- SPHERE ----------
+	//sphere 1, transparent, refractive slightly disruptive sphere
 	sphere = malloc(sizeof(t_sphere));
 	if (!sphere)
 		return (false);
-	sphere->center = (t_vec3){-10, 10, 30};
-	sphere->radius = 10;
+	sphere->center = (t_vec3){-3, 3, 2};
+	sphere->radius = 3;
 	obj = malloc(sizeof(t_object));
 	if (!obj)
 		return (false);
 	obj->type = OBJ_SPHERE;
 	obj->shape = sphere;
-	obj->material.base_color = (t_color){255, 60, 60};
+	obj->material.base_color = (t_color){10, 255, 155};
 	obj->material.reflectivity = 1;
-	obj->material.ior = 1.52;
-	obj->material.shininess = 32;
-	obj->material.specular_strength = 1;
+	obj->material.shininess = 20;
+	obj->material.specular_strength = 1.3;
+	obj->material.ior = 1.015;
+	obj->material.refractivity = 0.7;
+	obj->intersect = intersect_sphere;
+	obj->get_normal = get_normal_sphere;
+	ft_lstadd_back(&s->objects, add_content(obj));
+	
+	//another glass sphere
+	sphere = malloc(sizeof(t_sphere));
+	if (!sphere)
+		return (false);
+	sphere->center = (t_vec3){-3, 3.9, -3};
+	sphere->radius = 1.81;
+	obj = malloc(sizeof(t_object));
+	if (!obj)
+		return (false);
+	obj->type = OBJ_SPHERE;
+	obj->shape = sphere;
+	obj->material.base_color = (t_color){55, 55, 255};
+	obj->material.reflectivity = 1;
+	obj->material.shininess = 20;
+	obj->material.specular_strength = 1.3;
+	obj->material.ior = 1.015;
+	obj->material.refractivity = 0.01;
 	obj->intersect = intersect_sphere;
 	obj->get_normal = get_normal_sphere;
 	ft_lstadd_back(&s->objects, add_content(obj));
 
+	//sphere 2, shiny, reflective sphere
 	sphere = malloc(sizeof(t_sphere));
 	if (!sphere)
 		return (false);
-	sphere->center = (t_vec3){10, 10, 30};
-	sphere->radius = 10;
+	sphere->center = (t_vec3){-10, 3, 2};
+	sphere->radius = 3;
+	obj = malloc(sizeof(t_object));
+	if (!obj)
+		return (false);
+	obj->type = OBJ_SPHERE;
+	obj->shape = sphere;
+	obj->material.base_color = (t_color){255, 10, 155};
+	obj->material.reflectivity = 0.9;
+	obj->material.shininess = 20;
+	obj->material.specular_strength = 1.3;
+	obj->material.ior = 2.3;
+	obj->material.refractivity = 0;
+	obj->intersect = intersect_sphere;
+	obj->get_normal = get_normal_sphere;
+	ft_lstadd_back(&s->objects, add_content(obj));
+
+	//cynlinder, reflective perfect mirror
+	cylinder = malloc(sizeof(t_cylinder));
+	if (!cylinder)
+		return (false);
+	cylinder->center = (t_vec3){-13, -10, -33};
+	cylinder->axis = vec_normalize((t_vec3){0.2, 1, 0.1}),
+	cylinder->radius = 12;
+	cylinder->height = 30;
+	obj = malloc(sizeof(t_object));
+	if (!obj)
+		return (false);
+	obj->type = OBJ_CYLINDER;
+	obj->shape = cylinder;
+	obj->material.base_color = (t_color){75, 50, 255};
+	obj->material.reflectivity = 1;
+	obj->material.shininess = 20;
+	obj->material.specular_strength = 1.3;
+	obj->material.ior = 0.2;
+	obj->material.refractivity = 0;
+	obj->intersect = intersect_cylinder;
+	obj->get_normal = get_normal_cylinder;
+	ft_lstadd_back(&s->objects, add_content(obj));
+
+	//sphere 3, mate shiny sphere, no reflection
+	sphere = malloc(sizeof(t_sphere));
+	if (!sphere)
+		return (false);
+	sphere->center = (t_vec3){-17, 3, 2};
+	sphere->radius = 3;
 	obj = malloc(sizeof(t_object));
 	if (!obj)
 		return (false);
 	obj->type = OBJ_SPHERE;
 	obj->shape = sphere;
 	obj->material.base_color = (t_color){255, 255, 255};
-	obj->material.reflectivity = 1;
-	obj->material.ior = 0.05;
-	obj->material.shininess = 64;
-	obj->material.specular_strength = 0.7;
+	obj->material.reflectivity = 0;
+	obj->material.shininess = 20;
+	obj->material.specular_strength = 1.3;
+	obj->material.ior = 1.02;
+	obj->material.refractivity = 0;
 	obj->intersect = intersect_sphere;
 	obj->get_normal = get_normal_sphere;
 	ft_lstadd_back(&s->objects, add_content(obj));
@@ -121,14 +195,14 @@ bool	init_scene(t_scene *s)
 	plane = malloc(sizeof(t_plane));
 	if (!plane)
 		return (false);
-	plane->point = (t_vec3){0, 0, 0};
+	plane->point = (t_vec3){0, -5, 0};
 	plane->normal = (t_vec3){0, 1, 0};
 	obj = malloc(sizeof(t_object));
 	if (!obj)
 		return (false);
 	obj->type = OBJ_PLANE;
 	obj->shape = plane;
-	obj->material.base_color = (t_color){240, 240, 240};
+	obj->material.base_color = (t_color){255, 255, 255};
 	obj->material.reflectivity = 1;
 	obj->material.ior = 1;
 	obj->material.specular_strength = 0;
@@ -141,10 +215,15 @@ bool	init_scene(t_scene *s)
 	light = malloc(sizeof(t_light));
 	if (!light)
 		return (false);
-	light->position = (t_vec3){0, 30, -30};
+	light->position = (t_vec3){-5, 19, -12};
 	light->intensity = 0.9;
 	light->color = (t_color){255, 255, 255};
 	ft_lstadd_back(&s->lights, add_content(light));
+
+	// s->ambient_color = (t_color){255, 255, 255};
+	// s->ambient_ratio = 0.1;
+	// s->background_color = (t_color){0, 0, 0};
+	// return (1);
 
 	s->ambient_color = (t_color){255, 255, 255};
 	s->ambient_ratio = 0.2;
@@ -156,9 +235,111 @@ bool	init_scene(t_scene *s)
 
 
 
+// // --- FEATURE HIGHLIGHT : reflection + fresnel ---
+// // two reflective spheres
+// //
+// //reflectivity based on refl and ior :
+// //	plastic	: shine =  16; spec = 0.3; refl = 0.3; ior = 1.00;
+// //	glossy	: shine =  32; spec = 1.0; refl = 1.0; ior = 1.52;
+// //	shiny	: shine = 128; spec = 1.0; refl = 1.0; ior = 2.42;
+// //	metal	: shine = 256; spec = 1.0; refl = 1.0; ior = 0.01;
+// bool	init_scene(t_scene *s)
+// {
+// 	t_sphere	*sphere;
+// 	t_cylinder	*cylinder;
+// 	t_plane		*plane;
+// 	t_object	*obj;
+// 	t_light		*light;
+
+// 	s->camera.position = (t_vec3){3.00, 7.68, -15.15};
+// 	s->camera.direction = vec_normalize((t_vec3){-0.05, 0.01, 1.00});
+// 	s->camera.fov = 50;
+
+// 	s->is_rendering = false;
+// 	s->objects = NULL;
+// 	s->lights = NULL;
+
+// 	// ---------- SPHERE ----------
+// 	sphere = malloc(sizeof(t_sphere));
+// 	if (!sphere)
+// 		return (false);
+// 	sphere->center = (t_vec3){-10, 10, 30};
+// 	sphere->radius = 10;
+// 	obj = malloc(sizeof(t_object));
+// 	if (!obj)
+// 		return (false);
+// 	obj->type = OBJ_SPHERE;
+// 	obj->shape = sphere;
+// 	obj->material.base_color = (t_color){255, 60, 60};
+// 	obj->material.reflectivity = 1;
+// 	obj->material.ior = 1.52;
+// 	obj->material.shininess = 32;
+// 	obj->material.specular_strength = 1;
+// 	obj->material.refractivity = 0;
+// 	obj->intersect = intersect_sphere;
+// 	obj->get_normal = get_normal_sphere;
+// 	ft_lstadd_back(&s->objects, add_content(obj));
+
+// 	sphere = malloc(sizeof(t_sphere));
+// 	if (!sphere)
+// 		return (false);
+// 	sphere->center = (t_vec3){10, 10, 30};
+// 	sphere->radius = 10;
+// 	obj = malloc(sizeof(t_object));
+// 	if (!obj)
+// 		return (false);
+// 	obj->type = OBJ_SPHERE;
+// 	obj->shape = sphere;
+// 	obj->material.base_color = (t_color){255, 255, 255};
+// 	obj->material.reflectivity = 1;
+// 	obj->material.ior = 0.05;
+// 	obj->material.shininess = 64;
+// 	obj->material.specular_strength = 0.7;
+// 	obj->intersect = intersect_sphere;
+// 	obj->get_normal = get_normal_sphere;
+// 	ft_lstadd_back(&s->objects, add_content(obj));
+
+// 	// ---------- PLANE ----------
+// 	plane = malloc(sizeof(t_plane));
+// 	if (!plane)
+// 		return (false);
+// 	plane->point = (t_vec3){0, 0, 0};
+// 	plane->normal = (t_vec3){0, 1, 0};
+// 	obj = malloc(sizeof(t_object));
+// 	if (!obj)
+// 		return (false);
+// 	obj->type = OBJ_PLANE;
+// 	obj->shape = plane;
+// 	obj->material.base_color = (t_color){240, 240, 240};
+// 	obj->material.reflectivity = 1;
+// 	obj->material.ior = 1;
+// 	obj->material.specular_strength = 0;
+// 	obj->material.shininess = 0;
+// 	obj->intersect = intersect_plane;
+// 	obj->get_normal = get_normal_plane;
+// 	ft_lstadd_back(&s->objects, add_content(obj));
+
+// 	// ---------- LIGHT ----------
+// 	light = malloc(sizeof(t_light));
+// 	if (!light)
+// 		return (false);
+// 	light->position = (t_vec3){0, 30, -30};
+// 	light->intensity = 0.9;
+// 	light->color = (t_color){255, 255, 255};
+// 	ft_lstadd_back(&s->lights, add_content(light));
+
+// 	s->ambient_color = (t_color){255, 255, 255};
+// 	s->ambient_ratio = 0.2;
+// 	s->background_color = (t_color){10, 10, 40};
+// 	return (1);
+// }
+
+
+
+
 
 // //--- FEATURE HIGHLIGHT : specular highlight ---
-// //sphere, specular highlight (like in the subject)\
+// //sphere, specular highlight (like in the subject)
 // //
 // bool	init_scene(t_scene *s)
 // {
@@ -212,10 +393,9 @@ bool	init_scene(t_scene *s)
 
 
 
-
-
-
-// showing initialization for every objects, two planes
+// //--- FEATURE HIGHLIGHT : diffuse + hard shadow stress test---
+// //showing initialization for every objects, two planes
+//
 // bool	init_scene(t_scene *s)
 // {
 // 	t_sphere	*sphere;
@@ -242,6 +422,12 @@ bool	init_scene(t_scene *s)
 // 	s->objects = NULL;
 // 	s->lights = NULL;
 
+//	//removing some rendering component bc of uninit material values
+//	// g_renderer(NULL)->shading_flag &= ~FLAG_SPECULAR;
+// 	// g_renderer(NULL)->shading_flag &= ~FLAG_TRANSPARENT_SHADOW;
+// 	g_renderer(NULL)->shading_flag &= ~FLAG_REFLECTION;
+// 	g_renderer(NULL)->shading_flag &= ~FLAG_FRESNEL;
+
 // 	// ---------- SPHERE ----------
 // 	sphere = malloc(sizeof(t_sphere));
 // 	if (!sphere)
@@ -256,8 +442,8 @@ bool	init_scene(t_scene *s)
 // 	obj->material.base_color = (t_color){255, 200, 200};
 // 	obj->material.reflectivity = 0;
 // 	obj->material.shininess = 0;
-// 	obj->material.specular_strength = 1;
-// 	obj->material.ior = 1.0;
+// 	obj->material.specular_strength = 0;
+// 	obj->material.ior = 0.0;
 // 	obj->intersect = intersect_sphere;
 // 	obj->get_normal = get_normal_sphere;
 // 	ft_lstadd_back(&s->objects, add_content(obj));
@@ -276,8 +462,8 @@ bool	init_scene(t_scene *s)
 // 	obj->material.base_color = (t_color){100, 255, 200};
 // 	obj->material.reflectivity = 0;
 // 	obj->material.shininess = 0;
-// 	obj->material.specular_strength = 1;
-// 	obj->material.ior = 1.0;
+// 	obj->material.specular_strength = 0;
+// 	obj->material.ior = 0.0;
 // 	obj->intersect = intersect_sphere;
 // 	obj->get_normal = get_normal_sphere;
 // 	ft_lstadd_back(&s->objects, add_content(obj));
@@ -299,8 +485,8 @@ bool	init_scene(t_scene *s)
 // 	obj->material.base_color = (t_color){100, 100, 200};
 // 	obj->material.reflectivity = 0;
 // 	obj->material.shininess = 0;
-// 	obj->material.specular_strength = 0.2;
-// 	obj->material.ior = 1.0;
+// 	obj->material.specular_strength = 0;
+// 	obj->material.ior = 0.0;
 // 	obj->intersect = intersect_cylinder;
 // 	obj->get_normal = get_normal_cylinder;
 // 	ft_lstadd_back(&s->objects, add_content(obj));
@@ -323,8 +509,9 @@ bool	init_scene(t_scene *s)
 // 	obj->material.base_color = (t_color){100, 200, 200};
 // 	obj->material.reflectivity = 0;
 // 	obj->material.shininess = 0;
-// 	obj->material.specular_strength = 1;
-// 	obj->material.ior = 1.0;obj->intersect = intersect_cone;
+// 	obj->material.specular_strength = 0;
+// 	obj->material.ior = 0.0;
+// 	obj->intersect = intersect_cone;
 // 	obj->get_normal = get_normal_cone;
 // 	ft_lstadd_back(&s->objects, add_content(obj));
 
@@ -344,8 +531,8 @@ bool	init_scene(t_scene *s)
 // 	obj->material.base_color = (t_color){255, 200, 200};
 // 	obj->material.reflectivity = 0;
 // 	obj->material.shininess = 0;
-// 	obj->material.specular_strength = 1;
-// 	obj->material.ior = 1.0;
+// 	obj->material.specular_strength = 0;
+// 	obj->material.ior = 0.0;
 // 	obj->intersect = intersect_triangle;
 // 	obj->get_normal = get_normal_triangle;
 // 	ft_lstadd_back(&s->objects, add_content(obj));
@@ -387,7 +574,10 @@ bool	init_scene(t_scene *s)
 // 	obj->type = OBJ_PLANE;
 // 	obj->shape = plane;
 // 	obj->material.base_color = (t_color){255, 255, 255};
+// 	obj->material.reflectivity = 0;
+// 	obj->material.shininess = 0;
 // 	obj->material.specular_strength = 0;
+// 	obj->material.ior = 0;
 // 	obj->intersect = intersect_plane;
 // 	obj->get_normal = get_normal_plane;
 // 	ft_lstadd_back(&s->objects, add_content(obj));
@@ -403,7 +593,10 @@ bool	init_scene(t_scene *s)
 // 	obj->type = OBJ_PLANE;
 // 	obj->shape = plane1;
 // 	obj->material.base_color = (t_color){255, 255, 255};
+// 	obj->material.reflectivity = 0;
+// 	obj->material.shininess = 0;
 // 	obj->material.specular_strength = 0;
+// 	obj->material.ior = 0;
 // 	obj->intersect = intersect_plane;
 // 	obj->get_normal = get_normal_plane;
 // 	ft_lstadd_back(&s->objects, add_content(obj));
