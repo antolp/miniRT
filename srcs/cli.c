@@ -167,6 +167,20 @@ int	key_hook(int keycode, void *param)
 			r->supersampled = false;
 		}
 	}
+	else if (keycode == XK_n)
+	{
+		if ((r->shading_flag & FLAG_FRESNEL) != 0u)
+		{
+			printf("fresnel off.\n");
+			r->shading_flag &= ~FLAG_FRESNEL;
+		}
+		else
+		{
+			printf("fresnel on.\n");
+			r->shading_flag |= FLAG_FRESNEL;
+		}
+	}
+
 	return (0);
 }
 

@@ -38,6 +38,7 @@ typedef struct s_ray
 {
 	t_vec3	origin;
 	t_vec3	direction;
+	int		depth;
 }	t_ray;
 
 //each object types
@@ -78,8 +79,11 @@ typedef struct s_cap_vars
 	t_vec3	normal;
 	double	denom;
 	double	t;
+	double	best_t;
 	t_vec3	p;
+	t_vec3	best_p;
 	int		i;
+	bool	found;
 }	t_cap_vars;
 
 typedef struct s_cyl_side_vars
@@ -124,5 +128,6 @@ typedef struct s_tri_vars
 	double	v;
 	double	tcand;
 }	t_tri_vars;
+
 
 #endif

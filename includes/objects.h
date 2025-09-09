@@ -25,20 +25,22 @@ typedef struct s_checkerboard
 	double	scale;
 }	t_checkerboard;
 
+//appart from checkerboard, pseudo-random noise could be a cool proc texture
 typedef struct s_texture
 {
 	t_texture_type	type;
 	void			*data; // texture image or procedural config
 }	t_texture;
 
+//reflectance and refractance mutually exclusive because it's a pain in the ass
 typedef struct s_material
 {
-	t_color			base_color;
-	double			reflectivity;
-	double			shininess;
-	double			specular_coef;
-	double			ior;
-	t_texture		texture;
+	t_color		base_color;
+	double		shininess;			// [~10, ~300] specular exponent (Blinn-Phong)
+	double		specular_strength;	// [0, 1 (or a bit more)], intensity of highlight
+	double		reflectivity;		// [0, 1], used only if reflective
+	double		ior;				// index of refraction
+	double		refractivity;		// [0, 1] if more than 0, transparent and nothing else
 }	t_material;
 
 typedef struct s_sphere

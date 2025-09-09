@@ -56,4 +56,6 @@ dkms.conf
 
 /minilibx-linux/
 /miniRT
+/scenes.txt
 /.vscode/
+/*.c

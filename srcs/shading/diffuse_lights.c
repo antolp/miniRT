@@ -12,56 +12,37 @@
 
 #include "rt.h"
 
-//is_in_shadow()
-//if you can cast a ray from light to hit_point, and intersect any object
-//the point is in the shadow of that object.
-//scale that with lighting component and you get decent relatively cheap shadow
-//(cheap means it doesnt need a lot of computing power)
-//adding a very small sample of light dir avoids shadow acnee and doesn't seem
-//to impact performance. 
-bool	is_in_shadow(t_vec3 point, t_vec3 light_pos)
+static t_color	color_mul_255(t_color a, t_color b)
 {
-	t_ray		shadow_ray;
-	t_vec3		light_dir;
-	double		light_dist;
-	t_hit_info	hit;
+	t_color	r;
 
-	light_dir = vec_sub(light_pos, point);
-	light_dist = vec_length(light_dir);
-	light_dir = vec_normalize(light_dir);
-	shadow_ray.origin = vec_add(point, vec_mul(light_dir, 1e-4));
-	shadow_ray.direction = light_dir;
-	if (get_closest_hit(&shadow_ray, &hit))
-	{
-		double dist_to_hit = vec_length(vec_sub(hit.hit_point, shadow_ray.origin));
-		if (dist_to_hit < light_dist)
-			return (true);
-	}
-	return (false);
+	r.r = (int)fmin(255.0, (double)a.r * (double)b.r / 255.0);
+	r.g = (int)fmin(255.0, (double)a.g * (double)b.g / 255.0);
+	r.b = (int)fmin(255.0, (double)a.b * (double)b.b / 255.0);
+	return (r);
 }
 
-t_color	compute_ambient_light(t_material *mat, t_scene *scene)
+t_color	compute_ambient_light(t_material mat, t_scene *scene)
 {
 	t_color	ambient;
 
-	ambient.r = mat->base_color.r * scene->ambient_color.r / 255.0 * scene->ambient_ratio;
-	ambient.g = mat->base_color.g * scene->ambient_color.g / 255.0 * scene->ambient_ratio;
-	ambient.b = mat->base_color.b * scene->ambient_color.b / 255.0 * scene->ambient_ratio;
+	ambient.r = mat.base_color.r * scene->ambient_color.r / 255.0 * scene->ambient_ratio;
+	ambient.g = mat.base_color.g * scene->ambient_color.g / 255.0 * scene->ambient_ratio;
+	ambient.b = mat.base_color.b * scene->ambient_color.b / 255.0 * scene->ambient_ratio;
 	return (ambient);
 }
 
-void	apply_diffuse(t_color *out, t_material *mat, t_light *light,
-			t_vec3 point, t_vec3 normal)
+void	apply_diffuse(t_color *out, t_hit_info *hit, t_light *light)
 {
-	t_vec3	light_dir;
-	double	diff;
+	t_vec3		light_dir;
+	t_material	mat= hit->object->material;
+	double		diff;
 
-	light_dir = vec_normalize(vec_sub(light->position, point));
-	diff = fmax(0.0, vec_dot(normal, light_dir)) * light->intensity;
-
-	out->r += mat->base_color.r * light->color.r / 255.0 * diff;
-	out->g += mat->base_color.g * light->color.g / 255.0 * diff;
-	out->b += mat->base_color.b * light->color.b / 255.0 * diff;
+	light_dir = vec_normalize(vec_sub(light->position, hit->hit_point));
+	diff = fmax(0.0, vec_dot(hit->normal, light_dir)) * light->intensity;
+	out->r += mat.base_color.r * light->color.r / 255.0 * diff;
+	out->g += mat.base_color.g * light->color.g / 255.0 * diff;
+	out->b += mat.base_color.b * light->color.b / 255.0 * diff;
 }
 
 void	clamp_color(t_color *c)
@@ -70,6 +51,49 @@ void	clamp_color(t_color *c)
 	c->g = fmin(c->g, 255);
 	c->b = fmin(c->b, 255);
 }
+
+//get_light_attenuation:
+//Determines how much light reaches the hit point from a given light
+//Uses different shadowing models depending on flags.
+//Returns false if light is fully blocked and should be skipped.
+static bool	get_light_attenuation(t_hit_info *hit, t_light *light,
+	t_color *atten)
+{
+	if ((g_renderer(NULL)->shading_flag & FLAG_TRANSPARENT_SHADOW) != 0u)
+	{
+		*atten = compute_shadow_attenuation(hit->hit_point, light->position);
+	}
+	else if ((g_renderer(NULL)->shading_flag & FLAG_SHADOW) != 0u)
+	{
+		if (is_in_shadow(hit->hit_point, light->position))
+			return (false);
+		*atten = (t_color){255, 255, 255};
+	}
+	else
+	{
+		*atten = (t_color){255, 255, 255};
+	}
+	if (atten->r == 0 && atten->g == 0 && atten->b == 0)
+		return (false);
+	return (true);
+}
+
+// add_light_contribution:
+// Applies diffuse lighting from a given light to the accumulated color.
+// Light intensity is modulated by attenuation color.
+
+static void	add_light_contribution(t_color *color, t_hit_info *hit,
+	t_light *light, t_color *atten)
+{
+	t_light	tmp;
+
+	tmp = *light;
+	tmp.color = color_mul_255(light->color, *atten);
+	apply_diffuse(color, hit, &tmp);
+}
+
+
+
 
 //compute_diffuse_lighting()
 //computes ambient + diffuse lighting for a surface point
@@ -80,24 +104,105 @@ void	clamp_color(t_color *c)
 //
 //https://en.wikipedia.org/wiki/Lambertian_reflectance
 //(cheap but cool)
-t_color	compute_diffuse_lighting(t_material *mat, t_vec3 point, t_vec3 normal)
+t_color	compute_diffuse_lighting(t_hit_info *hit)
 {
-	t_scene		*scene;
-	t_list		*node;
-	t_light		*light;
-	t_color		color;
+	t_scene			*scene;
+	t_list			*node;
+	t_light			*light;
+	t_color			color;
+	t_color			atten;
+	unsigned int	flags;
 
 	scene = g_scene(NULL);
-	color = compute_ambient_light(mat, scene);
-
+	flags = g_renderer(NULL)->shading_flag;
+	color = compute_ambient_light(hit->object->material, scene);
 	node = scene->lights;
 	while (node)
 	{
 		light = (t_light *)node->content;
-		if (!is_in_shadow(point, light->position))
-			apply_diffuse(&color, mat, light, point, normal);
+		if (!get_light_attenuation(hit, light, &atten))
+		{
+			node = node->next;
+			continue;
+		}
+		add_light_contribution(&color, hit, light, &atten);
 		node = node->next;
 	}
 	clamp_color(&color);
 	return (color);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//compute_diffuse_lighting()
+//computes ambient + diffuse lighting for a surface point
+//first, ambiant light
+//then for each light :
+//	- If the point is not in shadow w.r.t. that light,
+//	adds Lambertian (diffuse) lighting based on light angle.
+//
+//https://en.wikipedia.org/wiki/Lambertian_reflectance
+//(cheap but cool)
+// t_color	compute_diffuse_lighting(t_hit_info *hit)
+// {
+// 	t_scene		*scene;
+// 	t_list		*node;
+// 	t_light		*light;
+// 	t_color		color;
+// 	t_color		atten;
+// 	t_light		tmp;
+// 	unsigned int	flags;
+
+// 	scene = g_scene(NULL);
+// 	flags = g_renderer(NULL)->shading_flag;
+// 	color = compute_ambient_light(hit->object->material, scene);
+// 	node = scene->lights;
+// 	while (node)
+// 	{
+// 		light = (t_light *)node->content;
+
+// 		// --- Shadow logic selection ---
+// 		if ((flags & FLAG_TRANSPARENT_SHADOW) != 0u)
+// 			atten = compute_shadow_attenuation(hit->hit_point, light->position);
+// 		else if ((flags & FLAG_SHADOW) != 0u)
+// 		{
+// 			if (is_in_shadow(hit->hit_point, light->position))
+// 			{
+// 				node = node->next;
+// 				continue;
+// 			}
+// 			atten = (t_color){255, 255, 255};
+// 		}
+// 		else
+// 			atten = (t_color){255, 255, 255};
+
+// 		// --- Skip lights with full attenuation ---
+// 		if (atten.r == 0 && atten.g == 0 && atten.b == 0)
+// 		{
+// 			node = node->next;
+// 			continue;
+// 		}
+
+// 		// --- Apply diffuse lighting ---
+// 		tmp = *light;
+// 		tmp.color = color_mul_255(light->color, atten);
+// 		apply_diffuse(&color,hit , &tmp);
+// 		node = node->next;
+// 	}
+// 	clamp_color(&color);
+// 	return (color);
+// }
+
