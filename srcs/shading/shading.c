@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ray_trace.c                                        :+:      :+:    :+:   */
+/*   shading.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -41,13 +41,24 @@ t_color	shade_pixel(t_ray *ray, t_hit_info *hit, int depth)
 		hit->normal = vec_mul(hit->normal, -1.0);
 	}
 
+	//get color of object surface at hit point
+	//if non-textured, fallback to base_color
+	if (g_renderer(NULL)->shading_flag & FLAG_TEXTURE &&
+		hit->object->material.texture.type != TEXTURE_NONE)
+	{
+		// printf("texture !! \n");
+		hit->hit_color = get_hit_color(hit);
+	}
+	else
+		hit->hit_color = hit->object->material.base_color;
+
+
 	//diffuse scale  will probably end up being removed
 	//goal was to introduce less transparent material but it's pretty ugly honestly...
-	// diffuse_scale = 1.0;
+	// diffuse_scale = 1.0
 	// if ((g_renderer(NULL)->shading_flag & FLAG_REFRACTION) != 0u
 	// 	&& hit->object->material.refractivity > 0.0)
 	// 	diffuse_scale = 0.0;
-
 	diffuse_col = compute_diffuse_lighting(hit);
 	if (g_renderer(NULL)->shading_flag & FLAG_REFRACTION
 	 	&& hit->object->material.refractivity > 0.0)
@@ -63,9 +74,7 @@ t_color	shade_pixel(t_ray *ray, t_hit_info *hit, int depth)
 	}
 	final_color = color_add(diffuse_col, spec_col);
 
-	//either refraction or reflection
-	//no ray splitting
-
+	//either refraction or reflection, no ray_splitting
 	//first refraction
 	//transmission to add refracted+tinted ON TOP, not overwrite specular
 	if ((g_renderer(NULL)->shading_flag & FLAG_REFRACTION) != 0u
@@ -75,10 +84,10 @@ t_color	shade_pixel(t_ray *ray, t_hit_info *hit, int depth)
 
 		refracted = compute_refraction(&hit->object->material, ray, hit, depth);
 
-		/* tint by base_color and mix by refractivity (your existing logic) */
-		transmitted.r = (int)(refracted.r * (hit->object->material.base_color.r / 255.0));
-		transmitted.g = (int)(refracted.g * (hit->object->material.base_color.g / 255.0));
-		transmitted.b = (int)(refracted.b * (hit->object->material.base_color.b / 255.0));
+		/* tint by hit_color and mix by refractivity (your existing logic) */
+		transmitted.r = (int)(refracted.r * (hit->hit_color.r / 255.0));
+		transmitted.g = (int)(refracted.g * (hit->hit_color.g / 255.0));
+		transmitted.b = (int)(refracted.b * (hit->hit_color.b / 255.0));
 		transmitted = color_lerp(refracted, transmitted, hit->object->material.refractivity);
 
 		final_color = color_add(final_color, transmitted);

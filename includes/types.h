@@ -16,6 +16,13 @@
 //This header is used to declare small types used
 //throughout the code of the program
 
+//2 dimensional vector/point
+typedef struct s_vec2
+{
+	double	x;
+	double	y;
+}	t_vec2;
+
 //3 dimensional vector/point
 typedef struct s_vec3
 {
@@ -56,9 +63,8 @@ typedef enum e_object_type
 typedef enum e_texture_type
 {
 	TEXTURE_NONE,
-	TEXTURE_IMAGE,
-	TEXTURE_CHECKERBOARD,
-	TEXTURE_BUMPMAP
+	TEXTURE_CHECKER,
+	TEXTURE_IMAGE
 }	t_texture_type;
 
 //struct for norm compliance on quadratic computation

@@ -41,6 +41,7 @@ typedef struct s_hit_info
 {
 	t_vec3			hit_point;
 	t_vec3			normal;
+	t_color			hit_color;
 	t_object		*object;
 	bool			is_outside;
 }	t_hit_info;
@@ -56,7 +57,7 @@ typedef struct s_hit_shadow_var
 	t_hit_info	*hit;
 }	t_hit_shadow_var;
 
-//used for pixel rendering in MiniLibX
+//used for per-pixel rendering in MiniLibX
 //see mlx_put_image_to_window() in mlx docs
 typedef struct s_img
 {
@@ -139,11 +140,25 @@ t_color	compute_refraction(t_material *m, t_ray *ray, t_hit_info *hit,
 			int depth);
 double	get_fresnel_weight(t_material *m, t_ray *ray, t_hit_info *hit);
 t_color	compute_shadow_attenuation(t_vec3 point, t_vec3 light_pos);
-
-//transparent shadows 
 double	caustic_gain(double ior, double cos_in, double cos_out);
 bool	get_closest_hit_ignoring(t_ray *ray, double max_t,
 	t_object *ignore, t_hit_info *hit);
+
+
+//texture
+t_color	get_hit_color(t_hit_info *hit);
+bool	get_uv_plane(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
+bool	get_uv_sphere(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
+bool	get_uv_cylinder(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
+bool	get_uv_cone(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
+bool	get_uv_triangle(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
+
+double	clamp01(double x);
+double	wrap01(double x);
+void	build_basis_from_normal(t_vec3 a, t_vec3 *t, t_vec3 *b);
+
+
+
 
 //maths
 t_vec3		vec_add(t_vec3 a, t_vec3 b);
@@ -155,8 +170,6 @@ double		vec_dot(t_vec3 a, t_vec3 b);
 t_vec3		vec_cross(t_vec3 a, t_vec3 b);
 t_vec3		vec_normalize(t_vec3 v);
 t_vec3		vec_reflect(t_vec3 dir, t_vec3 normal);
-
-
 
 //debug
 void	print_color(char *s, t_color c);

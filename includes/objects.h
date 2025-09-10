@@ -18,12 +18,16 @@
 //This header is used to declare all objects and their components
 //(textures, material properties)
 
+//parametric checker texture
+//immensely useful when debugging
 typedef struct s_checkerboard
 {
-	t_color	color1;
-	t_color	color2;
-	double	scale;
-}	t_checkerboard;
+    t_color color1;
+    t_color color2;
+	// double	scale;
+    double  scale_u;
+    double  scale_v;
+}   t_checkerboard;
 
 //appart from checkerboard, pseudo-random noise could be a cool proc texture
 typedef struct s_texture
@@ -41,6 +45,7 @@ typedef struct s_material
 	double		reflectivity;		// [0, 1], used only if reflective
 	double		ior;				// index of refraction
 	double		refractivity;		// [0, 1] if more than 0, transparent and nothing else
+	t_texture	texture;
 }	t_material;
 
 typedef struct s_sphere
@@ -89,6 +94,7 @@ typedef struct s_object
 	bool			(*intersect)(struct s_object *, t_ray *, double *t);
 	void			(*get_normal)(struct s_object *obj, t_vec3 *hit,
 			t_vec3 *out_normal);
+	bool			(*get_uv)(struct s_object *, t_vec3 *hit, t_vec2 *out_uv);
 }	t_object;
 
 #endif
