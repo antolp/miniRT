@@ -135,5 +135,20 @@ typedef struct s_tri_vars
 	double	tcand;
 }	t_tri_vars;
 
+struct s_cylinder;
+
+// Packs everything shared across the cylinder UV helpers
+typedef struct s_cyl_uv_vars
+{
+	struct s_cylinder *cy;
+	t_vec3				A;   // axis (normalized)
+	t_vec3				T;   // tangent
+	t_vec3				B;   // bitangent
+	t_vec3				rv;     // radial vector
+	double				h;      // axial coord from bottom
+	double				rlen;   // |rv|
+	double				eps;    // tolerance
+}	t_cyl_uv_vars;
+
 
 #endif
