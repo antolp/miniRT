@@ -78,6 +78,9 @@ typedef struct s_quad {
 	double	t1;
 }	t_quad;
 
+
+//for each struct here, add comments to explain values
+
 //same for cylinder cap and body intersection computation
 typedef struct s_cap_vars
 {
@@ -101,7 +104,6 @@ typedef struct s_cyl_side_vars
 	t_vec3	cto_perp;
 }	t_cyl_side_vars;
 
-//cones structs
 typedef struct s_cone_side_vars
 {
 	t_vec3	co;     // O - apex, apex concidered center of cone
@@ -120,7 +122,6 @@ typedef struct s_cone_cap_vars
 	double	t;
 }	t_cone_cap_vars;
 
-//finally triangles
 typedef struct s_tri_vars
 {
 	t_vec3	edge1;
@@ -140,15 +141,38 @@ struct s_cylinder;
 // Packs everything shared across the cylinder UV helpers
 typedef struct s_cyl_uv_vars
 {
-	struct s_cylinder *cy;
-	t_vec3				A;   // axis (normalized)
-	t_vec3				T;   // tangent
-	t_vec3				B;   // bitangent
-	t_vec3				rv;     // radial vector
-	double				h;      // axial coord from bottom
-	double				rlen;   // |rv|
-	double				eps;    // tolerance
+	struct s_cylinder	*cyl;
+	t_vec3				A;       // axis (normalized)
+	t_vec3				T;       // tangent
+	t_vec3				B;       // bitangent
+	t_vec3				d;       // P - center (per hit)
+	t_vec3				rv;      // radial vector
+	double				h;       // axial coord from bottom
+	double				rlen;    // |rv|
+	double				eps_h;   // axial tolerance
+	double				eps_r;   // radial tolerance
 }	t_cyl_uv_vars;
+
+struct t_cone;
+
+
+typedef struct s_cone_uv_vars
+{
+	struct s_cone	*cone;
+	t_vec3			A;        // axis (unit)
+	t_vec3			T;        // tangent
+	t_vec3			B;        // bitangent
+	t_vec3			P;        // hit point
+	t_vec3			d;        // P - apex
+	double			s;        // axial coord from apex (dot(d,A))
+	double			eps_h;    // axial epsilon
+	double			eps_r;    // radial epsilon
+	t_vec3			baseC;    // base center = apex + A*height
+	double			r_base;   // base radius = height * tan(angle)
+	t_vec3			w;        // off-axis vector at P
+	double			rlen;     // |w|
+	double			r_here;   // expected radius at s
+}	t_cone_uv_vars;
 
 
 #endif

@@ -152,11 +152,15 @@ bool	get_uv_sphere(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
 bool	get_uv_cylinder(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
 bool	get_uv_cone(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
 bool	get_uv_triangle(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
+void	init_cyl_uv_vars(t_cyl_uv_vars *v, t_object *obj);
+
 
 double	clamp01(double x);
 double	wrap01(double x);
 void	build_basis_from_normal(t_vec3 a, t_vec3 *t, t_vec3 *b);
 
+t_texture_image	*load_xpm_image(void *mlx, const char *path);
+t_color	sample_image_nearest(const t_texture_image *img, double u, double v);
 
 
 
