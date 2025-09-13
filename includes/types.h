@@ -155,7 +155,6 @@ typedef struct s_cyl_uv_vars
 
 struct t_cone;
 
-
 typedef struct s_cone_uv_vars
 {
 	struct s_cone	*cone;
@@ -174,5 +173,11 @@ typedef struct s_cone_uv_vars
 	double			r_here;   // expected radius at s
 }	t_cone_uv_vars;
 
+typedef struct s_bary_out
+{
+	double	b0;
+	double	b1;
+	double	b2;
+}	t_bary_out;
 
 #endif

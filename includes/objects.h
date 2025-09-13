@@ -18,13 +18,33 @@
 //This header is used to declare all objects and their components
 //(textures, material properties)
 
+//see uv_triangle.c
+typedef enum e_tri_uv_mode
+{
+	TRI_UV_ORTHONORMAL,   /* no deformation (your current frame U,V) */
+	TRI_UV_FIT,           /* p0->(0,0), p1->(1,0), p2->(0,1) */
+	TRI_UV_FIT_OPPOSITE   /* complementary half of the square */
+}	t_tri_uv_mode;
+
+//like so_long, XPM ONLY
+typedef struct s_texture_image {
+    void   *mlx_img;      // handle from mlx_xpm_file_to_image
+    char   *addr;         // from mlx_get_data_addr
+    int     bpp;
+    int     line_len;
+    int     endian;
+    int     width;
+    int     height;
+    int     bgra;         // 1 if BGRA ordering, happens sometimes
+} t_texture_image;
+
+
 //parametric checker texture
 //immensely useful when debugging
 typedef struct s_checkerboard
 {
     t_color color1;
     t_color color2;
-	// double	scale;
     double  scale_u;
     double  scale_v;
 }   t_checkerboard;
@@ -80,9 +100,10 @@ typedef struct s_cone
 //(or, won't be facing camera, no shading)
 typedef struct s_triangle
 {
-	t_vec3		p0;
-	t_vec3		p1;
-	t_vec3		p2;
+	t_vec3			p0;
+	t_vec3			p1;
+	t_vec3			p2;
+	t_tri_uv_mode	uv_mode;
 }	t_triangle;
 
 //polymorphic wrapper struct for objects

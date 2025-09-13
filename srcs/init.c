@@ -84,11 +84,13 @@ bool	init_scene(t_scene *s)
 	s->objects = NULL;
 	s->lights = NULL;
 
+	// g_renderer(NULL)->shading_flag &= ~FLAG_TRANSPARENT_SHADOW;
+
 	cb = malloc(sizeof(t_checkerboard));
 	if (!cb)
 		return (false);
 	cb->color1 = (t_color){250, 250, 250};
-	cb->color2 = (t_color){0, 0, 0};
+	cb->color2 = (t_color){20, 20, 20};
 	cb->scale_u = 0.3;
 	cb->scale_v = 0.3;
 	
@@ -132,32 +134,111 @@ bool	init_scene(t_scene *s)
 	cb_yellow->scale_u = 13;
 	cb_yellow->scale_v = 7;
 
-	
+	// t_texture_image	*img;
+	// img = load_xpm_image(g_renderer(NULL)->mlx, "assets/2k_earth_daymap.xpm");
+	// t_texture_image	*img1;
+	// img1 = load_xpm_image(g_renderer(NULL)->mlx, "assets/yotsuba_local_.xpm");
 
-	// // ---------- triangle ----------
-	// tri = malloc(sizeof(t_triangle));
-	// if (!tri)
+	// ---------- TRIANGLE SQUARE IMAGE MAPPING ----------
+	//could write a small function that generates the right coordinates
+	//for each triangles depending of the image ratio
+	//
+	// ---------- triangle1 ----------
+	tri = malloc(sizeof(t_triangle));
+	if (!tri)
+		return (false);
+	// tri->p0 = (t_vec3){0, 0, 0};
+	// tri->p1 = (t_vec3){10, 0, 0};
+	// tri->p2 = (t_vec3){0, 10, 0};
+	tri->p0 = (t_vec3){18, 0, 0};
+	tri->p1 = (t_vec3){0, 0, 0};
+	tri->p2 = (t_vec3){18, 18, 0};
+	tri->uv_mode = TRI_UV_ORTHONORMAL;	
+	// tri->uv_mode = TRI_UV_FIT;
+	obj = malloc(sizeof(t_object));
+	if (!obj)
+		return (false);
+	obj->type = OBJ_TRIANGLE;
+	obj->shape = tri;
+	obj->material.base_color = (t_color){200, 200, 255};
+	obj->material.reflectivity = 0;
+	obj->material.shininess = 0;
+	obj->material.specular_strength = 0;
+	obj->material.refractivity = 0.0;
+	obj->material.ior = 1;
+	// obj->material.texture.type = TEXTURE_NONE;
+	obj->material.texture.type = TEXTURE_CHECKER;
+	obj->material.texture.data = cb;
+	// obj->material.texture.type = TEXTURE_IMAGE;
+	// obj->material.texture.data = img1;
+	obj->intersect = intersect_triangle;
+	obj->get_normal = get_normal_triangle;
+	obj->get_uv = get_uv_triangle;
+	ft_lstadd_back(&s->objects, add_content(obj));
+
+	// ---------- triangle2 ----------
+	tri = malloc(sizeof(t_triangle));
+	if (!tri)
+		return (false);
+	// tri->p0 = (t_vec3){10, 10, 0};
+	// tri->p1 = (t_vec3){0, 10, 0};
+	// tri->p2 = (t_vec3){10, 0, 0};
+	tri->p0 = (t_vec3){0, 18, 0};
+	tri->p1 = (t_vec3){18, 18, 0};
+	tri->p2 = (t_vec3){0, 0, 0};
+	// tri->uv_mode = TRI_UV_FIT_OPPOSITE;
+	tri->uv_mode = TRI_UV_ORTHONORMAL;	
+	obj = malloc(sizeof(t_object));
+	if (!obj)
+		return (false);
+	obj->type = OBJ_TRIANGLE;
+	obj->shape = tri;
+	obj->material.base_color = (t_color){200, 200, 200};
+	obj->material.reflectivity = 0;
+	obj->material.shininess = 0;
+	obj->material.specular_strength = 0;
+	obj->material.ior = 1;
+	obj->material.refractivity = 0.0;
+	// obj->material.texture.type = TEXTURE_NONE;
+	obj->material.texture.type = TEXTURE_CHECKER;
+	obj->material.texture.data = cb;
+	// obj->material.texture.type = TEXTURE_IMAGE;
+	// obj->material.texture.data = img1;
+	obj->intersect = intersect_triangle;
+	obj->get_normal = get_normal_triangle;
+	obj->get_uv = get_uv_triangle;
+	ft_lstadd_back(&s->objects, add_content(obj));
+
+
+
+		
+	// // ---------- SPHERE ----------
+	// //checkerboard
+	// sphere = malloc(sizeof(t_sphere));
+	// if (!sphere)
 	// 	return (false);
-	// tri->p0 = (t_vec3){-14, 13, -1};
-	// tri->p1 = (t_vec3){-12, 0, 2};
-	// tri->p2 = (t_vec3){-9, 1, -9};
-
+	// sphere->center = (t_vec3){-10, 10, 25};
+	// sphere->radius = 7;
 	// obj = malloc(sizeof(t_object));
 	// if (!obj)
 	// 	return (false);
-	// obj->type = OBJ_TRIANGLE;
-	// obj->shape = tri;
-	// obj->material.base_color = (t_color){255, 200, 200};
-	// obj->material.reflectivity = 0;
-	// obj->material.shininess = 0;
-	// obj->material.specular_strength = 0;
-	// obj->material.ior = 0.0;
-	// obj->material.texture.type = TEXTURE_CHECKER;
+	// obj->type = OBJ_SPHERE;
+	// obj->shape = sphere;
+	// obj->material.base_color = (t_color){60, 60, 255};
+	// obj->material.reflectivity = 1;
+	// obj->material.ior = 1.01;
+	// obj->material.shininess = 32;
+	// obj->material.specular_strength = 1;
+	// obj->material.refractivity = 0.7;
+	// // obj->material.refractivity = 0;
 	// // obj->material.texture.type = TEXTURE_NONE;
-	// obj->material.texture.data = cb_wall;
-	// obj->intersect = intersect_triangle;
-	// obj->get_normal = get_normal_triangle;
-	// obj->get_uv = get_uv_triangle;
+	// // obj->material.texture.type = TEXTURE_CHECKER;
+	// // obj->material.texture.data = cb_red;
+	// obj->material.texture.type = TEXTURE_IMAGE;
+	// obj->material.texture.data = img;
+	// obj->intersect = intersect_sphere;
+	// obj->get_normal = get_normal_sphere;
+	// obj->get_uv = get_uv_sphere;
 	// ft_lstadd_back(&s->objects, add_content(obj));
 
 	// cone = malloc(sizeof(t_cone));
@@ -177,9 +258,11 @@ bool	init_scene(t_scene *s)
 	// obj->material.shininess = 20;
 	// obj->material.specular_strength = 1.3;
 	// obj->material.ior = 0.0;
-	// obj->material.texture.type = TEXTURE_CHECKER;
-	// // obj->material.texture.type = TEXTURE_NONE;
-	// obj->material.texture.data = cb_blue;
+	// // obj->material.texture.type = TEXTURE_CHECKER;
+	// // // obj->material.texture.type = TEXTURE_NONE;
+	// // obj->material.texture.data = cb_blue;
+	// obj->material.texture.type = TEXTURE_IMAGE;
+	// obj->material.texture.data = img;
 	// obj->intersect = intersect_cone;
 	// obj->get_normal = get_normal_cone;
 	// obj->get_uv = get_uv_cone;
@@ -204,64 +287,68 @@ bool	init_scene(t_scene *s)
 	// obj->material.specular_strength = 1.3;
 	// obj->material.ior = 0.2;
 	// obj->material.refractivity = 0;
-	// obj->material.texture.type = TEXTURE_CHECKER;
+	// obj->material.texture.type = TEXTURE_IMAGE;
+	// obj->material.texture.data = img;
+	// // obj->material.texture.type = TEXTURE_CHECKER;
+	// // obj->material.texture.data = cb_green;
 	// // obj->material.texture.type = TEXTURE_NONE;
-	// obj->material.texture.data = cb_green;
 	// obj->intersect = intersect_cylinder;
 	// obj->get_normal = get_normal_cylinder;
 	// obj->get_uv = get_uv_cylinder;
 	// ft_lstadd_back(&s->objects, add_content(obj));
 	
-	// ---------- SPHERE ----------
-	//checkerboard
-	sphere = malloc(sizeof(t_sphere));
-	if (!sphere)
-		return (false);
-	sphere->center = (t_vec3){-10, 10, 30};
-	sphere->radius = 7;
-	obj = malloc(sizeof(t_object));
-	if (!obj)
-		return (false);
-	obj->type = OBJ_SPHERE;
-	obj->shape = sphere;
-	obj->material.base_color = (t_color){60, 60, 255};
-	obj->material.reflectivity = 1;
-	obj->material.ior = 1.52;
-	obj->material.shininess = 32;
-	obj->material.specular_strength = 1;
-	// obj->material.refractivity = 0.7;
-	obj->material.refractivity = 0;
-	obj->material.texture.type = TEXTURE_CHECKER;
-	// obj->material.texture.type = TEXTURE_NONE;
-	obj->material.texture.data = cb_red;
-	obj->intersect = intersect_sphere;
-	obj->get_normal = get_normal_sphere;
-	obj->get_uv = get_uv_sphere;
-	ft_lstadd_back(&s->objects, add_content(obj));
+	// // ---------- SPHERE ----------
+	// //checkerboard
+	// sphere = malloc(sizeof(t_sphere));
+	// if (!sphere)
+	// 	return (false);
+	// sphere->center = (t_vec3){-10, 10, 30};
+	// sphere->radius = 7;
+	// obj = malloc(sizeof(t_object));
+	// if (!obj)
+	// 	return (false);
+	// obj->type = OBJ_SPHERE;
+	// obj->shape = sphere;
+	// obj->material.base_color = (t_color){60, 60, 255};
+	// obj->material.reflectivity = 1;
+	// obj->material.ior = 1.52;
+	// obj->material.shininess = 32;
+	// obj->material.specular_strength = 1;
+	// // obj->material.refractivity = 0.7;
+	// obj->material.refractivity = 0;
+	// // obj->material.texture.type = TEXTURE_NONE;
+	// // obj->material.texture.type = TEXTURE_CHECKER;
+	// // obj->material.texture.data = cb_red;
+	// obj->material.texture.type = TEXTURE_IMAGE;
+	// obj->material.texture.data = img;
+	// obj->intersect = intersect_sphere;
+	// obj->get_normal = get_normal_sphere;
+	// obj->get_uv = get_uv_sphere;
+	// ft_lstadd_back(&s->objects, add_content(obj));
 
-	//mirror
-	sphere = malloc(sizeof(t_sphere));
-	if (!sphere)
-		return (false);
-	sphere->center = (t_vec3){10, 10, 30};
-	sphere->radius = 7;
-	obj = malloc(sizeof(t_object));
-	if (!obj)
-		return (false);
-	obj->type = OBJ_SPHERE;
-	obj->shape = sphere;
-	obj->material.base_color = (t_color){255, 255, 255};
-	obj->material.reflectivity = 1;
-	obj->material.ior = 0.05;
-	obj->material.shininess = 64;
-	obj->material.specular_strength = 0.7;
-	obj->material.refractivity = 0;
-	obj->material.texture.type = TEXTURE_NONE;
-	obj->material.texture.data = NULL;
-	obj->intersect = intersect_sphere;
-	obj->get_normal = get_normal_sphere;
-	obj->get_uv = get_uv_sphere;
-	ft_lstadd_back(&s->objects, add_content(obj));
+	// //mirror
+	// sphere = malloc(sizeof(t_sphere));
+	// if (!sphere)
+	// 	return (false);
+	// sphere->center = (t_vec3){-7, 10, 20};
+	// sphere->radius = 7;
+	// obj = malloc(sizeof(t_object));
+	// if (!obj)
+	// 	return (false);
+	// obj->type = OBJ_SPHERE;
+	// obj->shape = sphere;
+	// obj->material.base_color = (t_color){255, 255, 255};
+	// obj->material.reflectivity = 1;
+	// obj->material.ior = 0.05;
+	// obj->material.shininess = 64;
+	// obj->material.specular_strength = 0.7;
+	// obj->material.refractivity = 0;
+	// obj->material.texture.type = TEXTURE_NONE;
+	// obj->material.texture.data = NULL;
+	// obj->intersect = intersect_sphere;
+	// obj->get_normal = get_normal_sphere;
+	// obj->get_uv = get_uv_sphere;
+	// ft_lstadd_back(&s->objects, add_content(obj));
 
 	// ---------- PLANE ----------
 	plane = malloc(sizeof(t_plane));
@@ -276,41 +363,41 @@ bool	init_scene(t_scene *s)
 	obj->shape = plane;
 	obj->material.base_color = (t_color){240, 240, 240};
 	obj->material.reflectivity = 1;
-	obj->material.ior = 1;
-	obj->material.specular_strength = 0;
-	obj->material.shininess = 0;
-	obj->material.refractivity = 0;
-	// obj->material.texture.type = TEXTURE_NONE;
-	obj->material.texture.type = TEXTURE_CHECKER;
-	obj->material.texture.data = cb;
-	obj->intersect = intersect_plane;
-	obj->get_normal = get_normal_plane;
-	obj->get_uv = get_uv_plane;
-	ft_lstadd_back(&s->objects, add_content(obj));
-	
-	plane = malloc(sizeof(t_plane));
-	if (!plane)
-		return (false);
-	plane->point = (t_vec3){0, 0, 90};
-	plane->normal = (t_vec3){0, 0, -1};
-	obj = malloc(sizeof(t_object));
-	if (!obj)
-		return (false);
-	obj->type = OBJ_PLANE;
-	obj->shape = plane;
-	obj->material.base_color = (t_color){240, 240, 240};
-	obj->material.reflectivity = 1;
-	obj->material.ior = 0.1;
+	obj->material.ior = 0.8;
 	obj->material.specular_strength = 0;
 	obj->material.shininess = 0;
 	obj->material.refractivity = 0;
 	obj->material.texture.type = TEXTURE_NONE;
 	// obj->material.texture.type = TEXTURE_CHECKER;
-	obj->material.texture.data = NULL;
+	// obj->material.texture.data = cb;
 	obj->intersect = intersect_plane;
 	obj->get_normal = get_normal_plane;
 	obj->get_uv = get_uv_plane;
 	ft_lstadd_back(&s->objects, add_content(obj));
+	
+	// plane = malloc(sizeof(t_plane));
+	// if (!plane)
+	// 	return (false);
+	// plane->point = (t_vec3){0, 0, 90};
+	// plane->normal = (t_vec3){0, 0, -1};
+	// obj = malloc(sizeof(t_object));
+	// if (!obj)
+	// 	return (false);
+	// obj->type = OBJ_PLANE;
+	// obj->shape = plane;
+	// obj->material.base_color = (t_color){240, 240, 240};
+	// obj->material.reflectivity = 1;
+	// obj->material.ior = 0.1;
+	// obj->material.specular_strength = 0;
+	// obj->material.shininess = 0;
+	// obj->material.refractivity = 0;
+	// obj->material.texture.type = TEXTURE_NONE;
+	// // obj->material.texture.type = TEXTURE_CHECKER;
+	// obj->material.texture.data = NULL;
+	// obj->intersect = intersect_plane;
+	// obj->get_normal = get_normal_plane;
+	// obj->get_uv = get_uv_plane;
+	// ft_lstadd_back(&s->objects, add_content(obj));
 
 	// ---------- LIGHT ----------
 	light = malloc(sizeof(t_light));
@@ -325,7 +412,8 @@ bool	init_scene(t_scene *s)
 		return (false);
 	light->position = (t_vec3){0, 30, 30};
 	light->intensity = 0.9;
-	light->color = (t_color){255, 200, 200};
+	light->color = (t_color){255, 255, 255};
+	// light->color = (t_color){255, 200, 200};
 	ft_lstadd_back(&s->lights, add_content(light));
 
 	s->ambient_color = (t_color){255, 255, 255};
