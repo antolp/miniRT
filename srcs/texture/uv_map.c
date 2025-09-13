@@ -12,24 +12,6 @@
 
 #include "rt.h"
 
-// //build_basis_v():
-// //to map UV coordinates on the plane's surface, we need an "orthonormal basis",
-// //so two vectors that are perpendicular to the normal, and between themselves
-// //these vectors are the tangents (T) and bitangents (B) to the plane's surface
-// //(if d is too much similar to the up (y+) direction, fallback to left (x+))
-// static void	build_basis_from_normal(t_vec3 n, t_vec3 *t, t_vec3 *b)
-// {
-// 	t_vec3	up;
-// 	double	d;
-
-// 	up = (t_vec3){0.0, 1.0, 0.0};
-// 	d = fabs(n.y);
-// 	if (d > 0.999) 
-// 		up = (t_vec3){1.0, 0.0, 0.0};
-// 	*t = vec_normalize(vec_cross(up, n));
-// 	*b = vec_cross(n, *t);
-// }
-
 //build_basis_from_normal():
 //To map UV coordinates on the object's surface, we need an "orthonormal basis",
 //so two vectors that are perpendicular to the normal, and between themselves,
@@ -48,6 +30,7 @@ void	build_basis_from_normal(t_vec3 a, t_vec3 *t, t_vec3 *b)
 	*t = vec_normalize(vec_cross(up, a));
 	*b = vec_cross(a, *t);
 }
+
 //u = (atan2(z,x)+pi)/(2pi) and v = acos(y)/pi, using normalized local dir
 //will write bigger comment eventually since the maths are pretty nice
 bool	get_uv_sphere(t_object *obj, t_vec3 *hit, t_vec2 *out_uv)
@@ -67,9 +50,9 @@ bool	get_uv_sphere(t_object *obj, t_vec3 *hit, t_vec2 *out_uv)
 		return (false);
 	p = vec_mul(p, 1.0 / len);
 	u = 0.5 + atan2(p.z, p.x) / (2.0 * M_PI);
-	u = fmax(0.0, fmin(1.0, u));
+	u = wrap01(u);
 	p.y = fmax(-1.0, fmin(1.0, p.y));
-	v = 0.5 - asin(p.y) / M_PI;
+	v = 0.5 + asin(p.y) / M_PI;
 	out_uv->x = u;
 	out_uv->y = v;
 	return (true);
