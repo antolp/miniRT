@@ -78,7 +78,6 @@ typedef struct s_quad {
 	double	t1;
 }	t_quad;
 
-
 //for each struct here, add comments to explain values
 
 //same for cylinder cap and body intersection computation

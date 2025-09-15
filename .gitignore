@@ -60,3 +60,4 @@ dkms.conf
 /.vscode/
 /*.c
 /assets/*_local.xpm
+/*.txt

@@ -63,7 +63,7 @@ typedef struct s_material
 	double		shininess;			// [~10, ~300] specular exponent (Blinn-Phong)
 	double		specular_strength;	// [0, 1 (or a bit more)], intensity of highlight
 	double		reflectivity;		// [0, 1], used only if reflective
-	double		ior;				// index of refraction
+	double		ior;				// index of refraction, different roles whether reflective or refractive.
 	double		refractivity;		// [0, 1] if more than 0, transparent and nothing else
 	t_texture	texture;
 }	t_material;
@@ -110,7 +110,7 @@ typedef struct s_triangle
 typedef struct s_object
 {
 	t_object_type	type;
-	void			*shape; // Cast to specific object struct
+	void			*shape;
 	t_material		material;
 	bool			(*intersect)(struct s_object *, t_ray *, double *t);
 	void			(*get_normal)(struct s_object *obj, t_vec3 *hit,

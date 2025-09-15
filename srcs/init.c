@@ -76,8 +76,8 @@ bool	init_scene(t_scene *s)
 	t_checkerboard	*cb_blue;
 	t_checkerboard	*cb_yellow;
 
-	s->camera.position = (t_vec3){3.00, 7.68, -15.15};
-	s->camera.direction = vec_normalize((t_vec3){0.0, 0.0, 1.00});
+	s->camera.position = (t_vec3){-6.0, 25.6, 65.0};
+	s->camera.direction = vec_normalize((t_vec3){0.15, -0.3, -1.00});
 	// s->camera.direction = vec_normalize((t_vec3){-0.05, 0.01, 1.00});
 	s->camera.fov = 60;
 
@@ -92,8 +92,8 @@ bool	init_scene(t_scene *s)
 		return (false);
 	cb->color1 = (t_color){250, 250, 250};
 	cb->color2 = (t_color){20, 20, 20};
-	cb->scale_u = 0.3;
-	cb->scale_v = 0.3;
+	cb->scale_u = 30.3;
+	cb->scale_v = 10.3;
 	
 	cb_wall = malloc(sizeof(t_checkerboard));
 	if (!cb)
@@ -139,8 +139,6 @@ bool	init_scene(t_scene *s)
 	img = load_xpm_image(g_renderer(NULL)->mlx, "assets/2k_earth_daymap.xpm");
 	t_texture_image	*img1;
 	img1 = load_xpm_image(g_renderer(NULL)->mlx, "assets/yotsuba_local_.xpm");
-	t_texture_image	*img2;
-	img2 = load_xpm_image(g_renderer(NULL)->mlx, "assets/wood.xpm");
 	t_texture_image	*img3;
 	img3 = load_xpm_image(g_renderer(NULL)->mlx, "assets/idk.xpm");
 
@@ -218,7 +216,7 @@ bool	init_scene(t_scene *s)
 	ft_lstadd_back(&s->objects, add_content(obj));
 
 	// ---------- SPHERE ----------
-	//checkerboard
+	//slightly refractive, transmissive sphere
 	sphere = malloc(sizeof(t_sphere));
 	if (!sphere)
 		return (false);
@@ -231,7 +229,7 @@ bool	init_scene(t_scene *s)
 	obj->shape = sphere;
 	obj->material.base_color = (t_color){60, 60, 255};
 	obj->material.reflectivity = 1;
-	obj->material.ior = 1.01;
+	obj->material.ior = 1.008;
 	obj->material.shininess = 32;
 	obj->material.specular_strength = 1;
 	obj->material.refractivity = 0.7;
@@ -292,44 +290,12 @@ bool	init_scene(t_scene *s)
 	obj->material.specular_strength = 1.3;
 	obj->material.ior = 0.2;
 	obj->material.refractivity = 0;
-	obj->material.texture.type = TEXTURE_IMAGE;
-	obj->material.texture.data = img2;
-	// obj->material.texture.type = TEXTURE_CHECKER;
-	// obj->material.texture.data = cb_green;
-	// obj->material.texture.type = TEXTURE_NONE;
+	obj->material.texture.type = TEXTURE_CHECKER;
+	obj->material.texture.data = cb;
 	obj->intersect = intersect_cylinder;
 	obj->get_normal = get_normal_cylinder;
 	obj->get_uv = get_uv_cylinder;
 	ft_lstadd_back(&s->objects, add_content(obj));
-	
-	// // ---------- SPHERE ----------
-	// //checkerboard
-	// sphere = malloc(sizeof(t_sphere));
-	// if (!sphere)
-	// 	return (false);
-	// sphere->center = (t_vec3){-10, 10, 30};
-	// sphere->radius = 7;
-	// obj = malloc(sizeof(t_object));
-	// if (!obj)
-	// 	return (false);
-	// obj->type = OBJ_SPHERE;
-	// obj->shape = sphere;
-	// obj->material.base_color = (t_color){60, 60, 255};
-	// obj->material.reflectivity = 1;
-	// obj->material.ior = 1.52;
-	// obj->material.shininess = 32;
-	// obj->material.specular_strength = 1;
-	// // obj->material.refractivity = 0.7;
-	// obj->material.refractivity = 0;
-	// // obj->material.texture.type = TEXTURE_NONE;
-	// // obj->material.texture.type = TEXTURE_CHECKER;
-	// // obj->material.texture.data = cb_red;
-	// obj->material.texture.type = TEXTURE_IMAGE;
-	// obj->material.texture.data = img;
-	// obj->intersect = intersect_sphere;
-	// obj->get_normal = get_normal_sphere;
-	// obj->get_uv = get_uv_sphere;
-	// ft_lstadd_back(&s->objects, add_content(obj));
 
 	//mirror
 	sphere = malloc(sizeof(t_sphere));
@@ -422,7 +388,7 @@ bool	init_scene(t_scene *s)
 	ft_lstadd_back(&s->lights, add_content(light));
 
 	s->ambient_color = (t_color){255, 255, 255};
-	s->ambient_ratio = 0.1;
+	s->ambient_ratio = 0.3;
 	s->background_color = (t_color){10, 10, 40};
 	return (1);
 }
