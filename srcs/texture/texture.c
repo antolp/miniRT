@@ -76,21 +76,35 @@ t_color	get_hit_color(t_hit_info *hit)
 	t_vec2			uv;
 	t_texture		*tex;
 	t_checkerboard	*chk;
+	t_texture_image	*img;
 
 	obj = hit->object;
 	mat = &obj->material;
 	flags = g_renderer(NULL)->shading_flag;
 
-	if ((flags & TEXTURE_CHECKER) != 0u)
+	if ((flags & FLAG_TEXTURE) != 0u)
 	{
 		if (mat->texture.type == TEXTURE_CHECKER && mat->texture.data != NULL)
 		{
 			if (object_uv(obj, &hit->hit_point, &uv) == true)
 			{
-				/* planes produce unbounded uv; wrap to [0,1) */
+				//planes produce unbounded uv !!
 				tex = &mat->texture;
 				chk = (t_checkerboard *)tex->data;
 				return (checkeroard_uv(chk, uv));
+			}
+		}
+		if (mat->texture.type == TEXTURE_IMAGE && mat->texture.data != NULL)
+		{
+			if (object_uv(obj, &hit->hit_point, &uv) == true)
+			{
+				tex = &mat->texture;
+				img = (t_texture_image *)tex->data;
+				//planes produce unbounded uv
+				//caps and triangle on uv
+				uv.x = wrap01(uv.x);
+				uv.y = wrap01(uv.y);
+				return (sample_image_nearest(img, uv.x, uv.y));
 			}
 		}
 	}
