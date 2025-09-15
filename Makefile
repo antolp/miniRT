@@ -7,7 +7,10 @@ SRCS		= srcs/main.c srcs/init.c srcs/vector.c srcs/cli.c srcs/debug.c \
 			  srcs/objects/cone.c srcs/objects/triangle.c \
 			  srcs/shading/diffuse_lights.c srcs/shading/shading.c srcs/shading/specular_highlight.c \
 			  srcs/shading/reflection.c srcs/shading/refraction.c srcs/shading/shadows.c \
-			  srcs/shading/shadow_utils.c srcs/shading/shading_utils.c
+			  srcs/shading/shadow_utils.c srcs/shading/shading_utils.c \
+			  srcs/texture/texture.c srcs/texture/uv_cylinder.c srcs/texture/uv_cone.c \
+			  srcs/texture/uv_triangle.c srcs/texture/uv_map.c srcs/texture/image_sample.c \
+			  srcs/texture/image_load.c srcs/texture/skybox.c
 OBJS		= $(SRCS:%.c=$(OBJDIR)/%.o)
 
 

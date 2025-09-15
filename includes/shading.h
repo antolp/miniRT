@@ -22,8 +22,8 @@
 # define FLAG_REFLECTION			(1u << 3)
 # define FLAG_REFRACTION			(1u << 4)
 # define FLAG_FRESNEL				(1u << 5)
-# define TEXTURE					(1u << 6)
-# define BUMP_MAP					(1u << 7)
+# define FLAG_TEXTURE				(1u << 6)
+# define FLAG_BUMP_MAP				(1u << 7)
 
 // # define DEFAULT_FLAGS ( \
 // 	FLAG_SPECULAR | FLAG_REFLECTION | FLAG_REFRACTION | \
@@ -32,7 +32,7 @@
 # define DEFAULT_FLAGS ( \
 	FLAG_SHADOW | FLAG_TRANSPARENT_SHADOW | FLAG_SPECULAR | \
 	FLAG_REFLECTION | FLAG_REFRACTION | FLAG_FRESNEL | \
-	TEXTURE | BUMP_MAP )
+	FLAG_TEXTURE | FLAG_BUMP_MAP )
 
 
 

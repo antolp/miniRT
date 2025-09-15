@@ -22,27 +22,28 @@ static t_color	color_mul_255(t_color a, t_color b)
 	return (r);
 }
 
-t_color	compute_ambient_light(t_material mat, t_scene *scene)
+t_color	compute_ambient_light(t_color c, t_scene *scene)
 {
 	t_color	ambient;
 
-	ambient.r = mat.base_color.r * scene->ambient_color.r / 255.0 * scene->ambient_ratio;
-	ambient.g = mat.base_color.g * scene->ambient_color.g / 255.0 * scene->ambient_ratio;
-	ambient.b = mat.base_color.b * scene->ambient_color.b / 255.0 * scene->ambient_ratio;
+	ambient.r = c.r * scene->ambient_color.r / 255.0 * scene->ambient_ratio;
+	ambient.g = c.g * scene->ambient_color.g / 255.0 * scene->ambient_ratio;
+	ambient.b = c.b * scene->ambient_color.b / 255.0 * scene->ambient_ratio;
 	return (ambient);
 }
 
 void	apply_diffuse(t_color *out, t_hit_info *hit, t_light *light)
 {
-	t_vec3		light_dir;
-	t_material	mat= hit->object->material;
-	double		diff;
+	t_vec3	light_dir;
+	t_color	c;
+	double	diff;
 
+	c = hit->hit_color;
 	light_dir = vec_normalize(vec_sub(light->position, hit->hit_point));
 	diff = fmax(0.0, vec_dot(hit->normal, light_dir)) * light->intensity;
-	out->r += mat.base_color.r * light->color.r / 255.0 * diff;
-	out->g += mat.base_color.g * light->color.g / 255.0 * diff;
-	out->b += mat.base_color.b * light->color.b / 255.0 * diff;
+	out->r += c.r * light->color.r / 255.0 * diff;
+	out->g += c.g * light->color.g / 255.0 * diff;
+	out->b += c.b * light->color.b / 255.0 * diff;
 }
 
 void	clamp_color(t_color *c)
@@ -115,7 +116,7 @@ t_color	compute_diffuse_lighting(t_hit_info *hit)
 
 	scene = g_scene(NULL);
 	flags = g_renderer(NULL)->shading_flag;
-	color = compute_ambient_light(hit->object->material, scene);
+	color = compute_ambient_light(hit->hit_color, scene);
 	node = scene->lights;
 	while (node)
 	{

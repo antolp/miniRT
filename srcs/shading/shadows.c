@@ -33,11 +33,11 @@ static void	apply_refraction_tint(t_color *trans, t_hit_info *hit,
 	if (k > 1.0)
 		k = 1.0;
 	trans->r = (int)fmin(255.0, trans->r * (1.0 - k)
-			+ hit->object->material.base_color.r * k);
+			+ hit->hit_color.r * k);
 	trans->g = (int)fmin(255.0, trans->g * (1.0 - k)
-			+ hit->object->material.base_color.g * k);
+			+ hit->hit_color.g * k);
 	trans->b = (int)fmin(255.0, trans->b * (1.0 - k)
-			+ hit->object->material.base_color.b * k);
+			+ hit->hit_color.b * k);
 	n = hit->normal;
 	if (vec_dot(n, ray->direction) > 0.0)
 		n = vec_mul(n, -1.0);

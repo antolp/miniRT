@@ -50,7 +50,7 @@ t_color	trace_ray(t_ray *ray, int depth)
 	t_hit_info	hit;
 
 	if (!get_closest_hit(ray, &hit))
-		return (g_scene(NULL)->background_color);
+		return (get_background_color(ray->direction));
 	// printf("%f %f %f\n",hit.hit_point.x, hit.hit_point.y, hit.hit_point.z);
 	return (shade_pixel(ray, &hit, depth));
 }
