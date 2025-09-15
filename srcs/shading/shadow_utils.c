@@ -55,6 +55,7 @@ double	caustic_gain(double ior, double cos_in, double cos_out)
 	return (gain);
 }
 
+//for norm
 static void	search_candidates(t_hit_shadow_var *ctx, t_list *objects)
 {
 	t_object	*obj;
@@ -79,6 +80,9 @@ static void	search_candidates(t_hit_shadow_var *ctx, t_list *objects)
 	}
 }
 
+//rewrite of the get_closest_hit function that
+//avoids self shadowing by ignoring the object from which
+//the shadow ray was cast
 bool	get_closest_hit_ignoring(t_ray *ray, double max_t,
 	t_object *ignore, t_hit_info *hit)
 {
@@ -95,5 +99,10 @@ bool	get_closest_hit_ignoring(t_ray *ray, double max_t,
 			vec_mul(ray->direction, ctx.t_min));
 	hit->object->get_normal(hit->object,
 		&hit->hit_point, &hit->normal);
+	if (g_renderer(NULL)->shading_flag & FLAG_TEXTURE
+		&& hit->object->material.texture.type != TEXTURE_NONE)
+		hit->hit_color = get_hit_color(hit);
+	else
+		hit->hit_color = hit->object->material.base_color;
 	return (true);
 }

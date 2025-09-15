@@ -55,6 +55,7 @@ typedef struct s_scene
 	float		ambient_ratio;
 	bool		is_rendering;
 	t_color		background_color;
+	t_texture	skybox;
 }	t_scene;
 
 #endif

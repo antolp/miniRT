@@ -43,6 +43,8 @@ t_color	shade_pixel(t_ray *ray, t_hit_info *hit, int depth)
 
 	//get color of object surface at hit point
 	//if non-textured, fallback to base_color
+	//(should move this in get_closest_hit, that requires splitting the function,
+	//which i already did)
 	if (g_renderer(NULL)->shading_flag & FLAG_TEXTURE &&
 		hit->object->material.texture.type != TEXTURE_NONE)
 	{

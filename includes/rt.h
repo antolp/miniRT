@@ -153,6 +153,7 @@ bool	get_uv_cylinder(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
 bool	get_uv_cone(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
 bool	get_uv_triangle(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
 void	init_cyl_uv_vars(t_cyl_uv_vars *v, t_object *obj);
+t_color	get_background_color(t_vec3 dir);
 
 
 double	clamp01(double x);
