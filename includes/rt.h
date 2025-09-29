@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rt.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/07/15 16:47:45 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/09/29 14:11:11 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,20 @@
 // A SUPPR
 # include <stdio.h>
 # include <sys/time.h>
+
+enum e_objects_props
+{
+	PROP_POSITION = 0,
+	PROP_COLOUR = 1 << 0,
+	PROP_RATIO = 1 << 1,
+	PROP_DIRECTION = 1 << 2,
+	PROP_INTENSITY = 1 << 3,
+	PROP_PATH = 1 << 4,
+	PROP_DIAMETER = 1 << 5,
+	PROP_CENTER = 1 << 6,
+	PROP_AXIS = 1 << 7,
+};
+
 
 typedef struct s_hit_info
 {
