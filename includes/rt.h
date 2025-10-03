@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/10/02 22:17:17 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/10/04 18:28:10 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,18 +37,32 @@
 # include <stdio.h>
 # include <sys/time.h>
 
+// typedef enum e_objects_props
+// {
+// 	PROP_POSITION = 0,
+// 	PROP_DIRECTION = 1 << 0,
+// 	PROP_COLOUR = 1 << 1,
+// 	PROP_RATIO = 1 << 2,
+// 	PROP_BRIGHTNESS = 1 << 3,
+// 	PROP_PATH = 1 << 4,
+// 	PROP_DIAMETER = 1 << 5,
+// 	PROP_FOV = 1 << 6,
+// 	PROP_AXIS = 1 << 7
+// }	t_object_props;
+
 typedef enum e_objects_props
 {
-	PROP_POSITION = 0,
-	PROP_DIRECTION = 1 << 2,
-	PROP_COLOUR = 1 << 0,
-	PROP_RATIO = 1 << 1,
-	PROP_INTENSITY = 1 << 3,
-	PROP_PATH = 1 << 4,
-	PROP_DIAMETER = 1 << 5,
-	PROP_CENTER = 1 << 6,
-	PROP_AXIS = 1 << 7
+	PROP_POSITION,
+	PROP_DIRECTION,
+	PROP_COLOUR,
+	PROP_RATIO,
+	PROP_BRIGHTNESS,
+	PROP_PATH,
+	PROP_DIAMETER,
+	PROP_FOV,
+	PROP_AXIS
 }	t_object_props;
+
 void	parse_rt(char *path);
 
 typedef struct s_hit_info

@@ -6,16 +6,23 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 18:10:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/10/03 12:24:36 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/10/06 19:30:34 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
-// #include "stdio.h"
 typedef struct s_asset {
 	char			*type_id;
 	t_object_type	params[5];
+	size_t			count;
 }	t_asset;
+
+void	put_err(char *msg)
+{
+	ft_dprintf(STDERR_FILENO, msg);
+	ft_putstr_fd(STDERR_FILENO, '\n');
+	exit(EXIT_FAILURE);
+}
 
 //
 bool	parse_vec3(char *val, t_vec3 *vec)
@@ -47,29 +54,56 @@ bool	parse_vec3(char *val, t_vec3 *vec)
 	return (1);
 }
 
+typedef struct s_property_rules {
+	t_object_type	type_id;
+	double			min;
+	double			max;
+	size_t			count;
+}	t_property_rules;
+
 //Charged to assert the integrity of given property value
 bool	check_type(size_t prop, char **value) {
 	float	sum;
+	static t_property_rules	props[] = {
+		[PROP_POSITION] = {PROP_POSITION, FLT_MIN, FLT_MAX},
+		[PROP_DIRECTION] = {PROP_DIRECTION, -1, 1},
+		[PROP_COLOUR] = {PROP_COLOUR, 0, 255},
+		[PROP_BRIGHTNESS] = {PROP_BRIGHTNESS, 0.0, 1.0},
+		[PROP_FOV] = {PROP_FOV, 0, 180},
+		[PROP_DIAMETER] = {PROP_DIAMETER, FLT_MIN, FLT_MAX},
+		// {PROP_DIRECTION, FLT_MIN, FLT_MAX},
+		// {PROP_DIRECTION, FLT_MIN, FLT_MAX},
+		[PROP_PATH] = {PROP_PATH, FLT_MIN, FLT_MAX}
+	};
+	static size_t	chkRange[] = {PROP_POSITION, PROP_DIRECTION, PROP_COLOUR,
+		PROP_BRIGHTNESS, PROP_FOV, PROP_DIAMETER };
 
 	sum = 0;
 	ft_atof("   2546.5874lll", &sum);
 	printf("Atof result : %f\n", sum);
 	if (prop == PROP_POSITION)
 	{
+		t_vec3	vec = {0};
 
+		parse_vec3(*value, &vec);
+		printf("String after vec3 parsing: %s\n", *value);
 	}
 	else if (prop == PROP_DIRECTION)
 	{
 		// ft_atoi();
-		// if (**value != '.')
+		//Error if vector is all 0
 
 	}
-	else if (prop == PROP_AXIS)
+	else if (prop == PROP_PATH)
 	{
-		// ft_atoi();
-		// if (**value != '.')
+
 
 	}
+	if (in_array(prop, chkRange, nb_elems(chkRange, sizeof(chkRange)))) {
+		if ( sum < props[prop].min || sum > props[prop].max )
+			put_err("Parameter has out of range value");
+	}
+
 	return (1);
 }
 
@@ -121,13 +155,17 @@ void	parse_rt(char *path)
 {
 	// size_t	i;
 	int		fd;
-	char	*line = "1,4,6.78";
-	t_vec3	vec = {0};
+	char	*line = "0.1,0.4l,6.78";
 	
-	parse_vec3(line, &vec);
-	printf("Vec x %f, y %f , z %f\n", vec.x, vec.y, vec.z);
+	check_type(PROP_POSITION, &path);
+	// t_vec3	vec = {0};
+	// parse_vec3(line, &vec);
+	// printf("Vec x %f, y %f , z %f\n", vec.x, vec.y, vec.z);
 	// check_type(PROP_AXIS, &line);
 	return ;
+	if (ft_strlen(path) < 3
+		|| !ft_strnstr(ft_strlen(path) - 3, ".rt", 3))
+			put_err("Invalid file name");
 	// check path integrity
 	fd = open(path, O_RDONLY);
 	if (fd == -1)
