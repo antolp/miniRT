@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 18:10:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/10/06 19:30:34 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/10/08 23:40:42 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ typedef struct s_asset {
 void	put_err(char *msg)
 {
 	ft_dprintf(STDERR_FILENO, msg);
-	ft_putstr_fd(STDERR_FILENO, '\n');
+	ft_putchar_fd(STDERR_FILENO, '\n');
 	exit(EXIT_FAILURE);
 }
 
@@ -34,22 +34,21 @@ bool	parse_vec3(char *val, t_vec3 *vec)
 	num = 0;
 	ret_atof = ft_atof(val, &num);
 	if (!ret_atof || val[ret_atof] != ',')
-		printf("Num: %f [vec3] Invalid data : Unexpected value or Missing coordinate\n", num);
-	printf("Num: %f \n", num);
+		put_err("Num: %f [vec3] Invalid data : Unexpected value or Missing coordinate\n");
 	val += ret_atof + 1;
 	vec->x = num;
 	num = 0;
 	//parse y
 	ret_atof = ft_atof(val, &num);
 	if (!ret_atof || val[ret_atof] != ',')
-		printf("[vec3] Invalid data : Unexpected value or Missing coordinate\n");
+		put_err("[vec3] Invalid data : Unexpected value or Missing coordinate\n");
 	val += ret_atof + 1;
 	vec->y = num;
 	num = 0;
 	//parse z
 	ret_atof = ft_atof(val, &num);
 	if (!ret_atof)
-		printf("[vec3] Invalid data : Unexpected value or Missing coordinate\n");
+		put_err("[vec3] Invalid data : Unexpected value or Missing coordinate\n");
 	vec->z = num;
 	return (1);
 }
@@ -81,23 +80,20 @@ bool	check_type(size_t prop, char **value) {
 	sum = 0;
 	ft_atof("   2546.5874lll", &sum);
 	printf("Atof result : %f\n", sum);
-	if (prop == PROP_POSITION)
+	if (prop == PROP_POSITION || prop == PROP_DIRECTION)
 	{
 		t_vec3	vec = {0};
 
 		parse_vec3(*value, &vec);
 		printf("String after vec3 parsing: %s\n", *value);
-	}
-	else if (prop == PROP_DIRECTION)
-	{
-		// ft_atoi();
-		//Error if vector is all 0
-
+		if (PROP_DIRECTION && (!vec.x && !vec.y && !vec.z))
+			put_err("Invalid vector dimensions : one axis should not be 0");
 	}
 	else if (prop == PROP_PATH)
 	{
-
-
+		if (ft_strlen(*value) < 4
+		|| !ft_strnstr(ft_strlen(*value) - 4, ".xpm", 4))
+			put_err("Invalid file name: expecting *.xpm");
 	}
 	if (in_array(prop, chkRange, nb_elems(chkRange, sizeof(chkRange)))) {
 		if ( sum < props[prop].min || sum > props[prop].max )
@@ -107,19 +103,19 @@ bool	check_type(size_t prop, char **value) {
 	return (1);
 }
 
-void	check_params(t_asset *object, char **line) {
-	size_t	i = 0;
-	// static t_asset asset[] = {
-	// 	{.type_id = "Test", .params = {"param1", "param2", 0}}
-	// };
-	// asset->type_id = "Changed litteral";
-	// printf("Asset 0 name : %s, Param 1 : %s Param 2 %s \n", asset->type_id, asset->params[0], asset->params[1]);
-	while (**line != ' ')
-	{
+// void	check_params(t_asset *object, char **line) {
+// 	size_t	i = 0;
+// 	// static t_asset asset[] = {
+// 	// 	{.type_id = "Test", .params = {"param1", "param2", 0}}
+// 	// };
+// 	// asset->type_id = "Changed litteral";
+// 	// printf("Asset 0 name : %s, Param 1 : %s Param 2 %s \n", asset->type_id, asset->params[0], asset->params[1]);
+// 	while (**line != ' ')
+// 	{
 	
-	}
+// 	}
 	
-}
+// }
 
 void	parse_object(char **line)
 {
@@ -134,7 +130,6 @@ void	parse_object(char **line)
 	//Priority
 	//Unicity
 
-
 	while (**line == ' ')
 		*line++;
 	i = 0;
@@ -148,16 +143,18 @@ void	parse_object(char **line)
 		i++;
 	}
 	*line += ft_strlen(assets[i]);
-	
 }
 
-void	parse_rt(char *path) 
+void	parse_rtconfig(char *path) 
 {
 	// size_t	i;
 	int		fd;
-	char	*line = "0.1,0.4l,6.78";
+	char	*line = "0.1,0.4,6.78";
 	
+
 	check_type(PROP_POSITION, &path);
+	
+	// check_type(PROP_POSITION, &somecharptr);
 	// t_vec3	vec = {0};
 	// parse_vec3(line, &vec);
 	// printf("Vec x %f, y %f , z %f\n", vec.x, vec.y, vec.z);
@@ -169,11 +166,10 @@ void	parse_rt(char *path)
 	// check path integrity
 	fd = open(path, O_RDONLY);
 	if (fd == -1)
-		return /* error trigger */;
+		return (put_err("Failled to open path"));
 	while (line = get_next_line(fd))
 	{
 		while (*line)
 			parse_object(&line);
 	}
-
 }

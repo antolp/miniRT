@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/10/04 18:28:10 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/10/08 22:52:12 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,8 @@ typedef enum e_objects_props
 	PROP_AXIS
 }	t_object_props;
 
-void	parse_rt(char *path);
+void	parse_rtconfig(char *path);
+void	put_err(char *msg);
 
 typedef struct s_hit_info
 {

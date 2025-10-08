@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/10/03 16:46:53 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/10/08 23:44:47 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,18 +46,14 @@ void	g_test()
 	printf("\ncoucou : %s\n", (char *)g_renderer(NULL)->mlx);
 }
 
-
-
-
-
-
-
-int	main(void)
+int	main(int argc, char	*argv[])
 {
 	t_scene		scene_g;
 	t_renderer	renderer_g;
 
-	parse_rt("OUI.txt");
+	if (argc != 2)
+		put_err("Insufficient parameter count : .rt config file path might be missing");
+	parse_rtconfig(argv[1]);
 	return (0);
 	if (!init_renderer(&renderer_g, WIDTH, HEIGHT, "rt"))
 		return (1); // need to aadd a free() mechanism 
