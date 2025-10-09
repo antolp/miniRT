@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 18:10:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/10/08 23:40:42 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/10/09 19:57:20 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,9 @@ bool	parse_vec3(char *val, t_vec3 *vec)
 	//parse x
 	num = 0;
 	ret_atof = ft_atof(val, &num);
+	printf("Sum is now %f with len of %ld\n", num, ret_atof);
 	if (!ret_atof || val[ret_atof] != ',')
-		put_err("Num: %f [vec3] Invalid data : Unexpected value or Missing coordinate\n");
+		put_err("[vec3] Invalid data : Unexpected value or Missing coordinate\n");
 	val += ret_atof + 1;
 	vec->x = num;
 	num = 0;
@@ -79,7 +80,7 @@ bool	check_type(size_t prop, char **value) {
 
 	sum = 0;
 	ft_atof("   2546.5874lll", &sum);
-	printf("Atof result : %f\n", sum);
+	// printf("Atof result : %f\n", sum);
 	if (prop == PROP_POSITION || prop == PROP_DIRECTION)
 	{
 		t_vec3	vec = {0};
@@ -95,10 +96,10 @@ bool	check_type(size_t prop, char **value) {
 		|| !ft_strnstr(ft_strlen(*value) - 4, ".xpm", 4))
 			put_err("Invalid file name: expecting *.xpm");
 	}
-	if (in_array(prop, chkRange, nb_elems(chkRange, sizeof(chkRange)))) {
-		if ( sum < props[prop].min || sum > props[prop].max )
-			put_err("Parameter has out of range value");
-	}
+	// if (in_array(prop, chkRange, nb_elems(chkRange, sizeof(chkRange)))) {
+	// 	if ( sum < props[prop].min || sum > props[prop].max )
+	// 		put_err("Parameter has out of range value");
+	// }
 
 	return (1);
 }
@@ -149,19 +150,21 @@ void	parse_rtconfig(char *path)
 {
 	// size_t	i;
 	int		fd;
-	char	*line = "0.1,0.4,6.78";
+	// char	*line = "0.1,0.4,6.78";
+	char	*line = NULL;
 	
-
-	check_type(PROP_POSITION, &path);
+	// printf("Passed chain : %s\n", path);
+	// check_type(PROP_POSITION, &path);
 	
 	// check_type(PROP_POSITION, &somecharptr);
 	// t_vec3	vec = {0};
 	// parse_vec3(line, &vec);
 	// printf("Vec x %f, y %f , z %f\n", vec.x, vec.y, vec.z);
 	// check_type(PROP_AXIS, &line);
-	return ;
+	// return ;
+	printf("Path %s\n", path);
 	if (ft_strlen(path) < 3
-		|| !ft_strnstr(ft_strlen(path) - 3, ".rt", 3))
+		|| !ft_strnstr(&path[ft_strlen(path) - 3], ".rt", 3))
 			put_err("Invalid file name");
 	// check path integrity
 	fd = open(path, O_RDONLY);
@@ -169,6 +172,7 @@ void	parse_rtconfig(char *path)
 		return (put_err("Failled to open path"));
 	while (line = get_next_line(fd))
 	{
+		printf("_%s\n");
 		while (*line)
 			parse_object(&line);
 	}
