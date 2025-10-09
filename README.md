@@ -1,7 +1,7 @@
 # miniRT
 42 miniRT (slightly extended)
 
-| ![roughreflectioncloudy](docs/gallery/roughreflectioncloudy.png) | ![reflectionglasssphere](docs/gallery/reflectionglasssphere.png) |
+| ![roughreflectioncloudy](docs/gallery/roughreflectioncloudy.png) | ![reflectionglasssphere](docs/gallery/transp.png) |
 |---|---|
 
 See the *.rt* format spec :  [scene initialization guide](docs/sceneinit_guide.md)

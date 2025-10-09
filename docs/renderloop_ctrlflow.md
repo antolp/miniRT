@@ -54,20 +54,30 @@ subgraph shading[ **Shading pipeline** : ]
     UseTexture -->|No| UseBaseColor["Use Base Color"]
     UseTexture -->|Yes| GetHitColor
 
-    %%Diffuse lighting
-    ComputeDiffuse["**Compute Diffuse**
-        *compute_diffuse_lighting()* 
-        Computes the effect of Lambertian lighting, and
-        full/transparent shadows at hit point."]
-    UseBaseColor ---->ComputeDiffuse
+    %%Bumpmap
+    ApplyBump["**Apply Bump From Image**
+        *apply_bump_from_image()* 
+        Modifies the passed normal 
+        vector according to a bump 
+        map texture."]
+    BumpOn{Bump Maps ?}
+    BumpOn --> |Yes| ApplyBump
+    BumpOn --> |No| ComputeDiffuse
+    ApplyBump --> ComputeDiffuse
 
     %%routing hit color to diffuse
     GetHitColor --> HitNode@{ shape: sm-circ, label: "" }
     HitNode -.-> CheckerColor["Checker Color"]
     HitNode -.-> ImageColor["Image Color"]
-    CheckerColor -->ComputeDiffuse
-    ImageColor -->ComputeDiffuse
+    CheckerColor -->BumpOn
+    ImageColor -->BumpOn
+    UseBaseColor ---->BumpOn
 
+    %%Diffuse lighting
+    ComputeDiffuse["**Compute Diffuse**
+        *compute_diffuse_lighting()* 
+        Computes the effect of Lambertian lighting, and
+        full/transparent shadows at hit point."]
     %%Specular
     ComputeSpecular["**Compute Specular**
         *compute_specular_component()* 
