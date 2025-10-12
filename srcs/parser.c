@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 18:10:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/10/09 19:57:20 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/10/12 18:40:29 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,12 @@ bool	parse_vec3(char *val, t_vec3 *vec)
 
 typedef struct s_property_rules {
 	t_object_type	type_id;
-	double			min;
-	double			max;
-	size_t			count;
+	double			val_min;
+	double			val_max;
 }	t_property_rules;
+
+
+//Proposed structure : Each object has a builder function, each function knows which property is to be tested, each property has its checker / builder
 
 //Charged to assert the integrity of given property value
 bool	check_type(size_t prop, char **value) {
@@ -70,13 +72,13 @@ bool	check_type(size_t prop, char **value) {
 		[PROP_COLOUR] = {PROP_COLOUR, 0, 255},
 		[PROP_BRIGHTNESS] = {PROP_BRIGHTNESS, 0.0, 1.0},
 		[PROP_FOV] = {PROP_FOV, 0, 180},
-		[PROP_DIAMETER] = {PROP_DIAMETER, FLT_MIN, FLT_MAX},
+		[PROP_DIMENSION] = {PROP_DIMENSION, FLT_MIN, FLT_MAX},
 		// {PROP_DIRECTION, FLT_MIN, FLT_MAX},
 		// {PROP_DIRECTION, FLT_MIN, FLT_MAX},
 		[PROP_PATH] = {PROP_PATH, FLT_MIN, FLT_MAX}
 	};
-	static size_t	chkRange[] = {PROP_POSITION, PROP_DIRECTION, PROP_COLOUR,
-		PROP_BRIGHTNESS, PROP_FOV, PROP_DIAMETER };
+	// static size_t	chkRange[] = {PROP_POSITION, PROP_DIRECTION, PROP_COLOUR,
+	// 	PROP_BRIGHTNESS, PROP_FOV, PROP_DIMENSION };
 
 	sum = 0;
 	ft_atof("   2546.5874lll", &sum);
@@ -100,7 +102,7 @@ bool	check_type(size_t prop, char **value) {
 	// 	if ( sum < props[prop].min || sum > props[prop].max )
 	// 		put_err("Parameter has out of range value");
 	// }
-
+	//Count and check object quantity
 	return (1);
 }
 
@@ -127,9 +129,23 @@ void	parse_object(char **line)
 		[4] = "SB",	[5] = "sp", [6] = "pl",
 		[7] = "cy", [8] = "co", [9] = "tr"
 	};
+	/* 	size_t			quantity;
+	size_t			qtmin;
+	size_t			qtmax;
+	 */
+	static t_object_props	prop_format[][2] = {
+		// [OBJ_CAMERA] = {{PROP_RATIO, true}, {PROP_COLOUR, true}},7
+		[OBJ_PLANE] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_COLOUR, true}},
+		[OBJ_SPHERE] = {{PROP_POSITION, true}, {PROP_DIMENSION, true}, {PROP_COLOUR, true}},
+		[OBJ_CYLINDER] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_DIMENSION, true}, {PROP_DIMENSION, true}, {PROP_COLOUR, true}},
+		[OBJ_CONE] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_DIMENSION, true}, {PROP_COLOUR, true}},
+		[OBJ_TRIANGLE] = {{PROP_POSITION, true}, {PROP_POSITION, true}, {PROP_POSITION, true}, {PROP_COLOUR, true}}
+	};
 	//Element
 	//Priority
 	//Unicity
+
+	//Get glob object t_scene
 
 	while (**line == ' ')
 		*line++;
@@ -138,12 +154,15 @@ void	parse_object(char **line)
 	while (assets[i])
 	{
 		if (i >= asset_count)
-			printf("PUT ERROR : unidentified asset type\n");
+			put_err("Unidentified asset type");
 		if (ft_strnstr(*line, assets[i], ft_strlen(assets[i])))
+			//Call asset parser
+			//Add back scene objects 
 			break ;
 		i++;
 	}
 	*line += ft_strlen(assets[i]);
+	printf("Remaining line : %s\n", *line);
 }
 
 void	parse_rtconfig(char *path) 
@@ -176,4 +195,6 @@ void	parse_rtconfig(char *path)
 		while (*line)
 			parse_object(&line);
 	}
+
+	//!!! CHECK THAT ALL MANDATORY ASSETS ARE SET IN THE SCENE
 }
