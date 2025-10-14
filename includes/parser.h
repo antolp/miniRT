@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 18:28:52 by epinaud           #+#    #+#             */
-/*   Updated: 2025/10/14 03:59:23 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/10/14 23:51:39 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,14 @@ typedef struct s_asset_format {
 	size_t	qtmax;
 	size_t	qtmin;
 	size_t	quantity;
+	bool	(*shape_builder)(struct s_object *);
 }	t_asset_format;
 
 void	parse_rtconfig(char *path);
 void	put_err(char *msg);
+
+
+//Shape builders
+t_object	*build_triangle();
 
 #endif

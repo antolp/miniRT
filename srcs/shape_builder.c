@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   shape_checker.c                                    :+:      :+:    :+:   */
+/*   shape_builder.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 03:37:00 by epinaud           #+#    #+#             */
-/*   Updated: 2025/10/14 03:38:39 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/10/14 23:51:26 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,3 +23,43 @@
 		[OBJ_CONE]
 		[OBJ_TRIANGLE] 
  */
+
+t_object	*build_sphere()
+{
+	t_object	*shape;
+
+	shape = malloc(sizeof(t_sphere));
+	return (shape);
+}
+
+t_object	*build_plane()
+{
+	t_object	*shape;
+
+	shape = malloc(sizeof(t_plane));
+	return (shape);
+}
+
+t_object	*build_cylinder()
+{
+	t_object	*shape;
+
+	shape = malloc(sizeof(t_cylinder));
+	return (shape);
+}
+
+t_object	*build_cone()
+{
+	t_object	*shape;
+
+	shape = malloc(sizeof(t_cone));
+	return (shape);
+}
+
+t_object	*build_triangle()
+{
+	t_object	*shape;
+
+	shape = malloc(sizeof(t_triangle));
+	return (shape);
+}
