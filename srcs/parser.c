@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 18:10:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/10/14 03:57:33 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/10/14 19:26:13 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	put_err(char *msg)
 {
 	ft_dprintf(STDERR_FILENO, msg);
-	ft_putchar_fd(STDERR_FILENO, '\n');
+	ft_putchar_fd('\n', STDERR_FILENO);
 	exit(EXIT_FAILURE);
 }
 
@@ -121,6 +121,7 @@ void	parse_object(char **line)
 	//Get glob object t_scene
 	size_t	i;
 	static t_asset_format	assets[] = {
+		// [OBJ_UNKNOWN] = {NULL},
 		[OBJ_AMBIANT_LIGHT] = {"A", 0, 0, 1},
 		[OBJ_CAMERA] = {"C", 0, 1, 1},
 		[OBJ_LIGHT] = {"L", 0, 0, SIZE_MAX},
@@ -132,18 +133,23 @@ void	parse_object(char **line)
 		[OBJ_CONE] = {"co", 0, 0, SIZE_MAX},
 		[OBJ_TRIANGLE] = {"tr", 0, 0, SIZE_MAX}};
 
+	printf("Entering object parsing with line : %s\n", *line);
 	while (**line == ' ')
-		*line++;
-	i = 0;
+	{
+		// printf("Skipping [%c] char Remaining line %s\n", **line, *line);
+		(*line)++;
+	}
+	i = 1;
 	while (i < sizeof(assets) / sizeof(*assets))
 	{
+		printf("asset type is %s\n", assets[i].type);
 		if (ft_strnstr(*line, assets[i].type, ft_strlen(assets[i].type)))
 		{
 			//Call asset parser 
 			//Add back scene objects 
 			assets[i].quantity++;
 			*line += ft_strlen(assets[i].type);
-			printf("Remaining line : %s\n", *line);
+			printf("Asset %s found. Remaining line : %s\n", assets[i].type ,*line);
 			return ;
 		}
 		i++;
@@ -157,6 +163,7 @@ void	parse_rtconfig(char *path)
 	int		fd;
 	// char	*line = "0.1,0.4,6.78";
 	char	*line = NULL;
+	char	*vnilline = NULL;
 	
 	// printf("Passed chain : %s\n", path);
 	// check_type(PROP_POSITION, &path);
@@ -177,9 +184,12 @@ void	parse_rtconfig(char *path)
 		return (put_err("Failled to open path"));
 	while (line = get_next_line(fd))
 	{
-		printf("_%s\n", line);
+		vnilline = line;
+		printf("_>> %s\n", line);
 		while (*line)
 			parse_object(&line);
+		free(vnilline);
 	}
+	printf("Ceased to read file\n");
 	//!!! CHECK THAT ALL MANDATORY ASSETS ARE SET IN THE SCENE
 }
