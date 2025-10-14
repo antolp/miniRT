@@ -6,16 +6,11 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 18:10:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/10/12 18:40:29 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/10/14 03:57:33 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
-typedef struct s_asset {
-	char			*type_id;
-	t_object_type	params[5];
-	size_t			count;
-}	t_asset;
 
 void	put_err(char *msg)
 {
@@ -54,13 +49,6 @@ bool	parse_vec3(char *val, t_vec3 *vec)
 	return (1);
 }
 
-typedef struct s_property_rules {
-	t_object_type	type_id;
-	double			val_min;
-	double			val_max;
-}	t_property_rules;
-
-
 //Proposed structure : Each object has a builder function, each function knows which property is to be tested, each property has its checker / builder
 
 //Charged to assert the integrity of given property value
@@ -74,14 +62,13 @@ bool	check_type(size_t prop, char **value) {
 		[PROP_FOV] = {PROP_FOV, 0, 180},
 		[PROP_DIMENSION] = {PROP_DIMENSION, FLT_MIN, FLT_MAX},
 		// {PROP_DIRECTION, FLT_MIN, FLT_MAX},
-		// {PROP_DIRECTION, FLT_MIN, FLT_MAX},
 		[PROP_PATH] = {PROP_PATH, FLT_MIN, FLT_MAX}
 	};
 	// static size_t	chkRange[] = {PROP_POSITION, PROP_DIRECTION, PROP_COLOUR,
 	// 	PROP_BRIGHTNESS, PROP_FOV, PROP_DIMENSION };
 
 	sum = 0;
-	ft_atof("   2546.5874lll", &sum);
+	// ft_atof("   2546.5874lll", &sum);
 	// printf("Atof result : %f\n", sum);
 	if (prop == PROP_POSITION || prop == PROP_DIRECTION)
 	{
@@ -95,7 +82,7 @@ bool	check_type(size_t prop, char **value) {
 	else if (prop == PROP_PATH)
 	{
 		if (ft_strlen(*value) < 4
-		|| !ft_strnstr(ft_strlen(*value) - 4, ".xpm", 4))
+		|| !ft_strnstr(*value + ft_strlen(*value) - 4, ".xpm", 4))
 			put_err("Invalid file name: expecting *.xpm");
 	}
 	// if (in_array(prop, chkRange, nb_elems(chkRange, sizeof(chkRange)))) {
@@ -108,6 +95,15 @@ bool	check_type(size_t prop, char **value) {
 
 // void	check_params(t_asset *object, char **line) {
 // 	size_t	i = 0;
+
+// static t_property_rules	prop_format[][2] = {
+// 	// [OBJ_CAMERA] = {{PROP_RATIO, true}, {PROP_COLOUR, true}},7
+// 	[OBJ_PLANE] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_COLOUR, true}},
+// 	[OBJ_SPHERE] = {{PROP_POSITION, true}, {PROP_DIMENSION, true}, {PROP_COLOUR, true}},
+// 	[OBJ_CYLINDER] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_DIMENSION, true}, {PROP_DIMENSION, true}, {PROP_COLOUR, true}},
+// 	[OBJ_CONE] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_DIMENSION, true}, {PROP_COLOUR, true}},
+// 	[OBJ_TRIANGLE] = {{PROP_POSITION, true}, {PROP_POSITION, true}, {PROP_POSITION, true}, {PROP_COLOUR, true}}
+// };
 // 	// static t_asset asset[] = {
 // 	// 	{.type_id = "Test", .params = {"param1", "param2", 0}}
 // 	// };
@@ -122,47 +118,37 @@ bool	check_type(size_t prop, char **value) {
 
 void	parse_object(char **line)
 {
-	static const size_t	asset_count = 10;
-	size_t	i;
-	static char	*assets[] = {
-		[0] = "A", [1] = "C", [2] = "L", [3] = "BG", 
-		[4] = "SB",	[5] = "sp", [6] = "pl",
-		[7] = "cy", [8] = "co", [9] = "tr"
-	};
-	/* 	size_t			quantity;
-	size_t			qtmin;
-	size_t			qtmax;
-	 */
-	static t_object_props	prop_format[][2] = {
-		// [OBJ_CAMERA] = {{PROP_RATIO, true}, {PROP_COLOUR, true}},7
-		[OBJ_PLANE] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_COLOUR, true}},
-		[OBJ_SPHERE] = {{PROP_POSITION, true}, {PROP_DIMENSION, true}, {PROP_COLOUR, true}},
-		[OBJ_CYLINDER] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_DIMENSION, true}, {PROP_DIMENSION, true}, {PROP_COLOUR, true}},
-		[OBJ_CONE] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_DIMENSION, true}, {PROP_COLOUR, true}},
-		[OBJ_TRIANGLE] = {{PROP_POSITION, true}, {PROP_POSITION, true}, {PROP_POSITION, true}, {PROP_COLOUR, true}}
-	};
-	//Element
-	//Priority
-	//Unicity
-
 	//Get glob object t_scene
+	size_t	i;
+	static t_asset_format	assets[] = {
+		[OBJ_AMBIANT_LIGHT] = {"A", 0, 0, 1},
+		[OBJ_CAMERA] = {"C", 0, 1, 1},
+		[OBJ_LIGHT] = {"L", 0, 0, SIZE_MAX},
+		[OBJ_BACKGROUND] = {"BG", 0, 0, 1},
+		[OBJ_SKYBOX] = {"SB", 0, 0, 1},
+		[OBJ_SPHERE] = {"sp", 0, 0, SIZE_MAX},
+		[OBJ_PLANE] = {"pl", 0, 0, SIZE_MAX},
+		[OBJ_CYLINDER] = {"cy", 0, 0, SIZE_MAX},
+		[OBJ_CONE] = {"co", 0, 0, SIZE_MAX},
+		[OBJ_TRIANGLE] = {"tr", 0, 0, SIZE_MAX}};
 
 	while (**line == ' ')
 		*line++;
 	i = 0;
-	
-	while (assets[i])
+	while (i < sizeof(assets) / sizeof(*assets))
 	{
-		if (i >= asset_count)
-			put_err("Unidentified asset type");
-		if (ft_strnstr(*line, assets[i], ft_strlen(assets[i])))
-			//Call asset parser
+		if (ft_strnstr(*line, assets[i].type, ft_strlen(assets[i].type)))
+		{
+			//Call asset parser 
 			//Add back scene objects 
-			break ;
+			assets[i].quantity++;
+			*line += ft_strlen(assets[i].type);
+			printf("Remaining line : %s\n", *line);
+			return ;
+		}
 		i++;
 	}
-	*line += ft_strlen(assets[i]);
-	printf("Remaining line : %s\n", *line);
+	put_err("Unidentified asset type");
 }
 
 void	parse_rtconfig(char *path) 
@@ -191,10 +177,9 @@ void	parse_rtconfig(char *path)
 		return (put_err("Failled to open path"));
 	while (line = get_next_line(fd))
 	{
-		printf("_%s\n");
+		printf("_%s\n", line);
 		while (*line)
 			parse_object(&line);
 	}
-
 	//!!! CHECK THAT ALL MANDATORY ASSETS ARE SET IN THE SCENE
 }

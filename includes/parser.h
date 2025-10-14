@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 18:28:52 by epinaud           #+#    #+#             */
-/*   Updated: 2025/10/12 18:30:56 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/10/14 03:59:23 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 // 	PROP_AXIS = 1 << 7
 // }	t_object_props;
 
-typedef enum e_objects_props
+typedef enum e_property_type
 {
 	PROP_POSITION,
 	PROP_DIRECTION,
@@ -38,7 +38,20 @@ typedef enum e_objects_props
 	PROP_DIMENSION,
 	PROP_FOV,
 	PROP_AXIS
-}	t_object_props;
+}	t_property_type;
+
+typedef struct s_property_rules {
+	t_property_type	type_id;
+	double			val_min;
+	double			val_max;
+}	t_property_rules;
+
+typedef struct s_asset_format {
+	char	*type;
+	size_t	qtmax;
+	size_t	qtmin;
+	size_t	quantity;
+}	t_asset_format;
 
 void	parse_rtconfig(char *path);
 void	put_err(char *msg);
