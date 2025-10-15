@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 03:37:00 by epinaud           #+#    #+#             */
-/*   Updated: 2025/10/14 23:51:26 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/10/15 21:42:44 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ t_object	*build_cone()
 	return (shape);
 }
 
-t_object	*build_triangle()
+t_object	*build_triangle(t_object *tri)
 {
 	t_object	*shape;
 

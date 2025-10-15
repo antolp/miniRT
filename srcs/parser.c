@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 18:10:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/10/14 23:55:07 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/10/15 22:40:09 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ bool	parse_vec3(char *val, t_vec3 *vec)
 	return (1);
 }
 
-//Proposed structure : Each object has a builder function, each function knows which property is to be tested, each property has its checker / builder
+//!!!!> Proposed structure : Each object has a builder function, each function knows which property is to be tested, each property has its checker / builder
 
 //Charged to assert the integrity of given property value
 bool	check_type(size_t prop, char **value) {
@@ -68,8 +68,6 @@ bool	check_type(size_t prop, char **value) {
 	// 	PROP_BRIGHTNESS, PROP_FOV, PROP_DIMENSION };
 
 	sum = 0;
-	// ft_atof("   2546.5874lll", &sum);
-	// printf("Atof result : %f\n", sum);
 	if (prop == PROP_POSITION || prop == PROP_DIRECTION)
 	{
 		t_vec3	vec = {0};
@@ -93,33 +91,36 @@ bool	check_type(size_t prop, char **value) {
 	return (1);
 }
 
-// void	check_params(t_asset *object, char **line) {
-// 	size_t	i = 0;
+//Will validate the integrity of user provided parameters for the specified shape
+//-->>Will be called from shape builders
+void	check_params(t_object_type type, char *line, size_t *idx) {
+	size_t	i = 0;
 
-// static t_property_rules	prop_format[][2] = {
-// 	// [OBJ_CAMERA] = {{PROP_RATIO, true}, {PROP_COLOUR, true}},7
-// 	[OBJ_PLANE] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_COLOUR, true}},
-// 	[OBJ_SPHERE] = {{PROP_POSITION, true}, {PROP_DIMENSION, true}, {PROP_COLOUR, true}},
-// 	[OBJ_CYLINDER] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_DIMENSION, true}, {PROP_DIMENSION, true}, {PROP_COLOUR, true}},
-// 	[OBJ_CONE] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_DIMENSION, true}, {PROP_COLOUR, true}},
-// 	[OBJ_TRIANGLE] = {{PROP_POSITION, true}, {PROP_POSITION, true}, {PROP_POSITION, true}, {PROP_COLOUR, true}}
-// };
-// 	// static t_asset asset[] = {
-// 	// 	{.type_id = "Test", .params = {"param1", "param2", 0}}
-// 	// };
-// 	// asset->type_id = "Changed litteral";
-// 	// printf("Asset 0 name : %s, Param 1 : %s Param 2 %s \n", asset->type_id, asset->params[0], asset->params[1]);
-// 	while (**line != ' ')
-// 	{
-	
-// 	}
-	
-// }
+	static int	prop_format[][10][2] = {
+		// [OBJ_CAMERA] = {{PROP_RATIO, true}, {PROP_COLOUR, true}},7
+		[OBJ_PLANE] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_COLOUR, true}},
+		[OBJ_SPHERE] = {{PROP_POSITION, true}, {PROP_DIMENSION, true}, {PROP_COLOUR, true}},
+		[OBJ_CYLINDER] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_DIMENSION, true}, {PROP_DIMENSION, true}, {PROP_COLOUR, true}},
+		[OBJ_CONE] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_DIMENSION, true}, {PROP_COLOUR, true}},
+		[OBJ_TRIANGLE] = {{PROP_POSITION, true}, {PROP_POSITION, true}, {PROP_POSITION, true}, {PROP_COLOUR, true}}
+	};
+
+	while (1)
+	{
+		while (line[*idx] == ' ')
+			(*idx)++;
+		//>>> Call the (proper?) param handler
+		// prop_format[type][0];
+		idx += ft_strchr(line + *idx, ' ') - &line[*idx];
+		break ;
+	}
+	//Should perhaps return the material object filled with its proper values
+}
 
 void	parse_object(char *line, size_t	*idx)
 {
-	//Get glob object t_scene
-	size_t	i;
+	size_t					i;
+	t_object				*object;
 	static t_asset_format	assets[] = {
 		// [OBJ_UNKNOWN] = {NULL},
 		[OBJ_AMBIANT_LIGHT] = {"A", 0, 0, 1},
@@ -133,21 +134,18 @@ void	parse_object(char *line, size_t	*idx)
 		[OBJ_CONE] = {"co", 0, 0, SIZE_MAX},
 		[OBJ_TRIANGLE] = {"tr", 0, 0, SIZE_MAX, &build_triangle}};
 
-	printf("Entering object parsing with line : %s\n", line[*idx]);
+	printf("Entering object parsing with line : %s\n", line + *idx);
 	while (line[*idx] == ' ')
-	{
-		// printf("Skipping [%c] char Remaining line %s\n", **line, *line);
-		// (line)++;
-		*idx++;		
-	}
+		(*idx)++;
 	i = 1;
 	while (i < sizeof(assets) / sizeof(*assets))
 	{
 		printf("asset type is %s\n", assets[i].type);
 		if (ft_strnstr(&line[*idx], assets[i].type, ft_strlen(assets[i].type)))
 		{
-			//Call asset parser | Asset is => assets[i]
-			//Add back scene objects 
+			//Call asset parser
+			//Add back scene object
+			// DRPRECATED >>> object = &(t_object){.intersect = assets[i].intersect, .get_normal = assets[i].get_normal, .get_uv = assets[i].get_uv};
 			assets[i].quantity++;
 			*idx += ft_strlen(assets[i].type);
 			printf("Asset %s found. Remaining line : %s\n", assets[i].type ,&line[*idx]);
@@ -155,26 +153,20 @@ void	parse_object(char *line, size_t	*idx)
 		}
 		i++;
 	}
+	free(line);
 	put_err("Unidentified asset type");
 }
 
 void	parse_rtconfig(char *path) 
 {
-	// size_t	i;
 	int		fd;
-	// char	*line = "0.1,0.4,6.78";
 	char	*line = NULL;
 	size_t	index;
 	
 	// printf("Passed chain : %s\n", path);
 	// check_type(PROP_POSITION, &path);
-	
 	// check_type(PROP_POSITION, &somecharptr);
-	// t_vec3	vec = {0};
-	// parse_vec3(line, &vec);
-	// printf("Vec x %f, y %f , z %f\n", vec.x, vec.y, vec.z);
 	// check_type(PROP_AXIS, &line);
-	// return ;
 	printf("Path %s\n", path);
 	if (ft_strlen(path) < 3
 		|| !ft_strnstr(&path[ft_strlen(path) - 3], ".rt", 3))

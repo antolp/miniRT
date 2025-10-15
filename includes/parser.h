@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 18:28:52 by epinaud           #+#    #+#             */
-/*   Updated: 2025/10/14 23:51:39 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/10/15 22:34:47 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,10 @@ typedef struct s_asset_format {
 	size_t	qtmax;
 	size_t	qtmin;
 	size_t	quantity;
-	bool	(*shape_builder)(struct s_object *);
+	// bool	(*intersect)(t_object *, t_ray *, double *);
+	// void	(*get_normal)(t_object *, t_vec3 *, t_vec3 *);
+	// bool	(*get_uv)(t_object *, t_vec3 *, t_vec2 *);
+	void	*(*shape_builder)(struct s_object *);
 }	t_asset_format;
 
 void	parse_rtconfig(char *path);
