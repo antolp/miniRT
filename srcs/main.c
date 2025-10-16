@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/10/08 23:44:47 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/10/16 05:21:20 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,8 @@ int	main(int argc, char	*argv[])
 	t_scene		scene_g;
 	t_renderer	renderer_g;
 
+	g_scene(&scene_g);
+	scene_g = (t_scene){0};
 	if (argc != 2)
 		put_err("Insufficient parameter count : .rt config file path might be missing");
 	parse_rtconfig(argv[1]);
@@ -60,7 +62,7 @@ int	main(int argc, char	*argv[])
 	g_renderer(&renderer_g);
 	if (!init_scene(&scene_g))
 		return (1); // again, need to aadd a free() mechanism
-	g_scene(&scene_g);
+
 	mlx_hook(renderer_g.win, KeyPress, KeyPressMask, key_hook, NULL);
 	// mlx_key_hook(renderer_g.mlx, key_hook, NULL);
 	mlx_loop_hook(renderer_g.mlx, render_loop, NULL);

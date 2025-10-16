@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   refraction.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/07/15 16:47:45 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/10/16 03:03:52 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,47 +14,47 @@
 
 #define FRESNEL_SPLIT_THRESHOLD 0.05
 
-//compute_refracted_dir():
-//Computes the refracted direction of a ray hitting a surface,
-//using Snell's Law to model how light bends between two media.
-//
-//The Snell's Law, a.k.a law of refraction, relates the angle of incidence 
-//and refraction:
-//	n1 * sin(θ1) = n2 * sin(θ2)
-//Where:
-//	- n1, n2 are the indices of refraction (ior)
-//	- θ1 is the angle between incident ray and normal
-//	- θ2 is the angle between refracted ray and normal
-//
-//In vector form, we (not me) can derive the formula :
-//	T = eta * I + (eta * cos(θ1) - sqrt(k)) * N
-//	where:
-//		- T is the refracted direction
-//		- I is the incident direction (normalized)
-//		- N is the surface normal (normalized, pointing against I)
-//		- eta = n1 / n2
-//		- cos(θ1) = -dot(I, N)
-//		- k = 1 - eta² * (1 - cos²(θ1))
-//	If k < 0 -> Total Internal Reflection (no real solution, reflect inside)
-//
-//ascii drawing :
-//         water (ior > 1.0)
-//           ⟍          .
-//             ⟍        |
-//     incident  ⟍      . 
-//       ray       ⟍ θ2 |
-//                   ⟍  .
-//                     ⟍|
-//  -------------------[x]----------------
-//                 	    |\ 
-//                      . \ 
-//                      |θ1\ 
-//                      .   \ refracted 
-//                      |    \  ray
-//                      .     \ 
-//the angles aren't steep enough, it's just to give an idea
-//the formulas can be found in this form in the openGL docs :
-//	https://registry.khronos.org/OpenGL-Refpages/gl4/html/refract.xhtml
+/* compute_refracted_dir():
+Computes the refracted direction of a ray hitting a surface,
+using Snell's Law to model how light bends between two media.
+
+The Snell's Law, a.k.a law of refraction, relates the angle of incidence 
+and refraction:
+	n1 * sin(θ1) = n2 * sin(θ2)
+Where:
+	- n1, n2 are the indices of refraction (ior)
+	- θ1 is the angle between incident ray and normal
+	- θ2 is the angle between refracted ray and normal
+
+In vector form, we (not me) can derive the formula :
+	T = eta * I + (eta * cos(θ1) - sqrt(k)) * N
+	where:
+		- T is the refracted direction
+		- I is the incident direction (normalized)
+		- N is the surface normal (normalized, pointing against I)
+		- eta = n1 / n2
+		- cos(θ1) = -dot(I, N)
+		- k = 1 - eta² * (1 - cos²(θ1))
+	If k < 0 -> Total Internal Reflection (no real solution, reflect inside)
+
+ascii drawing :
+        water (ior > 1.0)
+          ⟍          .
+            ⟍        |
+    incident  ⟍      . 
+      ray       ⟍ θ2 |
+                  ⟍  .
+                    ⟍|
+ -------------------[x]----------------
+                	    |\ 
+                     . \ 
+                     |θ1\ 
+                     .   \ refracted 
+                     |    \  ray
+                     .     \ 
+the angles aren't steep enough, it's just to give an idea
+the formulas can be found in this form in the openGL docs :
+	https://registry.khronos.org/OpenGL-Refpages/gl4/html/refract.xhtml */
 int	compute_refracted_dir(t_vec3 in, t_vec3 n, double eta, t_vec3 *out_dir)
 {
 	double	cosi;

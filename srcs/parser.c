@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 18:10:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/10/15 22:40:09 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/10/16 05:39:17 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 void	put_err(char *msg)
 {
+	// #include <errno.h>
+	// perror("open"); printf("open failed: %s\n", strerror(errno));
 	ft_dprintf(STDERR_FILENO, msg);
 	ft_putchar_fd('\n', STDERR_FILENO);
 	exit(EXIT_FAILURE);
@@ -93,7 +95,7 @@ bool	check_type(size_t prop, char **value) {
 
 //Will validate the integrity of user provided parameters for the specified shape
 //-->>Will be called from shape builders
-void	check_params(t_object_type type, char *line, size_t *idx) {
+void	check_params(t_object_type type, char **line) {
 	size_t	i = 0;
 
 	static int	prop_format[][10][2] = {
@@ -107,17 +109,15 @@ void	check_params(t_object_type type, char *line, size_t *idx) {
 
 	while (1)
 	{
-		while (line[*idx] == ' ')
-			(*idx)++;
 		//>>> Call the (proper?) param handler
 		// prop_format[type][0];
-		idx += ft_strchr(line + *idx, ' ') - &line[*idx];
+		// idx += ft_strchr(line + *idx, ' ') - &line[*idx];
 		break ;
 	}
 	//Should perhaps return the material object filled with its proper values
 }
 
-void	parse_object(char *line, size_t	*idx)
+void	parse_object(char **line)
 {
 	size_t					i;
 	t_object				*object;
@@ -132,42 +132,50 @@ void	parse_object(char *line, size_t	*idx)
 		[OBJ_PLANE] = {"pl", 0, 0, SIZE_MAX},
 		[OBJ_CYLINDER] = {"cy", 0, 0, SIZE_MAX},
 		[OBJ_CONE] = {"co", 0, 0, SIZE_MAX},
-		[OBJ_TRIANGLE] = {"tr", 0, 0, SIZE_MAX, &build_triangle}};
+		[OBJ_TRIANGLE] = {"tr", 0, 0, SIZE_MAX, .shape_builder = &build_triangle}};
 
-	printf("Entering object parsing with line : %s\n", line + *idx);
-	while (line[*idx] == ' ')
-		(*idx)++;
 	i = 1;
 	while (i < sizeof(assets) / sizeof(*assets))
 	{
 		printf("asset type is %s\n", assets[i].type);
-		if (ft_strnstr(&line[*idx], assets[i].type, ft_strlen(assets[i].type)))
+		if (ft_strcmp(*line, assets[i].type) == 0)
 		{
-			//Call asset parser
-			//Add back scene object
-			// DRPRECATED >>> object = &(t_object){.intersect = assets[i].intersect, .get_normal = assets[i].get_normal, .get_uv = assets[i].get_uv};
+			printf("Asset %s found. Remaining line :\n", assets[i].type);
+			line++;
+			put_recurse_dynarr(line);
+			object = malloc(sizeof(t_object));
+			if (!object)
+				put_err("Parser : Failled to malloc t_object");
+			object->type = i;
+			assets[i].shape_builder(object);
 			assets[i].quantity++;
-			*idx += ft_strlen(assets[i].type);
-			printf("Asset %s found. Remaining line : %s\n", assets[i].type ,&line[*idx]);
 			return ;
 		}
 		i++;
 	}
-	free(line);
 	put_err("Unidentified asset type");
+}
+
+void	clear_content(t_list *elm)
+{
+	if (((t_object *)elm->content)->shape)
+		free(((t_object *)elm->content)->shape);
+	if (elm->content)
+		free(elm->content);
 }
 
 void	parse_rtconfig(char *path) 
 {
 	int		fd;
 	char	*line = NULL;
+	char	**word_list = NULL;
 	size_t	index;
 	
 	// printf("Passed chain : %s\n", path);
 	// check_type(PROP_POSITION, &path);
 	// check_type(PROP_POSITION, &somecharptr);
 	// check_type(PROP_AXIS, &line);
-	printf("Path %s\n", path);
+	printf("Path %s of size %zu\n", path, ft_strlen(path));
 	if (ft_strlen(path) < 3
 		|| !ft_strnstr(&path[ft_strlen(path) - 3], ".rt", 3))
 			put_err("Invalid file name");
@@ -175,14 +183,21 @@ void	parse_rtconfig(char *path)
 	fd = open(path, O_RDONLY);
 	if (fd == -1)
 		return (put_err("Failled to open path"));
-	while (line = get_next_line(fd))
+	while ((line = get_next_line(fd)))
 	{
+		if (!line)
+			break ;
 		index = 0;
 		printf("_>> %s\n", line);
-		while (*line)
-			parse_object(line, &index);
+		word_list = ft_split(line, ' ');
 		free(line);
+		if (!word_list)
+			put_err("Parsing : failled to malloc word_list");
+		parse_object(word_list);
+		ft_free_dynarr(word_list);
+		word_list = NULL;
 	}
 	printf("Ceased to read file\n");
 	//!!! CHECK THAT ALL MANDATORY ASSETS ARE SET IN THE SCENE
+	ft_lstclear(&g_scene(0)->objects, clear_content);
 }
