@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 03:37:00 by epinaud           #+#    #+#             */
-/*   Updated: 2025/10/16 05:38:32 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/10/19 18:33:01 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,42 +24,61 @@
 		[OBJ_TRIANGLE] 
  */
 
-t_object	*build_sphere()
+t_object	*build_sphere(t_object *obj)
 {
-	t_object	*shape;
-
-	shape = malloc(sizeof(t_sphere));
-	return (shape);
+	printf(">>> Building sphere\n");
+	obj->shape = malloc(sizeof(t_sphere));
+	if (!obj->shape)
+		put_err("build_sphere : Failled to malloc t_sphere");
+	obj->intersect = intersect_sphere;
+	obj->get_normal = get_normal_sphere;
+	obj->get_uv = get_uv_sphere;
+	ft_lstadd_back(&g_scene(0)->objects, add_content(obj));
+	return (obj);
 }
 
-t_object	*build_plane()
+t_object	*build_plane(t_object *obj)
 {
-	t_object	*shape;
-
-	shape = malloc(sizeof(t_plane));
-	return (shape);
+	printf(">>> Building plane\n");
+	obj->shape = malloc(sizeof(t_plane));
+	if (!obj->shape)
+		put_err("build_plane : Failled to malloc t_plane");
+	obj->intersect = intersect_plane;
+	obj->get_normal = get_normal_plane;
+	obj->get_uv = get_uv_plane;
+	ft_lstadd_back(&g_scene(0)->objects, add_content(obj));
+	return (obj);
 }
 
-t_object	*build_cylinder()
+t_object	*build_cylinder(t_object *obj)
 {
-	t_object	*shape;
-
-	shape = malloc(sizeof(t_cylinder));
-	return (shape);
+	printf(">>> Building cylinder\n");
+	obj->shape = malloc(sizeof(t_cylinder));
+	if (!obj->shape)
+		put_err("build_cylinder : Failled to malloc t_cylinder");
+	obj->intersect = intersect_cylinder;
+	obj->get_normal = get_normal_cylinder;
+	obj->get_uv = get_uv_cylinder;
+	ft_lstadd_back(&g_scene(0)->objects, add_content(obj));
+	return (obj);
 }
 
-t_object	*build_cone()
+t_object	*build_cone(t_object *obj)
 {
-	t_object	*shape;
-
-	shape = malloc(sizeof(t_cone));
-	return (shape);
+	printf(">>> Building cone\n");
+	obj->shape = malloc(sizeof(t_cone));
+	if (!obj->shape)
+		put_err("build_cone : Failled to malloc t_cone");
+	obj->intersect = intersect_cone;
+	obj->get_normal = get_normal_cone;
+	obj->get_uv = get_uv_cone;
+	ft_lstadd_back(&g_scene(0)->objects, add_content(obj));
+	return (obj);
 }
 
-t_object	*build_triangle(t_object *obj)
+t_object	*build_triangle(t_object *obj, char	**line)
 {
 	t_triangle	*shape;
-	t_list		*objhead;
 
 	printf(">>> Building triangle\n");
 	shape = malloc(sizeof(t_triangle));
@@ -69,6 +88,11 @@ t_object	*build_triangle(t_object *obj)
 	obj->intersect = intersect_triangle;
 	obj->get_normal = get_normal_triangle;
 	obj->get_uv = get_uv_triangle;
+	set_property(PROP_POSITION, (&((t_triangle *)obj->shape)->p0), line++);
+	set_property(PROP_POSITION, (&((t_triangle *)obj->shape)->p1), line++);
+	set_property(PROP_POSITION, (&((t_triangle *)obj->shape)->p2), line++);
 	ft_lstadd_back(&g_scene(0)->objects, add_content(obj));
+
+	printf("Triangle coordinates : %f,%f,%f, %f,%f,%f etc\n", shape->p0.x, shape->p0.y, shape->p0.z, shape->p1.x, shape->p1.y, shape->p1.z);
 	return (obj);
 }

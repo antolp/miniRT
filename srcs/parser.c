@@ -6,11 +6,19 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 18:10:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/10/16 05:39:17 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/10/19 19:29:41 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
+
+void	clear_content(t_list *elm)
+{
+	if (((t_object *)elm->content)->shape)
+		free(((t_object *)elm->content)->shape);
+	if (elm->content)
+		free(elm->content);
+}
 
 void	put_err(char *msg)
 {
@@ -18,10 +26,11 @@ void	put_err(char *msg)
 	// perror("open"); printf("open failed: %s\n", strerror(errno));
 	ft_dprintf(STDERR_FILENO, msg);
 	ft_putchar_fd('\n', STDERR_FILENO);
+	ft_lstclear(&g_scene(0)->objects, clear_content);
 	exit(EXIT_FAILURE);
 }
 
-//
+//>> Warning for char ending atof call ?
 bool	parse_vec3(char *val, t_vec3 *vec)
 {
 	float	num;
@@ -30,7 +39,7 @@ bool	parse_vec3(char *val, t_vec3 *vec)
 	//parse x
 	num = 0;
 	ret_atof = ft_atof(val, &num);
-	printf("Sum is now %f with len of %ld\n", num, ret_atof);
+	// printf("Sum is now %f with len of %ld\n", num, ret_atof);
 	if (!ret_atof || val[ret_atof] != ',')
 		put_err("[vec3] Invalid data : Unexpected value or Missing coordinate\n");
 	val += ret_atof + 1;
@@ -54,7 +63,8 @@ bool	parse_vec3(char *val, t_vec3 *vec)
 //!!!!> Proposed structure : Each object has a builder function, each function knows which property is to be tested, each property has its checker / builder
 
 //Charged to assert the integrity of given property value
-bool	check_type(size_t prop, char **value) {
+bool	set_property(size_t type, void *dst, char **line)
+{
 	float	sum;
 	static t_property_rules	props[] = {
 		[PROP_POSITION] = {PROP_POSITION, FLT_MIN, FLT_MAX},
@@ -70,19 +80,19 @@ bool	check_type(size_t prop, char **value) {
 	// 	PROP_BRIGHTNESS, PROP_FOV, PROP_DIMENSION };
 
 	sum = 0;
-	if (prop == PROP_POSITION || prop == PROP_DIRECTION)
+	if (type == PROP_POSITION || type == PROP_DIRECTION)
 	{
-		t_vec3	vec = {0};
+		t_vec3	*vec = dst;
 
-		parse_vec3(*value, &vec);
-		printf("String after vec3 parsing: %s\n", *value);
-		if (PROP_DIRECTION && (!vec.x && !vec.y && !vec.z))
+		parse_vec3(*line, vec);
+		printf("String after vec3 parsing: %s\n", *line);
+		if (PROP_DIRECTION && (!vec->x && !vec->y && !vec->z))
 			put_err("Invalid vector dimensions : one axis should not be 0");
 	}
-	else if (prop == PROP_PATH)
+	else if (type == PROP_PATH)
 	{
-		if (ft_strlen(*value) < 4
-		|| !ft_strnstr(*value + ft_strlen(*value) - 4, ".xpm", 4))
+		if (ft_strlen(*line) < 4
+		|| !ft_strnstr(*line + ft_strlen(*line) - 4, ".xpm", 4))
 			put_err("Invalid file name: expecting *.xpm");
 	}
 	// if (in_array(prop, chkRange, nb_elems(chkRange, sizeof(chkRange)))) {
@@ -92,6 +102,32 @@ bool	check_type(size_t prop, char **value) {
 	//Count and check object quantity
 	return (1);
 }
+
+
+// void	init_shape(t_object_type type, t_object	*obj)
+// {
+// 	switch (type)
+// 	{
+// 		case OBJ_PLANE:
+// 			obj->shape = malloc(sizeof(t_plane));
+// 		break;
+// 		case OBJ_SPHERE:
+// 			obj->shape = malloc(sizeof(t_sphere));
+// 		break;
+// 		case OBJ_CYLINDER:
+// 			obj->shape = malloc(sizeof(t_cylinder));
+// 		break;
+// 		case OBJ_CONE:
+// 			obj->shape = malloc(sizeof(t_cone));
+// 		break;
+// 		case OBJ_TRIANGLE:
+// 			obj->shape = malloc(sizeof(t_triangle));
+// 		break;
+// 		}
+		
+// 	if (!obj->shape)
+// 		put_err("build_triangle : Failled to malloc shape");
+// }
 
 //Will validate the integrity of user provided parameters for the specified shape
 //-->>Will be called from shape builders
@@ -123,16 +159,16 @@ void	parse_object(char **line)
 	t_object				*object;
 	static t_asset_format	assets[] = {
 		// [OBJ_UNKNOWN] = {NULL},
-		[OBJ_AMBIANT_LIGHT] = {"A", 0, 0, 1},
-		[OBJ_CAMERA] = {"C", 0, 1, 1},
-		[OBJ_LIGHT] = {"L", 0, 0, SIZE_MAX},
-		[OBJ_BACKGROUND] = {"BG", 0, 0, 1},
-		[OBJ_SKYBOX] = {"SB", 0, 0, 1},
-		[OBJ_SPHERE] = {"sp", 0, 0, SIZE_MAX},
-		[OBJ_PLANE] = {"pl", 0, 0, SIZE_MAX},
-		[OBJ_CYLINDER] = {"cy", 0, 0, SIZE_MAX},
-		[OBJ_CONE] = {"co", 0, 0, SIZE_MAX},
-		[OBJ_TRIANGLE] = {"tr", 0, 0, SIZE_MAX, .shape_builder = &build_triangle}};
+	[OBJ_AMBIANT_LIGHT] = {"A", 0, 0, 1},
+	[OBJ_CAMERA] = {"C", 0, 1, 1},
+	[OBJ_LIGHT] = {"L", 0, 0, SIZE_MAX},
+	[OBJ_BACKGROUND] = {"BG", 0, 0, 1},
+	[OBJ_SKYBOX] = {"SB", 0, 0, 1},
+	[OBJ_SPHERE] = {"sp", 0, 0, SIZE_MAX},
+	[OBJ_PLANE] = {"pl", 0, 0, SIZE_MAX},
+	[OBJ_CYLINDER] = {"cy", 0, 0, SIZE_MAX},
+	[OBJ_CONE] = {"co", 0, 0, SIZE_MAX},
+	[OBJ_TRIANGLE] = {"tr", 0, 0, SIZE_MAX, &build_triangle}};
 
 	i = 1;
 	while (i < sizeof(assets) / sizeof(*assets))
@@ -147,21 +183,13 @@ void	parse_object(char **line)
 			if (!object)
 				put_err("Parser : Failled to malloc t_object");
 			object->type = i;
-			assets[i].shape_builder(object);
+			assets[i].shape_builder(object, line);
 			assets[i].quantity++;
 			return ;
 		}
 		i++;
 	}
 	put_err("Unidentified asset type");
-}
-
-void	clear_content(t_list *elm)
-{
-	if (((t_object *)elm->content)->shape)
-		free(((t_object *)elm->content)->shape);
-	if (elm->content)
-		free(elm->content);
 }
 
 void	parse_rtconfig(char *path) 
