@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 03:37:00 by epinaud           #+#    #+#             */
-/*   Updated: 2025/10/19 18:33:01 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/10/22 21:37:47 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ t_object	*build_triangle(t_object *obj, char	**line)
 
 	printf(">>> Building triangle\n");
 	shape = malloc(sizeof(t_triangle));
+	*shape = (t_triangle){0};
 	if (!shape)
 		put_err("build_triangle : Failled to malloc t_triangle");
 	obj->shape = shape;
@@ -91,8 +92,12 @@ t_object	*build_triangle(t_object *obj, char	**line)
 	set_property(PROP_POSITION, (&((t_triangle *)obj->shape)->p0), line++);
 	set_property(PROP_POSITION, (&((t_triangle *)obj->shape)->p1), line++);
 	set_property(PROP_POSITION, (&((t_triangle *)obj->shape)->p2), line++);
+	set_property(PROP_COLOUR, &(obj->material.base_color), line++);
 	ft_lstadd_back(&g_scene(0)->objects, add_content(obj));
 
-	printf("Triangle coordinates : %f,%f,%f, %f,%f,%f etc\n", shape->p0.x, shape->p0.y, shape->p0.z, shape->p1.x, shape->p1.y, shape->p1.z);
+	printf("Triangle coordinates : %f,%f,%f, %f,%f,%f %f,%f,%f \n",
+		shape->p0.x, shape->p0.y, shape->p0.z,
+		shape->p1.x, shape->p1.y, shape->p1.z,
+		shape->p2.x, shape->p2.y, shape->p2.z);
 	return (obj);
 }

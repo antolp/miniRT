@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 18:10:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/10/19 19:29:41 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/10/22 23:59:34 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,37 +30,54 @@ void	put_err(char *msg)
 	exit(EXIT_FAILURE);
 }
 
+// bool	parse_vec3(char *val, t_vec3 *vec)
+// {
+// 	double	num;
+// 	size_t	ret_atof;
+
+// 	//parse x
+// 	num = 0;
+// 	ret_atof = ft_atof(val, &num);
+// 	// printf("Sum is now %f with len of %ld\n", num, ret_atof);
+// 	if (!ret_atof || val[ret_atof] != ',')
+// 		put_err("[vec3] Invalid data : Unexpected value or Missing coordinate\n");
+// 	val += ret_atof + 1;
+// 	vec->x = num;
+// 	num = 0;
+// 	//parse y
+// 	ret_atof = ft_atof(val, &num);
+// 	if (!ret_atof || val[ret_atof] != ',')
+// 		put_err("[vec3] Invalid data : Unexpected value or Missing coordinate\n");
+// 	val += ret_atof + 1;
+// 	vec->y = num;
+// 	num = 0;
+// 	//parse z
+// 	ret_atof = ft_atof(val, &num);
+// 	if (!ret_atof)
+// 		put_err("[vec3] Invalid data : Unexpected value or Missing coordinate\n");
+// 	vec->z = num;
+// 	return (1);
+// }
+
 //>> Warning for char ending atof call ?
-bool	parse_vec3(char *val, t_vec3 *vec)
+void	parse_valset(char *line, void *valset[], t_property_type type)
 {
-	float	num;
 	size_t	ret_atof;
-
-	//parse x
-	num = 0;
-	ret_atof = ft_atof(val, &num);
-	// printf("Sum is now %f with len of %ld\n", num, ret_atof);
-	if (!ret_atof || val[ret_atof] != ',')
-		put_err("[vec3] Invalid data : Unexpected value or Missing coordinate\n");
-	val += ret_atof + 1;
-	vec->x = num;
-	num = 0;
-	//parse y
-	ret_atof = ft_atof(val, &num);
-	if (!ret_atof || val[ret_atof] != ',')
-		put_err("[vec3] Invalid data : Unexpected value or Missing coordinate\n");
-	val += ret_atof + 1;
-	vec->y = num;
-	num = 0;
-	//parse z
-	ret_atof = ft_atof(val, &num);
-	if (!ret_atof)
-		put_err("[vec3] Invalid data : Unexpected value or Missing coordinate\n");
-	vec->z = num;
-	return (1);
+	
+	ret_atof = 0;
+	while (*valset) 
+	{
+		if (type == PROP_COLOUR)
+			ret_atof = ft_atoi2(line, *valset);
+		else if (type == PROP_POSITION || type == PROP_DIRECTION)
+			ret_atof = ft_atof(line, *valset);
+		printf("Sum is now %f with len of %ld\n", **(double **)valset, ret_atof);
+		if (!ret_atof || (line[ret_atof] && line[ret_atof] != ','))
+			put_err("Invalid data : Unexpected or Missing value\n");
+		line += ret_atof + 1;
+		valset++;
+	}
 }
-
-//!!!!> Proposed structure : Each object has a builder function, each function knows which property is to be tested, each property has its checker / builder
 
 //Charged to assert the integrity of given property value
 bool	set_property(size_t type, void *dst, char **line)
@@ -78,17 +95,25 @@ bool	set_property(size_t type, void *dst, char **line)
 	};
 	// static size_t	chkRange[] = {PROP_POSITION, PROP_DIRECTION, PROP_COLOUR,
 	// 	PROP_BRIGHTNESS, PROP_FOV, PROP_DIMENSION };
-
+	
+	printf(" >>> Calling setproperty with line %s\n", *line);
+	if (!*line)
+		put_err("Invalid data : missing parameter");
 	sum = 0;
 	if (type == PROP_POSITION || type == PROP_DIRECTION)
 	{
 		t_vec3	*vec = dst;
 
-		parse_vec3(*line, vec);
-		printf("String after vec3 parsing: %s\n", *line);
+		// parse_vec3(*line, dst);
+		parse_valset(*line, (void *[]){&vec->x, &vec->y, &vec->z, 0}, PROP_DIRECTION);
+		// printf("String after vec3 parsing: %s\n", *line);
 		if (PROP_DIRECTION && (!vec->x && !vec->y && !vec->z))
 			put_err("Invalid vector dimensions : one axis should not be 0");
+		printf("Valset coordinates : %f,%f,%f \n",
+		vec->x, vec->y, vec->z);
 	}
+	else if (type == PROP_COLOUR)
+		parse_valset(*line, (void *[]){&((t_color *)dst)->r, &((t_color *)dst)->g, &((t_color *)dst)->b, 0}, PROP_COLOUR);
 	else if (type == PROP_PATH)
 	{
 		if (ft_strlen(*line) < 4
@@ -103,7 +128,7 @@ bool	set_property(size_t type, void *dst, char **line)
 	return (1);
 }
 
-
+//Used alongside automatic shape building utilities
 // void	init_shape(t_object_type type, t_object	*obj)
 // {
 // 	switch (type)
@@ -145,11 +170,17 @@ void	check_params(t_object_type type, char **line) {
 
 	while (1)
 	{
-		//>>> Call the (proper?) param handler
-		// prop_format[type][0];
-		// idx += ft_strchr(line + *idx, ' ') - &line[*idx];
-		break ;
+		//parse mandatory params specified in prop_format array
+		// break ;
 	}
+
+	while (line)
+	{
+		//search for = in word
+		//search the left word for an existing key
+		//if match, search
+	}
+	
 	//Should perhaps return the material object filled with its proper values
 }
 
@@ -182,6 +213,7 @@ void	parse_object(char **line)
 			object = malloc(sizeof(t_object));
 			if (!object)
 				put_err("Parser : Failled to malloc t_object");
+			*object = (t_object){0};
 			object->type = i;
 			assets[i].shape_builder(object, line);
 			assets[i].quantity++;
@@ -192,6 +224,7 @@ void	parse_object(char **line)
 	put_err("Unidentified asset type");
 }
 
+//Add *splited_line[] and *line to glob object so it can be reached and freed anywhere
 void	parse_rtconfig(char *path) 
 {
 	int		fd;
@@ -207,14 +240,13 @@ void	parse_rtconfig(char *path)
 	if (ft_strlen(path) < 3
 		|| !ft_strnstr(&path[ft_strlen(path) - 3], ".rt", 3))
 			put_err("Invalid file name");
-	// check path integrity
 	fd = open(path, O_RDONLY);
 	if (fd == -1)
 		return (put_err("Failled to open path"));
 	while ((line = get_next_line(fd)))
 	{
-		if (!line)
-			break ;
+		if (*line == '\n') {
+			free(line); continue ; }
 		index = 0;
 		printf("_>> %s\n", line);
 		word_list = ft_split(line, ' ');
