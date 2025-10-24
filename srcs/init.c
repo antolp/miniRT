@@ -91,9 +91,11 @@ bool	init_scene(t_scene *s)
 	if (!cb)
 		return (false);
 	cb->color1 = (t_color){250, 250, 250};
-	cb->color2 = (t_color){20, 20, 20};
-	cb->scale_u = 30.3;
-	cb->scale_v = 10.3;
+	cb->color2 = (t_color){120, 120, 120};
+	// cb->scale_u = 0.03;
+	// cb->scale_v = 0.03;
+	cb->scale_u = 23;
+	cb->scale_v = 13;
 	
 	cb_wall = malloc(sizeof(t_checkerboard));
 	if (!cb)
@@ -138,12 +140,12 @@ bool	init_scene(t_scene *s)
 	t_texture_image	*img;
 	img = load_xpm_image(g_renderer(NULL)->mlx, "assets/2k_earth_daymap.xpm");
 	t_texture_image	*img1;
-	img1 = load_xpm_image(g_renderer(NULL)->mlx, "assets/yotsuba_local_.xpm");
+	img1 = load_xpm_image(g_renderer(NULL)->mlx, "assets/42.xpm");
 	t_texture_image	*img3;
 	img3 = load_xpm_image(g_renderer(NULL)->mlx, "assets/idk.xpm");
 
 	//skybox
-	t_texture_image *sky = load_xpm_image(g_renderer(NULL)->mlx, "assets/sky_red.xpm");
+	t_texture_image *sky = load_xpm_image(g_renderer(NULL)->mlx, "assets/autumn_field_puresky_8k.xpm");
 	s->skybox.type = TEXTURE_IMAGE;
 	s->skybox.data = sky;
 
@@ -220,19 +222,21 @@ bool	init_scene(t_scene *s)
 	sphere = malloc(sizeof(t_sphere));
 	if (!sphere)
 		return (false);
-	sphere->center = (t_vec3){12, 20, 35};
-	sphere->radius = 7.7;
+	sphere->center = (t_vec3){-7, 10.2, 20};
+	sphere->radius = 10.2;
+	// sphere->center = (t_vec3){12, 20, 35};
+	// sphere->radius = 7.7;
 	obj = malloc(sizeof(t_object));
 	if (!obj)
 		return (false);
 	obj->type = OBJ_SPHERE;
 	obj->shape = sphere;
 	obj->material.base_color = (t_color){60, 60, 255};
-	obj->material.reflectivity = 1;
+	obj->material.reflectivity = 0;
 	obj->material.ior = 1.008;
 	obj->material.shininess = 32;
 	obj->material.specular_strength = 1;
-	obj->material.refractivity = 0.7;
+	obj->material.refractivity = 0.1;
 	// obj->material.refractivity = 0;
 	// obj->material.texture.type = TEXTURE_NONE;
 	// obj->material.texture.type = TEXTURE_CHECKER;
@@ -244,10 +248,62 @@ bool	init_scene(t_scene *s)
 	obj->get_uv = get_uv_sphere;
 	ft_lstadd_back(&s->objects, add_content(obj));
 
+	//mirror
+	sphere = malloc(sizeof(t_sphere));
+	if (!sphere)
+		return (false);
+	sphere->center = (t_vec3){12, 20, 35};
+	sphere->radius = 5;
+	// sphere->center = (t_vec3){-7, 10.2, 20};
+	// sphere->radius = 10.2;
+	obj = malloc(sizeof(t_object));
+	if (!obj)
+		return (false);
+	obj->type = OBJ_SPHERE;
+	obj->shape = sphere;
+	obj->material.base_color = (t_color){255, 255, 255};
+	obj->material.reflectivity = 1;
+	obj->material.ior = 0.05;
+	obj->material.shininess = 64;
+	obj->material.specular_strength = 0.7;
+	obj->material.refractivity = 0;
+	obj->material.texture.type = TEXTURE_NONE;
+	obj->material.texture.data = NULL;
+	obj->intersect = intersect_sphere;
+	obj->get_normal = get_normal_sphere;
+	obj->get_uv = get_uv_sphere;
+	ft_lstadd_back(&s->objects, add_content(obj));
+
+	sphere = malloc(sizeof(t_sphere));
+	if (!sphere)
+		return (false);
+	sphere->center = (t_vec3){6.5, 10, 35};
+	sphere->radius = 4.5;
+	// sphere->center = (t_vec3){-7, 10.2, 20};
+	// sphere->radius = 10.2;
+	obj = malloc(sizeof(t_object));
+	if (!obj)
+		return (false);
+	obj->type = OBJ_SPHERE;
+	obj->shape = sphere;
+	obj->material.base_color = (t_color){255, 255, 255};
+	obj->material.reflectivity = 0;
+	obj->material.ior = 1.7;
+	obj->material.shininess = 64;
+	obj->material.specular_strength = 0.7;
+	obj->material.refractivity = 1;
+	obj->material.texture.type = TEXTURE_NONE;
+	obj->material.texture.data = NULL;
+	obj->intersect = intersect_sphere;
+	obj->get_normal = get_normal_sphere;
+	obj->get_uv = get_uv_sphere;
+	ft_lstadd_back(&s->objects, add_content(obj));
+
+
 	cone = malloc(sizeof(t_cone));
 	if (!cone)
 		return (false);
-	cone->apex = (t_vec3){25, 17, 25};
+	cone->apex = (t_vec3){25, 17, 29};
 	cone->axis = vec_normalize((t_vec3){-0.3, -1, 0.1});
 	cone->angle = 0.3;
 	cone->height = 13.5;
@@ -270,6 +326,7 @@ bool	init_scene(t_scene *s)
 	obj->get_normal = get_normal_cone;
 	obj->get_uv = get_uv_cone;
 	ft_lstadd_back(&s->objects, add_content(obj));
+
 
 	//cynlinder, reflective perfect mirror
 	cylinder = malloc(sizeof(t_cylinder));
@@ -297,35 +354,12 @@ bool	init_scene(t_scene *s)
 	obj->get_uv = get_uv_cylinder;
 	ft_lstadd_back(&s->objects, add_content(obj));
 
-	//mirror
-	sphere = malloc(sizeof(t_sphere));
-	if (!sphere)
-		return (false);
-	sphere->center = (t_vec3){-7, 10.2, 20};
-	sphere->radius = 10.2;
-	obj = malloc(sizeof(t_object));
-	if (!obj)
-		return (false);
-	obj->type = OBJ_SPHERE;
-	obj->shape = sphere;
-	obj->material.base_color = (t_color){255, 255, 255};
-	obj->material.reflectivity = 1;
-	obj->material.ior = 0.05;
-	obj->material.shininess = 64;
-	obj->material.specular_strength = 0.7;
-	obj->material.refractivity = 0;
-	obj->material.texture.type = TEXTURE_NONE;
-	obj->material.texture.data = NULL;
-	obj->intersect = intersect_sphere;
-	obj->get_normal = get_normal_sphere;
-	obj->get_uv = get_uv_sphere;
-	ft_lstadd_back(&s->objects, add_content(obj));
 
 	// ---------- PLANE ----------
 	plane = malloc(sizeof(t_plane));
 	if (!plane)
 		return (false);
-	plane->point = (t_vec3){0, 0, 0};
+	plane->point = (t_vec3){0, -20, 0};
 	plane->normal = (t_vec3){0, 1, 0};
 	obj = malloc(sizeof(t_object));
 	if (!obj)
@@ -333,8 +367,9 @@ bool	init_scene(t_scene *s)
 	obj->type = OBJ_PLANE;
 	obj->shape = plane;
 	obj->material.base_color = (t_color){240, 240, 240};
+	// obj->material.base_color = (t_color){240, 240, 240};
 	obj->material.reflectivity = 1;
-	obj->material.ior = 0.9;
+	obj->material.ior = 0.7;
 	obj->material.specular_strength = 0;
 	obj->material.shininess = 0;
 	obj->material.refractivity = 0;
@@ -374,16 +409,17 @@ bool	init_scene(t_scene *s)
 	light = malloc(sizeof(t_light));
 	if (!light)
 		return (false);
-	light->position = (t_vec3){0, 30, -30};
-	light->intensity = 0.9;
+	// light->position = (t_vec3){20, 30, -30};
+	light->position = (t_vec3){0, 30, 50};
+	light->intensity = 0.7;
 	light->color = (t_color){255, 255, 255};
 	ft_lstadd_back(&s->lights, add_content(light));
 		light = malloc(sizeof(t_light));
 	if (!light)
 		return (false);
-	light->position = (t_vec3){0, 30, 30};
-	light->intensity = 0.9;
-	light->color = (t_color){255, 255, 255};
+	light->position = (t_vec3){-17, 30, 30};
+	light->intensity = 0.2;
+	light->color = (t_color){255, 220, 220};
 	// light->color = (t_color){255, 200, 200};
 	ft_lstadd_back(&s->lights, add_content(light));
 
