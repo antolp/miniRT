@@ -54,6 +54,10 @@ t_color	shade_pixel(t_ray *ray, t_hit_info *hit, int depth)
 	else
 		hit->hit_color = hit->object->material.base_color;
 
+	//bumpsmaps
+	if ( (g_renderer(NULL)->shading_flag & FLAG_BUMP_MAP) != 0u
+		&& hit->object->material.bump_maps.type == TEXTURE_IMAGE)
+		apply_bump_from_image(hit->object, hit->hit_point, &hit->normal);
 
 	//diffuse scale  will probably end up being removed
 	//goal was to introduce less transparent material but it's pretty ugly honestly...

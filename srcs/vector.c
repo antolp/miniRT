@@ -105,6 +105,22 @@ t_vec3	vec_normalize(t_vec3 v)
 	return ((t_vec3){v.x / len, v.y / len, v.z / len});
 }
 
+//normalize with a fallback if vec invalid, instead of null vec
+//checking 0 (or eps) and checking fallback was redundant
+//
+//ishould change other vec_normalize calls to vec_safe_normalize if coherent
+//(especially in intersection logic)
+t_vec3	vec_safe_normalize(t_vec3 v, t_vec3 fallback)
+{
+	double l;
+
+	l = vec_length(v);
+	if (l <= DBL_EPSILON)
+		return (fallback);
+	return (vec_mul(v, 1.0 / l));
+}
+
+
 //Computes the reflection of a direction vector across a surface normal.
 //Both dir and normal are assumed to be normalized.
 //

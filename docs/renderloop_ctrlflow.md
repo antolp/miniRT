@@ -91,7 +91,7 @@ subgraph shading[ **Shading pipeline** : ]
 
     ComputeSpecular --> RefractOn
 
-    %%refraction or reflection (exclusive by your rule)
+    %%refraction or reflection
     ComputeRefract["**Compute Refraction**
         *compute_refraction()* 
         Compute refraction at hit

@@ -179,4 +179,24 @@ typedef struct s_bary_out
 	double	b2;
 }	t_bary_out;
 
+struct s_object;
+struct s_material;
+struct s_texture_image;
+
+typedef struct s_bump_var
+{
+	struct s_object			*obj;
+	struct s_material		*mat;
+	struct s_texture_image	*img;
+	t_vec3					hit_p;
+	t_vec2					uv;
+	double					du;
+	double					dv;
+	double					dhdu;
+	double					dhdv;
+	t_vec3					N;
+	t_vec3					T;
+	t_vec3					B;
+}	t_bump_var;
+
 #endif
