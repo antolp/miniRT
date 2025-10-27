@@ -6,11 +6,25 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 18:10:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/10/22 23:59:34 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/10/27 10:12:01 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
+
+typedef struct s_parser
+{
+	char	*line;
+	char	**word_arr;
+}	t_parser;
+
+
+t_parser	*parser_data(void)
+{
+	static t_parser s = (t_parser){0};
+
+	return (&s);
+}
 
 void	clear_content(t_list *elm)
 {
@@ -27,37 +41,12 @@ void	put_err(char *msg)
 	ft_dprintf(STDERR_FILENO, msg);
 	ft_putchar_fd('\n', STDERR_FILENO);
 	ft_lstclear(&g_scene(0)->objects, clear_content);
+	if (parser_data()->line)
+		free(parser_data()->line);
+	if(parser_data()->word_arr)
+		ft_free_dynarr(parser_data()->word_arr);
 	exit(EXIT_FAILURE);
 }
-
-// bool	parse_vec3(char *val, t_vec3 *vec)
-// {
-// 	double	num;
-// 	size_t	ret_atof;
-
-// 	//parse x
-// 	num = 0;
-// 	ret_atof = ft_atof(val, &num);
-// 	// printf("Sum is now %f with len of %ld\n", num, ret_atof);
-// 	if (!ret_atof || val[ret_atof] != ',')
-// 		put_err("[vec3] Invalid data : Unexpected value or Missing coordinate\n");
-// 	val += ret_atof + 1;
-// 	vec->x = num;
-// 	num = 0;
-// 	//parse y
-// 	ret_atof = ft_atof(val, &num);
-// 	if (!ret_atof || val[ret_atof] != ',')
-// 		put_err("[vec3] Invalid data : Unexpected value or Missing coordinate\n");
-// 	val += ret_atof + 1;
-// 	vec->y = num;
-// 	num = 0;
-// 	//parse z
-// 	ret_atof = ft_atof(val, &num);
-// 	if (!ret_atof)
-// 		put_err("[vec3] Invalid data : Unexpected value or Missing coordinate\n");
-// 	vec->z = num;
-// 	return (1);
-// }
 
 //>> Warning for char ending atof call ?
 void	parse_valset(char *line, void *valset[], t_property_type type)
@@ -71,8 +60,13 @@ void	parse_valset(char *line, void *valset[], t_property_type type)
 			ret_atof = ft_atoi2(line, *valset);
 		else if (type == PROP_POSITION || type == PROP_DIRECTION)
 			ret_atof = ft_atof(line, *valset);
-		printf("Sum is now %f with len of %ld\n", **(double **)valset, ret_atof);
-		if (!ret_atof || (line[ret_atof] && line[ret_atof] != ','))
+
+		if (type == PROP_COLOUR)
+			printf("Sum is now %d with len of %ld\n", **(int **)valset, ret_atof);
+		else if (type == PROP_POSITION || type == PROP_DIRECTION)
+			printf("Sum is now %f with len of %ld\n", **(double **)valset, ret_atof);
+
+		if (!ret_atof || !ft_strchr(",\n\0", line[ret_atof]))
 			put_err("Invalid data : Unexpected or Missing value\n");
 		line += ret_atof + 1;
 		valset++;
@@ -128,61 +122,55 @@ bool	set_property(size_t type, void *dst, char **line)
 	return (1);
 }
 
-//Used alongside automatic shape building utilities
-// void	init_shape(t_object_type type, t_object	*obj)
-// {
-// 	switch (type)
-// 	{
-// 		case OBJ_PLANE:
-// 			obj->shape = malloc(sizeof(t_plane));
-// 		break;
-// 		case OBJ_SPHERE:
-// 			obj->shape = malloc(sizeof(t_sphere));
-// 		break;
-// 		case OBJ_CYLINDER:
-// 			obj->shape = malloc(sizeof(t_cylinder));
-// 		break;
-// 		case OBJ_CONE:
-// 			obj->shape = malloc(sizeof(t_cone));
-// 		break;
-// 		case OBJ_TRIANGLE:
-// 			obj->shape = malloc(sizeof(t_triangle));
-// 		break;
-// 		}
-		
-// 	if (!obj->shape)
-// 		put_err("build_triangle : Failled to malloc shape");
-// }
-
 //Will validate the integrity of user provided parameters for the specified shape
 //-->>Will be called from shape builders
-void	check_params(t_object_type type, char **line) {
-	size_t	i = 0;
+// void	check_params(t_object_type type, char **line) {
+// 	size_t	i = 0;
 
-	static int	prop_format[][10][2] = {
-		// [OBJ_CAMERA] = {{PROP_RATIO, true}, {PROP_COLOUR, true}},7
-		[OBJ_PLANE] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_COLOUR, true}},
-		[OBJ_SPHERE] = {{PROP_POSITION, true}, {PROP_DIMENSION, true}, {PROP_COLOUR, true}},
-		[OBJ_CYLINDER] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_DIMENSION, true}, {PROP_DIMENSION, true}, {PROP_COLOUR, true}},
-		[OBJ_CONE] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_DIMENSION, true}, {PROP_COLOUR, true}},
-		[OBJ_TRIANGLE] = {{PROP_POSITION, true}, {PROP_POSITION, true}, {PROP_POSITION, true}, {PROP_COLOUR, true}}
-	};
+// 	static int	prop_format[][10][2] = {
+// 		// [OBJ_CAMERA] = {{PROP_RATIO, true}, {PROP_COLOUR, true}},
+// 		[OBJ_PLANE] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_COLOUR, true}},
+// 		[OBJ_SPHERE] = {{PROP_POSITION, true}, {PROP_DIMENSION, true}, {PROP_COLOUR, true}},
+// 		[OBJ_CYLINDER] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_DIMENSION, true}, {PROP_DIMENSION, true}, {PROP_COLOUR, true}},
+// 		[OBJ_CONE] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_DIMENSION, true}, {PROP_COLOUR, true}},
+// 		[OBJ_TRIANGLE] = {{PROP_POSITION, true}, {PROP_POSITION, true}, {PROP_POSITION, true}, {PROP_COLOUR, true}}
+// 	};
 
-	while (1)
-	{
-		//parse mandatory params specified in prop_format array
-		// break ;
-	}
+// 	static char	*mat_keys[] = {
+// 		[MAT_REFLECT] = "refl",
+// 		[MAT_REFRACT] = "refr",
+// 		[MAT_IDX_REFRACT] = "idx_refr",
+// 		[MAT_SPECULAR] = "spec",
+// 		[MAT_SHINE] = "shine",
+// 		[MAT_CHECKER] = "checker",
+// 		[MAT_IMG] = "image",
+// 	};
 
-	while (line)
-	{
-		//search for = in word
-		//search the left word for an existing key
-		//if match, search
-	}
+// 	while (1)
+// 	{
+// 		//parse mandatory params specified in prop_format array
+// 		// break ;
+// 	}
+
+// 	size_t	i;
+
+// 	while (line)
+// 	{
+// 		i = 0;
+// 		while (condition)
+// 		{
+// 			/* code */
+// 		}
+		
+// 		ft_strncmp()
+// 		//search for = in word
+// 		//search the left word for an existing key
+// 		//if match, search
+// 		(*line)++;
+// 	}
 	
-	//Should perhaps return the material object filled with its proper values
-}
+// 	//Should perhaps return the material object filled with its proper values
+// }
 
 void	parse_object(char **line)
 {
@@ -228,14 +216,10 @@ void	parse_object(char **line)
 void	parse_rtconfig(char *path) 
 {
 	int		fd;
-	char	*line = NULL;
-	char	**word_list = NULL;
 	size_t	index;
-	
-	// printf("Passed chain : %s\n", path);
-	// check_type(PROP_POSITION, &path);
-	// check_type(PROP_POSITION, &somecharptr);
-	// check_type(PROP_AXIS, &line);
+	t_parser	*parser;
+
+	parser = parser_data();
 	printf("Path %s of size %zu\n", path, ft_strlen(path));
 	if (ft_strlen(path) < 3
 		|| !ft_strnstr(&path[ft_strlen(path) - 3], ".rt", 3))
@@ -243,19 +227,19 @@ void	parse_rtconfig(char *path)
 	fd = open(path, O_RDONLY);
 	if (fd == -1)
 		return (put_err("Failled to open path"));
-	while ((line = get_next_line(fd)))
+	while ((parser->line = get_next_line(fd)))
 	{
-		if (*line == '\n') {
-			free(line); continue ; }
+		if (*parser->line == '\n') {
+			continue ; }
 		index = 0;
-		printf("_>> %s\n", line);
-		word_list = ft_split(line, ' ');
-		free(line);
-		if (!word_list)
-			put_err("Parsing : failled to malloc word_list");
-		parse_object(word_list);
-		ft_free_dynarr(word_list);
-		word_list = NULL;
+		printf("_>> %s\n", parser->line);
+		parser->word_arr = ft_split(parser->line, ' ');
+		if (!parser->word_arr)
+			put_err("Parsing : failled to malloc parser->word_arr");
+		parse_object(parser->word_arr);
+		ft_free_dynarr(parser->word_arr);
+		free(parser->line);
+		parser->word_arr = NULL;
 	}
 	printf("Ceased to read file\n");
 	//!!! CHECK THAT ALL MANDATORY ASSETS ARE SET IN THE SCENE

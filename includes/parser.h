@@ -6,13 +6,19 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 18:28:52 by epinaud           #+#    #+#             */
-/*   Updated: 2025/10/19 18:47:51 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/10/27 10:12:55 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef	PARSER_H
 # define PARSER_H
 #include "rt.h"
+
+typedef struct s_parser
+{
+	char	*line;
+	char	**word_arr;
+}	t_parser;
 
 // typedef enum e_objects_props
 // {
@@ -53,6 +59,17 @@ typedef struct s_asset_format {
 	size_t	quantity;
 	t_object	*(*shape_builder)(t_object *obj, char **line);
 }	t_asset_format;
+
+typedef enum e_material_keys
+{
+	MAT_REFLECT,
+	MAT_REFRACT,
+	MAT_IDX_REFRACT,
+	MAT_SPECULAR,
+	MAT_SHINE,
+	MAT_CHECKER,
+	MAT_IMG
+}	t_material_keys;
 
 void	parse_rtconfig(char *path);
 void	put_err(char *msg);

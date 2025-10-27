@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 03:37:00 by epinaud           #+#    #+#             */
-/*   Updated: 2025/10/22 21:37:47 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/10/24 16:37:51 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,15 +85,16 @@ t_object	*build_triangle(t_object *obj, char	**line)
 	*shape = (t_triangle){0};
 	if (!shape)
 		put_err("build_triangle : Failled to malloc t_triangle");
+	ft_lstadd_back(&g_scene(0)->objects, add_content(obj));
 	obj->shape = shape;
 	obj->intersect = intersect_triangle;
 	obj->get_normal = get_normal_triangle;
 	obj->get_uv = get_uv_triangle;
-	set_property(PROP_POSITION, (&((t_triangle *)obj->shape)->p0), line++);
-	set_property(PROP_POSITION, (&((t_triangle *)obj->shape)->p1), line++);
-	set_property(PROP_POSITION, (&((t_triangle *)obj->shape)->p2), line++);
+	set_property(PROP_POSITION, &shape->p0 , line++);
+	set_property(PROP_POSITION, &shape->p1, line++);
+	set_property(PROP_POSITION, &shape->p2, line++);
 	set_property(PROP_COLOUR, &(obj->material.base_color), line++);
-	ft_lstadd_back(&g_scene(0)->objects, add_content(obj));
+	shape->uv_mode = TRI_UV_ORTHONORMAL;
 
 	printf("Triangle coordinates : %f,%f,%f, %f,%f,%f %f,%f,%f \n",
 		shape->p0.x, shape->p0.y, shape->p0.z,
