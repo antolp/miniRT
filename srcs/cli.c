@@ -180,7 +180,8 @@ int	key_hook(int keycode, void *param)
 			r->shading_flag |= FLAG_FRESNEL;
 		}
 	}
-
+	else if (keycode == XK_p)
+		print_scene();
 	return (0);
 }
 
