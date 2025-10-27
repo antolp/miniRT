@@ -88,10 +88,8 @@ void	build_tb_triangle_fit(t_triangle *tr, t_vec3 N, t_vec3 *T, t_vec3 *B)
 //
 //https://computergraphics.stackexchange.com/questions/
 //5498/compute-sphere-tangent-for-normal-mapping
-//here, we arent using spherical coordinates, but that little trick still works
+//here, we arent using spherical coordinates, but that little trick works
 //using 3d vector coordinates
-//for some reason, i didn't manage to use the same logic on other parametric surfaces
-//(e.g. cones and cylinders)
 void	build_tb_sphere(t_sphere *sp, t_vec3 P, t_vec3 N, t_vec3 *T, t_vec3 *B)
 {
 	t_vec3	fallback;

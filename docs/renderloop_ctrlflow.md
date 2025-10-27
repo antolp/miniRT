@@ -142,12 +142,12 @@ end
 
 %%top-level render loop and mode switch
 RenderLoop@{ shape: circle, label: "**Render Loop**"} --> ModeChoice{Rendering Mode ?}
-ModeChoice -->|RENDER_REALTIME| RenderRealtime["Render Realtime Frame"]
+ModeChoice -->|RENDER_EDIT| RenderEdit["Render Edit Frame"]
 ModeChoice -->|RENDER_HIGH_QUALITY| RenderHQ["Render High Quality Frame"]
 ModeChoice -->|RENDER_TEST| RenderTest["Render Test Frame"]
 
 %%raltime branch
-RenderRealtime --> FirstRT?{First Realtime?}
+RenderEdit --> FirstRT?{First Realtime?}
 FirstRT? -->|no| ReturnRT([Return])
 FirstRT? --->|yes| RenderDown@{ shape: rounded, label: "Render Downsampled
 Calls trace ray N times for one pixel, skips shading path." }

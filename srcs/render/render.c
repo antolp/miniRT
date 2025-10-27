@@ -131,7 +131,7 @@ void	render_high_quality_frame(void)
 	mlx_put_image_to_window(r->mlx, r->win, r->img.img, 0, 0);
 }
 
-void	render_realtime_frame()
+void	render_edit_frame()
 {
 	t_scene			*s;
 	t_renderer		*r;
@@ -160,8 +160,8 @@ int	render_loop(void *param)
 	r = g_renderer(NULL);
 	if (r->mode == RENDER_TEST)
 		render_test_frame(frame++);
-	else if (r->mode == RENDER_REALTIME)
-		render_realtime_frame();
+	else if (r->mode == RENDER_EDIT)
+		render_edit_frame();
 	else if (r->mode == RENDER_HIGH_QUALITY)
 		render_high_quality_frame();
 	return (0);

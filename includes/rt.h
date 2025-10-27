@@ -72,11 +72,13 @@ typedef struct s_img
 	int		endian;
 }	t_img;
 
+//could add so
 typedef enum e_render_mode
 {
-	RENDER_REALTIME,
+	RENDER_EDIT,
 	RENDER_HIGH_QUALITY,
-	RENDER_TEST
+	RENDER_TEST,
+	RENDER_EDIT_MENU
 }	t_render_mode;
 
 typedef struct s_renderer
