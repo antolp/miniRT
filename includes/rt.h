@@ -31,6 +31,10 @@
 # define SAMPLE_LVL 7
 # define WIDTH 900
 # define HEIGHT 700
+
+//EPS, epsilon next smallest value next to a value in specified context
+//e.g., DBL_EPSILON from limits.h : next smallest value after (double)0.0;
+//(thats how i understand it)
 # define SHADOW_EPS 0.001
 
 // A SUPPR
@@ -68,11 +72,13 @@ typedef struct s_img
 	int		endian;
 }	t_img;
 
+//could add so
 typedef enum e_render_mode
 {
-	RENDER_REALTIME,
+	RENDER_EDIT,
 	RENDER_HIGH_QUALITY,
-	RENDER_TEST
+	RENDER_TEST,
+	RENDER_EDIT_MENU
 }	t_render_mode;
 
 typedef struct s_renderer
@@ -165,6 +171,23 @@ t_texture_image	*load_xpm_image(void *mlx, const char *path);
 t_color	sample_image_nearest(const t_texture_image *img, double u, double v);
 
 
+//bump maps
+void	apply_bump_from_image(t_object *obj, t_vec3 hit_p, t_vec3 *normal);
+double	sample_height01(const t_texture_image *img, double u, double v);
+void	bump_tangent_plane(t_bump_var *c);
+void	bump_tangent_triangle(t_bump_var *c);
+void	bump_tangent_cylinder(t_bump_var *c);
+void	bump_tangent_cone(t_bump_var *c);
+void	bump_tangent_sphere(t_bump_var *c);
+void	build_tb_plane(t_plane *pl, t_vec3 N, t_vec3 *T, t_vec3 *B);
+void	build_tb_triangle_ortho(t_triangle *tr, t_vec3 N, t_vec3 *T, t_vec3 *B);
+void	build_tb_triangle_fit(t_triangle *tr, t_vec3 N, t_vec3 *T, t_vec3 *B);
+void	build_tb_sphere(t_sphere *sp, t_vec3 P, t_vec3 N, t_vec3 *T, t_vec3 *B);
+int		is_cylinder_cap(t_cylinder *cy, t_vec3 P);
+void	build_tb_cylinder_side(t_cylinder *cy, t_vec3 P, t_vec3 N, t_vec3 *T, t_vec3 *B);
+int		is_cone_base(t_cone *co, t_vec3 P);
+void	build_tb_cone_side(t_cone *co, t_vec3 P, t_vec3 N, t_vec3 *T, t_vec3 *B);
+
 
 //maths
 t_vec3		vec_add(t_vec3 a, t_vec3 b);
@@ -176,10 +199,12 @@ double		vec_dot(t_vec3 a, t_vec3 b);
 t_vec3		vec_cross(t_vec3 a, t_vec3 b);
 t_vec3		vec_normalize(t_vec3 v);
 t_vec3		vec_reflect(t_vec3 dir, t_vec3 normal);
+t_vec3		vec_safe_normalize(t_vec3 v, t_vec3 fallback);
 
 //debug
 void	print_color(char *s, t_color c);
 void	print_vec3(char *s, t_vec3 v);
+void	print_scene(void);
 
 
 #endif

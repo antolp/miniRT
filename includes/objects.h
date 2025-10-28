@@ -21,9 +21,9 @@
 //see uv_triangle.c
 typedef enum e_tri_uv_mode
 {
-	TRI_UV_ORTHONORMAL,   /* no deformation (your current frame U,V) */
-	TRI_UV_FIT,           /* p0->(0,0), p1->(1,0), p2->(0,1) */
-	TRI_UV_FIT_OPPOSITE   /* complementary half of the square */
+	TRI_UV_ORTHONORMAL,
+	TRI_UV_FIT,
+	TRI_UV_FIT_OPPOSITE
 }	t_tri_uv_mode;
 
 //like so_long, XPM ONLY
@@ -37,7 +37,6 @@ typedef struct s_texture_image {
     int     height;
     int     bgra;         // 1 if BGRA ordering, happens sometimes
 } t_texture_image;
-
 
 //parametric checker texture
 //immensely useful when debugging
@@ -66,6 +65,8 @@ typedef struct s_material
 	double		ior;				// index of refraction, different roles whether reflective or refractive.
 	double		refractivity;		// [0, 1] if more than 0, transparent and nothing else
 	t_texture	texture;
+	t_texture	bump_maps;
+	double      bump_strength;
 }	t_material;
 
 typedef struct s_sphere

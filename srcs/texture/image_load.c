@@ -13,6 +13,7 @@
 #include "rt.h"
 
 //allocates the image texture struct in heap
+//	add explicit malloc error message
 static t_texture_image	*tex_image_alloc(void)
 {
 	t_texture_image	*img;
@@ -41,19 +42,23 @@ static int	load_mlx_xpm(void *mlx, const char *path, t_texture_image *img)
 	h = 0;
 	img->mlx_img = mlx_xpm_file_to_image(mlx, (char *)path, &w, &h);
 	if (img->mlx_img == NULL)
-		return (0);
+		return (ft_dprintf(2, "mlx_xpm_file_to_image() failed, %s\n"), path, 0);
 	img->width = w;
 	img->height = h;
 	return (1);
 }
 
 //binds pixel buffer, on failure destroys the MLX image
+//not sure, but i think mlx_get_data_addr() returns a pointer to where the
+//image already got allocated, and populate the rest of the given pointer with
+//already computed and stored data
 static int	map_image_buffer(void *mlx, t_texture_image *img)
 {
 	img->addr = mlx_get_data_addr(img->mlx_img,
 			&img->bpp, &img->line_len, &img->endian);
 	if (img->addr == NULL)
 	{
+		ft_dprintf(2, "loaded image %s data couldn't be mapped.\n");
 		mlx_destroy_image(mlx, img->mlx_img);
 		img->mlx_img = NULL;
 		return (0);
@@ -62,6 +67,8 @@ static int	map_image_buffer(void *mlx, t_texture_image *img)
 }
 
 //bgra useless
+//all function used are here :
+//https://harm-smits.github.io/42docs/libs/minilibx/prototypes
 t_texture_image	*load_xpm_image(void *mlx, const char *path)
 {
 	t_texture_image	*img;
@@ -73,6 +80,7 @@ t_texture_image	*load_xpm_image(void *mlx, const char *path)
 		return (NULL);
 	if (!load_mlx_xpm(mlx, path, img))
 	{
+		ft_dprintf(2, "image %s couldn't be loaded. please check the path.\n");
 		free(img);
 		return (NULL);
 	}
@@ -85,7 +93,7 @@ t_texture_image	*load_xpm_image(void *mlx, const char *path)
 		img->bgra = 1;
 	else
 		img->bgra = 0;
-	ft_dprintf(2, "loaded xpm: %s (%dx%d, bpp=%d, line=%d, endian=%d)\n",
+		ft_dprintf(1, "loaded xpm: %s (%dx%d, bpp=%d, line=%d, endian=%d)\n",
             path, img->width, img->height, img->bpp, img->line_len, img->endian);
 	return (img);
 }
