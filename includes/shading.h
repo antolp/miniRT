@@ -19,6 +19,7 @@
 //Feature toggles
 //this is maxed out
 //because there's no more than 9 digits, in base 10
+//unless I add pages to the flag menu
 # define FLAG_SHADOW				((uint32_t)1 << 0)
 # define FLAG_TRANSPARENT_SHADOW	((uint32_t)1 << 1)
 # define FLAG_DIFFUSE				((uint32_t)1 << 2)
@@ -28,6 +29,8 @@
 # define FLAG_FRESNEL				((uint32_t)1 << 6)
 # define FLAG_TEXTURE				((uint32_t)1 << 7)
 # define FLAG_BUMP_MAP				((uint32_t)1 << 8)
+// # define FLAG_SHALOW_REFRACTION		((uint32_t)1 << 9)
+// # define FLAG_CHEAP_FRESNEL			((uint32_t)1 << 10)
 
 # define DEFAULT_FLAGS ( \
 	FLAG_SHADOW | FLAG_TRANSPARENT_SHADOW | FLAG_DIFFUSE | \

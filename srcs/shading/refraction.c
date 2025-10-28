@@ -137,15 +137,17 @@ static t_color	trace_and_blend_refraction(t_material *m, t_ray *ray,
 	refract_ray.origin = vec_add(hit->hit_point,
 			vec_mul(refract_dir, SHADOW_EPS));
 	refract_ray.direction = refract_dir;
-	col_t = trace_ray(&refract_ray, 1);
-	if (fw < FRESNEL_SPLIT_THRESHOLD)
-		return (color_scale_clamped(col_t, 1.0 - fw));
+	col_t = trace_ray(&refract_ray, ray->depth - 1);
+	// if (fw < FRESNEL_SPLIT_THRESHOLD)
+	// 	return (color_scale_clamped(col_t, 1.0 - fw));
 	reflect_ray = compute_reflected_ray(ray, hit);
+	// printf("ray->depth - 1 %i\n ", ray->depth - 1);
 	col_r = trace_ray(&reflect_ray, ray->depth - 1);
 	col_t = color_scale_clamped(col_t, 1.0 - fw);
 	col_r = color_scale_clamped(col_r, fw);
 	return (color_add(col_t, col_r));
 }
+
 
 //compute_refraction():
 //Entry point for computing refraction shading for a ray hit.

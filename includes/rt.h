@@ -130,6 +130,9 @@ void	get_normal_cylinder(t_object *obj, t_vec3 *hit_point, t_vec3 *out_normal);
 void	get_normal_cone(t_object *obj, t_vec3 *hit_point, t_vec3 *out_normal);
 
 //shading
+t_color	surface_color(t_hit_info *hit);
+void	apply_bump(t_hit_info *hit);
+
 t_color	shade_pixel(t_ray *ray, t_hit_info *hit, int depth);
 bool	is_in_shadow(t_vec3 point, t_vec3 light_pos);
 t_color	color_add(t_color a, t_color b);

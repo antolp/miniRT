@@ -60,7 +60,14 @@ void	clamp_color(t_color *c)
 static bool	get_light_attenuation(t_hit_info *hit, t_light *light,
 	t_color *atten)
 {
-	if ((g_renderer(NULL)->shading_flag & FLAG_TRANSPARENT_SHADOW) != 0u)
+	if ((g_renderer(NULL)->shading_flag & FLAG_TRANSPARENT_SHADOW) != 0u &&
+		(g_renderer(NULL)->shading_flag & FLAG_SHADOW) == 0u)
+	{
+		*atten = (t_color){255, 255, 255};
+		return (true);
+	}
+	if ((g_renderer(NULL)->shading_flag & FLAG_TRANSPARENT_SHADOW) != 0u &&
+		(g_renderer(NULL)->shading_flag & FLAG_REFRACTION) != 0u)
 	{
 		*atten = compute_shadow_attenuation(hit->hit_point, light->position);
 	}
@@ -71,14 +78,11 @@ static bool	get_light_attenuation(t_hit_info *hit, t_light *light,
 		*atten = (t_color){255, 255, 255};
 	}
 	else
-	{
 		*atten = (t_color){255, 255, 255};
-	}
 	if (atten->r == 0 && atten->g == 0 && atten->b == 0)
 		return (false);
 	return (true);
 }
-
 // add_light_contribution:
 // Applies diffuse lighting from a given light to the accumulated color.
 // Light intensity is modulated by attenuation color.
