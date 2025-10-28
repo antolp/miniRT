@@ -51,27 +51,23 @@ static bool	init_cone_uv_vars(t_object *obj, t_vec3 *hit, t_cone_uv_vars *v)
 }
 
 //cone_try_side():
-//Computes UV on the lateral surface of the cone.
-//Projects the hit point around the axis and maps to [0,1]x[0,1].
-//U is the wrap-around angle, V is axial fraction from apex.
+//Maps a hit on the cone’s lateral surface to UV.
 //
-//key idea :
-//  The cone radius grows linearly along the axis: r_here = s * tan(angle).
-//  The off-axis (radial) direction is w = (P - apex) - A * s.
-//  Angle around the cone is atan2(dot(rdir, B), dot(rdir, T)).
+//first, compute off-axis vector and local radius:
+//	w = d - A*s   (remove axial component), rlen = |w|,
+//	r_here = s * tan(angle)  (expected cone radius at height s).
 //
-//Math steps :
-//  s = dot(P - apex, A)         -> axial distance from apex
-//  w = (P - apex) - A*s         -> radial vector off the axis
-//  rlen = |w|                    -> actual radial distance at P
-//  r_here = s * tan(angle)       -> expected radial distance on cone
-//  near the sheet if |rlen - r_here| <= eps_r (or near apex where r_here≈0)
-//  rdir = normalize(w) (fallback to T near apex to avoid NaN)
-//  theta = atan2(dot(rdir,B), dot(rdir,T))   -> full 360° angle
+//then, check if we’re within the side surface :
+//	s in [-eps_h, height+eps_h] and |rlen - r_here| ≤ eps_r (unless r_here ~= 0 near apex).
+//Get a stable radial direction rdir:
+//	if rlen>0 -> rdir = w / rlen; else use T as fallback (apex).
 //
-//UV mapping :
-//  u = (theta + pi) / (2*pi)     -> [-pi,pi] to [0,1]
-//  v = s / height                -> apex→base mapped to [0,1]
+//Angle around the cone for U:
+//	theta = atan2( dot(rdir,B), dot(rdir,T) )  -> full wrap [-pi,pi].
+//	u = (theta + pi) / (2pi)  -> map to [0,1] then wrap01(u).
+//
+//Axial fraction for V:
+//	vcoord = s / height  -> map bottom->top to [0,1], then clamp01 to be safe.
 static bool	cone_try_side(t_cone_uv_vars *v, t_vec2 *out_uv)
 {
 	t_vec3	rdir;
@@ -98,7 +94,26 @@ static bool	cone_try_side(t_cone_uv_vars *v, t_vec2 *out_uv)
 	return (true);
 }
 
-/* base (disk) UVs: project on (T,B) plane and normalize to [0,1]^2 */
+//cone_try_base():
+//Checks if hit point P lies on the cone's base disk, then maps it to UV
+//the checking is just like in the intersection logic, so it's redundant
+//
+//first, test if point on the base plane
+//	db = P - baseC  (vector from base center to hit point)
+// 	ht = |dot(db, A)| gives us how far we are off the base plane along its normal A
+//	If ht =< eps_h, point P is on the base plane. 
+//
+//then, test if point inside the base disk
+//	r_xy = sqrt(|db|^2 - ht^2) is the in-plane distance from the center (Pythagorea)
+//	(remove the height part). Must be =< r_base + eps_r to be inside the disk.
+//
+//get 2D coords on that plane.
+//	x = dot(db, T),  y = dot(db, B)  -> coordinates in the plane’s (T,B) axes,
+//	centered at the base center (same as plane uv mapping).
+//
+//finally convert those to UV in [0,1].
+//	The disk fits in a square of size 2*r_base around (0,0)
+//	u = 0.5 + x / (2*r_base),  v = 0.5 + y / (2*r_base), then clamp to [0,1].
 static bool	cone_try_base(t_cone_uv_vars *v, t_vec2 *out_uv)
 {
 	t_vec3	db;
@@ -121,7 +136,7 @@ static bool	cone_try_base(t_cone_uv_vars *v, t_vec2 *out_uv)
 	return (true);
 }
 
-/* entry: init once, try side then base */
+//init once try side then base
 bool	get_uv_cone(t_object *obj, t_vec3 *hit, t_vec2 *out_uv)
 {
 	t_cone_uv_vars	v;
