@@ -6,18 +6,11 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 18:10:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/10/27 10:12:01 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/10/29 14:08:38 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
-
-typedef struct s_parser
-{
-	char	*line;
-	char	**word_arr;
-}	t_parser;
-
 
 t_parser	*parser_data(void)
 {
@@ -28,8 +21,15 @@ t_parser	*parser_data(void)
 
 void	clear_content(t_list *elm)
 {
-	if (((t_object *)elm->content)->shape)
-		free(((t_object *)elm->content)->shape);
+	t_object	*obj;
+
+	if (!elm->content)
+		return ;
+	obj = elm->content;
+	if (obj->shape)
+		free(obj->shape);
+	if (obj->material.texture.data)
+		free(obj->material.texture.data);
 	if (elm->content)
 		free(elm->content);
 }
@@ -51,7 +51,7 @@ void	put_err(char *msg)
 //>> Warning for char ending atof call ?
 void	parse_valset(char *line, void *valset[], t_property_type type)
 {
-	size_t	ret_atof;
+	int	ret_atof;
 	
 	ret_atof = 0;
 	while (*valset) 
@@ -62,20 +62,65 @@ void	parse_valset(char *line, void *valset[], t_property_type type)
 			ret_atof = ft_atof(line, *valset);
 
 		if (type == PROP_COLOUR)
-			printf("Sum is now %d with len of %ld\n", **(int **)valset, ret_atof);
+			printf("Sum is now %d with len of %d\n", **(int **)valset, ret_atof);
 		else if (type == PROP_POSITION || type == PROP_DIRECTION)
-			printf("Sum is now %f with len of %ld\n", **(double **)valset, ret_atof);
+			printf("Sum is now %f with len of %d\n", **(double **)valset, ret_atof);
 
-		if (!ret_atof || !ft_strchr(",\n\0", line[ret_atof]))
+		if (ret_atof < 1 || !ft_strchr(";,\n\0", line[ret_atof]))
 			put_err("Invalid data : Unexpected or Missing value\n");
 		line += ret_atof + 1;
 		valset++;
 	}
 }
 
-//Charged to assert the integrity of given property value
-bool	set_property(size_t type, void *dst, char **line)
+//Count and check object quantity
+void	check_range(double val, t_property_rules range)
 {
+	// if (in_array(prop, chkRange, nb_elems(chkRange, sizeof(chkRange)))) {
+	if ( val < range.min || val > range.max )
+	{
+		ft_dprintf(STDERR_FILENO, "Expecting value between [%f] and [%f]", range.min, range.max);
+		put_err("Parameter has out of range value");
+	}
+}
+
+bool	set_mat(size_t type, void *dst, char *line)
+{
+	if (type >= MAT_REFLECT && type <= MAT_SHINE)
+		set_property(PROP_DIMENSION, dst, line);	
+	else if (type == MAT_IMG)
+		set_property(PROP_PATH, dst, line);
+	else if (type == MAT_CHECKER)
+	{
+		t_checkerboard	*cb;
+
+		cb = malloc(sizeof(t_checkerboard));
+		if (!cb)
+			return (false);
+		*cb = (t_checkerboard){0};
+		parse_valset(line, (void *[]){&cb->color1.r, &cb->color1.g, &cb->color1.b, 0}, PROP_COLOUR);
+		line = ft_strchr(line, ';') + 1;
+		if (!line)
+			put_err("Checkerboard : Insufficient parameter count");
+		parse_valset(line, (void *[]){&cb->color2.r, &cb->color2.g, &cb->color2.b, 0}, PROP_COLOUR);
+		line = ft_strchr(line, ';') + 1;
+		if (!line)
+			put_err("Checkerboard : Insufficient parameter count");
+		printf("line is now %s\n", line);
+		set_property(PROP_DIMENSION, &cb->scale_u, line);		
+		line = ft_strchr(line, ';') + 1;
+		if (!line)
+			put_err("Checkerboard : Insufficient parameter count\n Expecting: checker=R,G,B;R,G,B;scaleU;scaleV");
+		set_property(PROP_DIMENSION, &cb->scale_u, line);
+		*(t_texture *)dst = (t_texture){.type = TEXTURE_CHECKER, .data = cb};
+	}
+	//check values range
+}
+
+//Charged to assert the integrity of given property value
+bool	set_property(size_t type, void *dst, char *line)
+{
+	t_morph	un;
 	float	sum;
 	static t_property_rules	props[] = {
 		[PROP_POSITION] = {PROP_POSITION, FLT_MIN, FLT_MAX},
@@ -84,93 +129,104 @@ bool	set_property(size_t type, void *dst, char **line)
 		[PROP_BRIGHTNESS] = {PROP_BRIGHTNESS, 0.0, 1.0},
 		[PROP_FOV] = {PROP_FOV, 0, 180},
 		[PROP_DIMENSION] = {PROP_DIMENSION, FLT_MIN, FLT_MAX},
-		// {PROP_DIRECTION, FLT_MIN, FLT_MAX},
-		[PROP_PATH] = {PROP_PATH, FLT_MIN, FLT_MAX}
+		[PROP_PATH] = {PROP_PATH, FLT_MIN, FLT_MAX}/* ,
+		{PROP_VALUE, {PROP_VALUE, FLT_MIN, FLT_MAX}} */
 	};
-	// static size_t	chkRange[] = {PROP_POSITION, PROP_DIRECTION, PROP_COLOUR,
-	// 	PROP_BRIGHTNESS, PROP_FOV, PROP_DIMENSION };
 	
-	printf(" >>> Calling setproperty with line %s\n", *line);
-	if (!*line)
+	printf(" >>> Calling setproperty with line %s\n", line);
+	if (!line)
 		put_err("Invalid data : missing parameter");
 	sum = 0;
 	if (type == PROP_POSITION || type == PROP_DIRECTION)
 	{
-		t_vec3	*vec = dst;
+		// t_vec3	*vec = dst;
+		un.vec = dst;
 
-		// parse_vec3(*line, dst);
-		parse_valset(*line, (void *[]){&vec->x, &vec->y, &vec->z, 0}, PROP_DIRECTION);
-		// printf("String after vec3 parsing: %s\n", *line);
-		if (PROP_DIRECTION && (!vec->x && !vec->y && !vec->z))
+		parse_valset(line, (void *[]){&un.vec->x, &un.vec->y, &un.vec->z, 0}, PROP_DIRECTION);
+		// printf("String after vec3 parsing: %s\n", line);
+		if (PROP_DIRECTION && (!un.vec->x && !un.vec->y && !un.vec->z))
 			put_err("Invalid vector dimensions : one axis should not be 0");
 		printf("Valset coordinates : %f,%f,%f \n",
-		vec->x, vec->y, vec->z);
+		un.vec->x, un.vec->y, un.vec->z);
 	}
 	else if (type == PROP_COLOUR)
-		parse_valset(*line, (void *[]){&((t_color *)dst)->r, &((t_color *)dst)->g, &((t_color *)dst)->b, 0}, PROP_COLOUR);
+		parse_valset(line, (void *[]){&((t_color *)dst)->r, &((t_color *)dst)->g,
+			&((t_color *)dst)->b, 0}, PROP_COLOUR);
 	else if (type == PROP_PATH)
 	{
-		if (ft_strlen(*line) < 4
-		|| !ft_strnstr(*line + ft_strlen(*line) - 4, ".xpm", 4))
+		char	*path;
+
+		if (ft_strchr(line, ' '))
+			path = ft_substr(line, 0, ft_strchr(line, ' ') - line);
+		else
+			path = ft_substr(line, 0, ft_strlen(line));
+		if (ft_strlen(path) < 4
+			|| !ft_strnstr(path + ft_strlen(path) - 4, ".xpm", 4))
 			put_err("Invalid file name: expecting *.xpm");
+		((t_texture *)dst)->type = TEXTURE_IMAGE;
+		((t_texture *)dst)->data = load_xpm_image(g_renderer(NULL)->mlx, path);
+		free(path);
 	}
-	// if (in_array(prop, chkRange, nb_elems(chkRange, sizeof(chkRange)))) {
-	// 	if ( sum < props[prop].min || sum > props[prop].max )
-	// 		put_err("Parameter has out of range value");
-	// }
-	//Count and check object quantity
+	else {
+		if (ft_atof(line, (double *)dst) < 1)
+			put_err("[Atof-Atoi2] : Overflow or parsing error");
+	}
 	return (1);
 }
 
-//Will validate the integrity of user provided parameters for the specified shape
-//-->>Will be called from shape builders
-// void	check_params(t_object_type type, char **line) {
-// 	size_t	i = 0;
+// Will validate the integrity of user provided parameters for the specified shape
+// -->>Will be called from shape builders
+// static int	prop_format[][10][2] = {
+// 	// [OBJ_CAMERA] = {{PROP_RATIO, true}, {PROP_COLOUR, true}},
+// 	[OBJ_PLANE] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_COLOUR, true}},
+// 	[OBJ_SPHERE] = {{PROP_POSITION, true}, {PROP_DIMENSION, true}, {PROP_COLOUR, true}},
+// 	[OBJ_CYLINDER] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_DIMENSION, true}, {PROP_DIMENSION, true}, {PROP_COLOUR, true}},
+// 	[OBJ_CONE] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_DIMENSION, true}, {PROP_COLOUR, true}},
+// 	[OBJ_TRIANGLE] = {{PROP_POSITION, true}, {PROP_POSITION, true}, {PROP_POSITION, true}, {PROP_COLOUR, true}}
+// };
+void	parse_mats(t_material *mat, char **line)
+{
+	size_t	i = 0;
+	static char	*mat_keys[] = {
+		[MAT_REFLECT] = "refl",
+		[MAT_REFRACT] = "refr",
+		[MAT_IDX_REFRACT] = "idx_refr",
+		[MAT_SPECULAR] = "spec",
+		[MAT_SHINE] = "shine",
+		[MAT_CHECKER] = "checker",
+		[MAT_IMG] = "image",
+	};
+	size_t	len;
 
-// 	static int	prop_format[][10][2] = {
-// 		// [OBJ_CAMERA] = {{PROP_RATIO, true}, {PROP_COLOUR, true}},
-// 		[OBJ_PLANE] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_COLOUR, true}},
-// 		[OBJ_SPHERE] = {{PROP_POSITION, true}, {PROP_DIMENSION, true}, {PROP_COLOUR, true}},
-// 		[OBJ_CYLINDER] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_DIMENSION, true}, {PROP_DIMENSION, true}, {PROP_COLOUR, true}},
-// 		[OBJ_CONE] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_DIMENSION, true}, {PROP_COLOUR, true}},
-// 		[OBJ_TRIANGLE] = {{PROP_POSITION, true}, {PROP_POSITION, true}, {PROP_POSITION, true}, {PROP_COLOUR, true}}
-// 	};
-
-// 	static char	*mat_keys[] = {
-// 		[MAT_REFLECT] = "refl",
-// 		[MAT_REFRACT] = "refr",
-// 		[MAT_IDX_REFRACT] = "idx_refr",
-// 		[MAT_SPECULAR] = "spec",
-// 		[MAT_SHINE] = "shine",
-// 		[MAT_CHECKER] = "checker",
-// 		[MAT_IMG] = "image",
-// 	};
-
-// 	while (1)
-// 	{
-// 		//parse mandatory params specified in prop_format array
-// 		// break ;
-// 	}
-
-// 	size_t	i;
-
-// 	while (line)
-// 	{
-// 		i = 0;
-// 		while (condition)
-// 		{
-// 			/* code */
-// 		}
-		
-// 		ft_strncmp()
-// 		//search for = in word
-// 		//search the left word for an existing key
-// 		//if match, search
-// 		(*line)++;
-// 	}
-	
-// 	//Should perhaps return the material object filled with its proper values
-// }
+	while (*line)
+	{
+		i = 0;
+		while (i < sizeof(mat_keys) / sizeof(*mat_keys))
+		{
+			printf("Checking mat:  %s in line %s\n", mat_keys[i], *line);
+			len = ft_strlen(mat_keys[i]);
+			
+			if (!ft_strncmp(mat_keys[i], *line, len) && ft_strchr("=:", (*line)[len])) {
+				printf("Found the right mat <3\nRemaining val %s\n", *line + len + 1);
+				set_mat(MAT_CHECKER, &mat->texture, *line + len + 1);
+				break ;
+			}
+			i++;
+		}
+		line++;
+	}
+	if (!mat->shininess)
+	mat->shininess = 32;
+	if (!mat->ior)
+	{
+		if (mat->reflectivity)
+			mat->ior = 1.3;
+		else if (mat->refractivity)
+			mat->ior = 1.02;
+		else
+			mat->ior = 1.00;
+	}
+}
 
 void	parse_object(char **line)
 {
@@ -192,7 +248,7 @@ void	parse_object(char **line)
 	i = 1;
 	while (i < sizeof(assets) / sizeof(*assets))
 	{
-		printf("asset type is %s\n", assets[i].type);
+		// printf("asset type is %s\n", assets[i].type);
 		if (ft_strcmp(*line, assets[i].type) == 0)
 		{
 			printf("Asset %s found. Remaining line :\n", assets[i].type);
@@ -230,6 +286,7 @@ void	parse_rtconfig(char *path)
 	while ((parser->line = get_next_line(fd)))
 	{
 		if (*parser->line == '\n') {
+			free(parser->line); 
 			continue ; }
 		index = 0;
 		printf("_>> %s\n", parser->line);

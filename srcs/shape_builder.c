@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 03:37:00 by epinaud           #+#    #+#             */
-/*   Updated: 2025/10/24 16:37:51 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/10/29 13:24:24 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,15 +90,16 @@ t_object	*build_triangle(t_object *obj, char	**line)
 	obj->intersect = intersect_triangle;
 	obj->get_normal = get_normal_triangle;
 	obj->get_uv = get_uv_triangle;
-	set_property(PROP_POSITION, &shape->p0 , line++);
-	set_property(PROP_POSITION, &shape->p1, line++);
-	set_property(PROP_POSITION, &shape->p2, line++);
-	set_property(PROP_COLOUR, &(obj->material.base_color), line++);
+	set_property(PROP_POSITION, &shape->p0 , *line++);
+	set_property(PROP_POSITION, &shape->p1, *line++);
+	set_property(PROP_POSITION, &shape->p2, *line++);
+	set_property(PROP_COLOUR, &(obj->material.base_color), *line++);
 	shape->uv_mode = TRI_UV_ORTHONORMAL;
-
-	printf("Triangle coordinates : %f,%f,%f, %f,%f,%f %f,%f,%f \n",
-		shape->p0.x, shape->p0.y, shape->p0.z,
-		shape->p1.x, shape->p1.y, shape->p1.z,
-		shape->p2.x, shape->p2.y, shape->p2.z);
+	parse_mats(&obj->material, line);
+	printf("My triangle has %d mat \n", obj->material.texture.type);
+	// printf("Triangle coordinates : %f,%f,%f, %f,%f,%f %f,%f,%f \n",
+	// 	shape->p0.x, shape->p0.y, shape->p0.z,
+	// 	shape->p1.x, shape->p1.y, shape->p1.z,
+	// 	shape->p2.x, shape->p2.y, shape->p2.z);
 	return (obj);
 }

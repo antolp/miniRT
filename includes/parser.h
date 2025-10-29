@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 18:28:52 by epinaud           #+#    #+#             */
-/*   Updated: 2025/10/27 10:12:55 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/10/29 13:52:26 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,8 @@ typedef enum e_property_type
 
 typedef struct s_property_rules {
 	t_property_type	type_id;
-	double			val_min;
-	double			val_max;
+	double			min;
+	double			max;
 }	t_property_rules;
 
 typedef struct s_asset_format {
@@ -59,6 +59,15 @@ typedef struct s_asset_format {
 	size_t	quantity;
 	t_object	*(*shape_builder)(t_object *obj, char **line);
 }	t_asset_format;
+
+# define MAT_KEY 0
+# define MAT_DISPATCHER 1
+
+typedef union s_morph
+{
+	t_vec3	*vec;
+	t_color	*col;
+}	t_morph;
 
 typedef enum e_material_keys
 {
@@ -71,6 +80,12 @@ typedef enum e_material_keys
 	MAT_IMG
 }	t_material_keys;
 
+typedef struct s_material_dispatcher {
+	char				*key;
+	void				*val;
+	t_property_type		processing_type;
+}	t_material_dispatcher;
+
 void	parse_rtconfig(char *path);
 void	put_err(char *msg);
 
@@ -78,6 +93,7 @@ void	put_err(char *msg);
 //Shape builders
 t_list		*add_content(void *content);
 t_object	*build_triangle(t_object *obj, char **line);
-bool		set_property(size_t type, void *dst, char **line);
+bool		set_property(size_t type, void *dst, char *line);
+void		parse_mats(t_material *mat, char **line);
 
 #endif
