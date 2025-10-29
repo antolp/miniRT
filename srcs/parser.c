@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 18:10:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/10/29 14:08:38 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/01 00:07:03 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,11 @@ void	clear_content(t_list *elm)
 	obj = elm->content;
 	if (obj->shape)
 		free(obj->shape);
+	//free image path in material
+		//if (obj->material.texture.)
 	if (obj->material.texture.data)
 		free(obj->material.texture.data);
+
 	if (elm->content)
 		free(elm->content);
 }
@@ -84,38 +87,19 @@ void	check_range(double val, t_property_rules range)
 	}
 }
 
-bool	set_mat(size_t type, void *dst, char *line)
-{
-	if (type >= MAT_REFLECT && type <= MAT_SHINE)
-		set_property(PROP_DIMENSION, dst, line);	
-	else if (type == MAT_IMG)
-		set_property(PROP_PATH, dst, line);
-	else if (type == MAT_CHECKER)
-	{
-		t_checkerboard	*cb;
-
-		cb = malloc(sizeof(t_checkerboard));
-		if (!cb)
-			return (false);
-		*cb = (t_checkerboard){0};
-		parse_valset(line, (void *[]){&cb->color1.r, &cb->color1.g, &cb->color1.b, 0}, PROP_COLOUR);
-		line = ft_strchr(line, ';') + 1;
-		if (!line)
-			put_err("Checkerboard : Insufficient parameter count");
-		parse_valset(line, (void *[]){&cb->color2.r, &cb->color2.g, &cb->color2.b, 0}, PROP_COLOUR);
-		line = ft_strchr(line, ';') + 1;
-		if (!line)
-			put_err("Checkerboard : Insufficient parameter count");
-		printf("line is now %s\n", line);
-		set_property(PROP_DIMENSION, &cb->scale_u, line);		
-		line = ft_strchr(line, ';') + 1;
-		if (!line)
-			put_err("Checkerboard : Insufficient parameter count\n Expecting: checker=R,G,B;R,G,B;scaleU;scaleV");
-		set_property(PROP_DIMENSION, &cb->scale_u, line);
-		*(t_texture *)dst = (t_texture){.type = TEXTURE_CHECKER, .data = cb};
-	}
-	//check values range
-}
+//!!!Now rendered obsolete by the dynamic material dispatcher
+// bool	set_mat(size_t type, t_material *mat, char *line, void *dst)
+// {
+// 	if (type >= MAT_REFLECT && type <= MAT_SHINE)
+// 		set_property(PROP_SIZE, dst, line);	
+// 	else if (type == MAT_IMG)
+// 		set_property(PROP_PATH, dst, line);
+// 	else if (type == MAT_CHECKER)
+// 	{
+		
+// 	}
+// 	//check values range
+// }
 
 //Charged to assert the integrity of given property value
 bool	set_property(size_t type, void *dst, char *line)
@@ -126,12 +110,13 @@ bool	set_property(size_t type, void *dst, char *line)
 		[PROP_POSITION] = {PROP_POSITION, FLT_MIN, FLT_MAX},
 		[PROP_DIRECTION] = {PROP_DIRECTION, -1, 1},
 		[PROP_COLOUR] = {PROP_COLOUR, 0, 255},
-		[PROP_BRIGHTNESS] = {PROP_BRIGHTNESS, 0.0, 1.0},
-		[PROP_FOV] = {PROP_FOV, 0, 180},
-		[PROP_DIMENSION] = {PROP_DIMENSION, FLT_MIN, FLT_MAX},
-		[PROP_PATH] = {PROP_PATH, FLT_MIN, FLT_MAX}/* ,
-		{PROP_VALUE, {PROP_VALUE, FLT_MIN, FLT_MAX}} */
+		[PROP_RATIO] = {PROP_RATIO, 0.0, 1.0},
+		[PROP_ANGLE] = {PROP_ANGLE, 0, 180},
+		[PROP_SIZE] = {PROP_SIZE, FLT_MIN, FLT_MAX},
+		[PROP_PATH] = {PROP_PATH, 0, 0}
+		// {PROP_VALUE, {PROP_VALUE, FLT_MIN, FLT_MAX}
 	};
+	
 	
 	printf(" >>> Calling setproperty with line %s\n", line);
 	if (!line)
@@ -165,7 +150,32 @@ bool	set_property(size_t type, void *dst, char *line)
 			put_err("Invalid file name: expecting *.xpm");
 		((t_texture *)dst)->type = TEXTURE_IMAGE;
 		((t_texture *)dst)->data = load_xpm_image(g_renderer(NULL)->mlx, path);
+		//check proper xmp img loading
 		free(path);
+	}
+	else if (type == PROP_CHECKER)
+	{
+		t_checkerboard	*cb;
+
+		cb = malloc(sizeof(t_checkerboard));
+		if (!cb)
+			return (false);
+		*cb = (t_checkerboard){0};
+		parse_valset(line, (void *[]){&cb->color1.r, &cb->color1.g, &cb->color1.b, 0}, PROP_COLOUR);
+		line = ft_strchr(line, ';') + 1;
+		if (!line)
+			put_err("Checkerboard : Insufficient parameter count");
+		parse_valset(line, (void *[]){&cb->color2.r, &cb->color2.g, &cb->color2.b, 0}, PROP_COLOUR);
+		line = ft_strchr(line, ';') + 1;
+		if (!line)
+			put_err("Checkerboard : Insufficient parameter count");
+		printf("line is now %s\n", line);
+		set_property(PROP_SIZE, &cb->scale_u, line);		
+		line = ft_strchr(line, ';') + 1;
+		if (!line)
+			put_err("Checkerboard : Insufficient parameter count\n Expecting: checker=R,G,B;R,G,B;scaleU;scaleV");
+		set_property(PROP_SIZE, &cb->scale_u, line);
+		*(t_texture *)dst = (t_texture){.type = TEXTURE_CHECKER, .data = cb};
 	}
 	else {
 		if (ft_atof(line, (double *)dst) < 1)
@@ -177,39 +187,56 @@ bool	set_property(size_t type, void *dst, char *line)
 // Will validate the integrity of user provided parameters for the specified shape
 // -->>Will be called from shape builders
 // static int	prop_format[][10][2] = {
-// 	// [OBJ_CAMERA] = {{PROP_RATIO, true}, {PROP_COLOUR, true}},
+// 	// [OBJ_CAMERA] = {{PROP_SIZE, true}, {PROP_COLOUR, true}},
 // 	[OBJ_PLANE] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_COLOUR, true}},
-// 	[OBJ_SPHERE] = {{PROP_POSITION, true}, {PROP_DIMENSION, true}, {PROP_COLOUR, true}},
-// 	[OBJ_CYLINDER] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_DIMENSION, true}, {PROP_DIMENSION, true}, {PROP_COLOUR, true}},
-// 	[OBJ_CONE] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_DIMENSION, true}, {PROP_COLOUR, true}},
+// 	[OBJ_SPHERE] = {{PROP_POSITION, true}, {PROP_SIZE, true}, {PROP_COLOUR, true}},
+// 	[OBJ_CYLINDER] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_SIZE, true}, {PROP_SIZE, true}, {PROP_COLOUR, true}},
+// 	[OBJ_CONE] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_SIZE, true}, {PROP_COLOUR, true}},
 // 	[OBJ_TRIANGLE] = {{PROP_POSITION, true}, {PROP_POSITION, true}, {PROP_POSITION, true}, {PROP_COLOUR, true}}
 // };
+
+t_material_dispatcher	*build_dispatcher(void **vals)
+{
+	static t_material_dispatcher disp[] = {
+	[MAT_REFLECT] = {.key = "refl", .processing_type = PROP_SIZE},
+	[MAT_REFRACT] = {.key = "refr", .processing_type = PROP_SIZE},
+	[MAT_IDX_REFRACT] = {.key = "idx_refr", .processing_type = PROP_SIZE},
+	[MAT_SPECULAR] = {.key = "spec", .processing_type = PROP_SIZE},
+	[MAT_SHINE] = {.key = "shine", .processing_type = PROP_SIZE},
+	[MAT_CHECKER] = {.key = "checker", .processing_type = PROP_CHECKER},
+	[MAT_IMG] = {.key = "image", .processing_type = PROP_PATH}, NULL};
+	size_t	i;
+
+	i = 0;
+	while (vals[i])
+	{
+		disp[i].val = vals[i];
+		i++;
+	}
+	return (disp);
+}
+
 void	parse_mats(t_material *mat, char **line)
 {
-	size_t	i = 0;
-	static char	*mat_keys[] = {
-		[MAT_REFLECT] = "refl",
-		[MAT_REFRACT] = "refr",
-		[MAT_IDX_REFRACT] = "idx_refr",
-		[MAT_SPECULAR] = "spec",
-		[MAT_SHINE] = "shine",
-		[MAT_CHECKER] = "checker",
-		[MAT_IMG] = "image",
-	};
 	size_t	len;
+	size_t	i;
+	t_material_dispatcher	*mat_disp;
 
-	while (*line)
+	mat_disp = build_dispatcher((void *[]){[MAT_REFLECT] = &mat->reflectivity, 
+		[MAT_REFRACT] = &mat->refractivity, [MAT_IDX_REFRACT] = &mat->ior,
+		[MAT_SPECULAR] = &mat->specular_strength, [MAT_SHINE] = &mat->shininess,
+		[MAT_CHECKER] = &mat->texture, [MAT_IMG] = &mat->texture, NULL});
+	while (*line && **line != '\n')
 	{
 		i = 0;
-		while (i < sizeof(mat_keys) / sizeof(*mat_keys))
+		while (mat_disp[i].key)
 		{
-			printf("Checking mat:  %s in line %s\n", mat_keys[i], *line);
-			len = ft_strlen(mat_keys[i]);
+			printf("Checking mat:  %s in line %s\n", mat_disp[i].key, *line);
+			len = ft_strlen(mat_disp[i].key);
 			
-			if (!ft_strncmp(mat_keys[i], *line, len) && ft_strchr("=:", (*line)[len])) {
+			if (!ft_strncmp(mat_disp[i].key, *line, len) && ft_strchr("=:", (*line)[len])) {
 				printf("Found the right mat <3\nRemaining val %s\n", *line + len + 1);
-				set_mat(MAT_CHECKER, &mat->texture, *line + len + 1);
-				break ;
+				set_property(mat_disp[i].processing_type, mat_disp[i].val, *line + len + 1);
 			}
 			i++;
 		}
