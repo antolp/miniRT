@@ -45,9 +45,18 @@ t_color	color_scale_clamped(t_color c, double s)
 		s = 0.0;
 	if (s > 1.0)
 		s = 1.0;
-	x = c.r * s; if (x > 255.0) x = 255.0; r.r = (int)x;
-	x = c.g * s; if (x > 255.0) x = 255.0; r.g = (int)x;
-	x = c.b * s; if (x > 255.0) x = 255.0; r.b = (int)x;
+	x = c.r * s;
+	if (x > 255.0)
+		x = 255.0;
+	r.r = (int)x;
+	x = c.g * s;
+	if (x > 255.0)
+		x = 255.0;
+	r.g = (int)x;
+	x = c.b * s; 
+	if (x > 255.0) 
+	x = 255.0;
+	r.b = (int)x;
 	return (r);
 }
 

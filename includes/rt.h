@@ -209,5 +209,9 @@ void	print_color(char *s, t_color c);
 void	print_vec3(char *s, t_vec3 v);
 void	print_scene(void);
 
+//a trier
+t_color	compute_fast_preview(t_ray *ray, t_hit_info *hit);
+void	orient_normal(t_ray *ray, t_hit_info *hit);
+
 
 #endif

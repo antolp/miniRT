@@ -52,6 +52,14 @@ double	vec_length_squared(t_vec3 v)
 //it's a scalar value defined as: a.x * b.x + a.y * b.y + a.z * b.z
 //extremely useful when dealing witgh angle calculations, projections, lighting 
 //
+//Let two UNIT vectors A and B :
+//A . B = cos(delta), where delta is the angle between them.
+//
+// Quick tests with dot:
+// -orthogonal: |a . b| ~= 0 
+// -parallel: |a . b| ~= |a|*|b| (or ~= 1 if both UNIT).
+// -same hemisphere wrt normal n: A.N >= 0. (both unit)
+//
 //it measures how "aligned" the two vectors are
 //If the dot product is:
 //- Positive	-> vectors point roughly in the same direction

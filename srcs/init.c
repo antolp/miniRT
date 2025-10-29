@@ -101,8 +101,43 @@ bool	init_scene(t_scene *s)
 	s->objects = NULL;
 	s->lights = NULL;
 
-	// ---------- SPHERE ----------
-	//refractive rough bump map
+	// // ---------- SPHERE ----------
+	// //mirror rough bump map
+	// sphere = malloc(sizeof(t_sphere));
+	// if (!sphere)
+	// 	return (false);
+	// sphere->center = (t_vec3){-31, 7.2, 20};
+	// sphere->radius = 7.2;
+	// // sphere->center = (t_vec3){12, 20, 35};
+	// // sphere->radius = 7.7;
+	// obj = malloc(sizeof(t_object));
+	// if (!obj)
+	// 	return (false);
+	// obj->type = OBJ_SPHERE;
+	// obj->shape = sphere;
+	// obj->material.base_color = (t_color){60, 60, 255};
+	// obj->material.reflectivity = 1;
+	// obj->material.ior = 0.15;
+	// obj->material.shininess = 32;
+	// obj->material.specular_strength = 1;
+	// // obj->material.refractivity = 0.05;
+	// obj->material.refractivity = 0;
+	// // obj->material.refractivity = 0;
+	// // obj->material.texture.type = TEXTURE_NONE;
+	// // obj->material.texture.type = TEXTURE_CHECKER;
+	// // obj->material.texture.data = cb_red;
+	// obj->material.texture.type = TEXTURE_NONE;
+	// obj->material.texture.data = NULL;
+	// // obj->material.bump_maps.type = TEXTURE_NONE;
+	// // obj->material.bump_maps.data = NULL;
+	// obj->material.bump_maps.type = TEXTURE_IMAGE;
+	// obj->material.bump_maps.data = img;
+	// obj->material.bump_strength = 1;
+	// obj->intersect = intersect_sphere;
+	// obj->get_normal = get_normal_sphere;
+	// obj->get_uv = get_uv_sphere;
+	// ft_lstadd_back(&s->objects, add_content(obj));
+
 	sphere = malloc(sizeof(t_sphere));
 	if (!sphere)
 		return (false);
@@ -115,10 +150,10 @@ bool	init_scene(t_scene *s)
 		return (false);
 	obj->type = OBJ_SPHERE;
 	obj->shape = sphere;
-	obj->material.base_color = (t_color){60, 60, 255};
+	obj->material.base_color = (t_color){255, 60, 60};
 	obj->material.reflectivity = 1;
-	obj->material.ior = 0.15;
-	obj->material.shininess = 32;
+	obj->material.ior = 0.2;
+	obj->material.shininess = 256;
 	obj->material.specular_strength = 1;
 	// obj->material.refractivity = 0.05;
 	obj->material.refractivity = 0;
@@ -128,10 +163,10 @@ bool	init_scene(t_scene *s)
 	// obj->material.texture.data = cb_red;
 	obj->material.texture.type = TEXTURE_NONE;
 	obj->material.texture.data = NULL;
+	obj->material.bump_maps.type = TEXTURE_NONE;
+	obj->material.bump_maps.data = NULL;
 	// obj->material.bump_maps.type = TEXTURE_IMAGE;
 	// obj->material.bump_maps.data = img;
-	obj->material.bump_maps.type = TEXTURE_IMAGE;
-	obj->material.bump_maps.data = img;
 	obj->material.bump_strength = 1;
 	obj->intersect = intersect_sphere;
 	obj->get_normal = get_normal_sphere;
@@ -139,8 +174,8 @@ bool	init_scene(t_scene *s)
 	ft_lstadd_back(&s->objects, add_content(obj));
 
 	// ---------- SPHERE ----------
-	//slightly refractive, transmissive sphere
-		sphere = malloc(sizeof(t_sphere));
+	//metalic refractive, transmissive sphere
+	sphere = malloc(sizeof(t_sphere));
 	if (!sphere)
 		return (false);
 	sphere->center = (t_vec3){-50.97, 7.7, 23.76};
@@ -152,22 +187,22 @@ bool	init_scene(t_scene *s)
 		return (false);
 	obj->type = OBJ_SPHERE;
 	obj->shape = sphere;
-	obj->material.base_color = (t_color){255, 255, 255};
+	obj->material.base_color = (t_color){190, 210, 255};
 	obj->material.reflectivity = 1;
-	obj->material.ior = 1.008;
+	obj->material.ior = 1.0000001;
 	obj->material.shininess = 32;
 	obj->material.specular_strength = 1;
-	obj->material.refractivity = 0.05;
+	obj->material.refractivity = 0.25;
 	// obj->material.refractivity = 0;
 	// obj->material.texture.type = TEXTURE_NONE;
 	// obj->material.texture.type = TEXTURE_CHECKER;
 	// obj->material.texture.data = cb_red;
 	obj->material.texture.type = TEXTURE_NONE;
 	obj->material.texture.data = NULL;
-	// obj->material.bump_maps.type = TEXTURE_NONE;
-	// obj->material.bump_maps.data = NULL;
-	obj->material.bump_maps.type = TEXTURE_IMAGE;
-	obj->material.bump_maps.data = img_bump;
+	obj->material.bump_maps.type = TEXTURE_NONE;
+	obj->material.bump_maps.data = NULL;
+	// obj->material.bump_maps.type = TEXTURE_IMAGE;
+	// obj->material.bump_maps.data = img_bump;
 	obj->material.bump_strength = 1;
 	obj->intersect = intersect_sphere;
 	obj->get_normal = get_normal_sphere;

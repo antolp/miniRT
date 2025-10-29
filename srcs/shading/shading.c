@@ -17,7 +17,7 @@
 //from below surface (e.g. inside of circle, behind a plane/triangle, etc)
 //fix it by flipping normal, also tell the refraction logic that the ray
 //is "inside" the object (which is stupid, you are "inside a surface")
-static void	orient_normal(t_ray *ray, t_hit_info *hit)
+void	orient_normal(t_ray *ray, t_hit_info *hit)
 {
 	double	dp;
 

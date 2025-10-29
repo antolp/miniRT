@@ -31,7 +31,7 @@
 # define FLAG_BUMP_MAP				((uint32_t)1 << 8)
 // # define FLAG_SHALOW_REFRACTION		((uint32_t)1 << 9)
 // # define FLAG_CHEAP_FRESNEL			((uint32_t)1 << 10)
-
+// # define FLAG_EDIT_FAST				((uint32_t)1 << 11)
 # define DEFAULT_FLAGS ( \
 	FLAG_SHADOW | FLAG_TRANSPARENT_SHADOW | FLAG_DIFFUSE | \
 	FLAG_SPECULAR | FLAG_REFLECTION | FLAG_REFRACTION | FLAG_FRESNEL | \
