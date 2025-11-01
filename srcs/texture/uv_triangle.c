@@ -44,8 +44,9 @@ static int	build_triangle_basis(const t_triangle *tr, t_vec3 *U, t_vec3 *V)
 //right triangle in UV space by assigning vertices:
 //	p0 -> (0,0),  p1 -> (1,0),  p2 -> (0,1)
 //Under this mapping, a point’s UV becomes:
-//	(u, v) = (b1, b2)      // (and optionally flipped for FIT_OPPOSITE, allowing
-//	full image area mapping onto a square formed by two triangles)
+//	(u, v) = (b1, b2)
+//	(and optionally flipped for FIT_OPPOSITE, allowing
+//		full image area mapping onto a square formed by two triangles)
 //This most importantly preserves straight lines !
 //
 //Math outline (dot-product formulation; stable, no trig):
@@ -69,6 +70,7 @@ static int	build_triangle_basis(const t_triangle *tr, t_vec3 *U, t_vec3 *V)
 //
 //https://www.scratchapixel.com/lessons/3d-basic-rendering/
 //ray-tracing-rendering-a-triangle/barycentric-coordinates.html
+//https://en.wikipedia.org/wiki/Gram%E2%80%93Schmidt_process
 static int	barycentric(const t_triangle *tr, t_vec3 P, t_bary_out *out)
 {
 	t_vec3	v[3];

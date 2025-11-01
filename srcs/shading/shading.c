@@ -12,93 +12,115 @@
 
 #include "rt.h"
 
-//first, get surface color (futur implementation textured/bumpy render)
-//then, diffuse from color
-//then, reflection/refraction
-//then, fresnel through schlick approx
-//finally, spec highlight though blinn-phong
-//
-//	WORK IN PROGRESS, WILL NEED REWRITE
-//	rewriting this as of now would be wasting time, since texturing hasn't been
-//	introduced yet, and the function will need some adaptation to work with it.
-t_color	shade_pixel(t_ray *ray, t_hit_info *hit, int depth)
+//orient_normal();
+//if normal same direction as ray vector, shading wil leak
+//from below surface (e.g. inside of circle, behind a plane/triangle, etc)
+//fix it by flipping normal, also tell the refraction logic that the ray
+//is "inside" the object (which is stupid, you are "inside a surface")
+void	orient_normal(t_ray *ray, t_hit_info *hit)
 {
-	t_color	final_color;
-	t_color	transmitted;
-	t_color	diffuse_col;
-	t_color	spec_col;
-	t_vec3	view_dir;
-	double	diffuse_scale;
+	double	dp;
 
-	//if a ray is traced from inside a shape, it's behind its surface
-	//the normal is calculation doesnt take that into account
-	//shading rely heavily on normal vector, so we need to realign its direction
-	//is_outside is used in refraction logic (entering/exiting the object's medium)
 	hit->is_outside = 1;
-	if (vec_dot(hit->normal, ray->direction) >= 0.0)
+	dp = vec_dot(hit->normal, ray->direction);
+	if (dp >= 0.0)
 	{
 		hit->is_outside = 0;
 		hit->normal = vec_mul(hit->normal, -1.0);
 	}
+}
 
-	//get color of object surface at hit point
-	//if non-textured, fallback to base_color
-	//(should move this in get_closest_hit, that requires splitting the function,
-	//which i already did)
-	if (g_renderer(NULL)->shading_flag & FLAG_TEXTURE &&
-		hit->object->material.texture.type != TEXTURE_NONE)
-	{
-		// printf("texture !! \n");
-		hit->hit_color = get_hit_color(hit);
-	}
-	else
-		hit->hit_color = hit->object->material.base_color;
+static t_color	shade_diffuse(t_hit_info *hit)
+{
+	t_color			c;
+	unsigned int	flags;
 
+	c = hit->hit_color;
+	flags = g_renderer(NULL)->shading_flag;
+	if ((flags & FLAG_DIFFUSE) != 0u)
+		c = compute_diffuse_lighting(hit);
+	if ((flags & FLAG_REFRACTION) != 0u
+		&& hit->object->material.refractivity > 0.0)
+		c = color_scale_clamped(c, 0.0);
+	return (c);
+}
 
-	//diffuse scale  will probably end up being removed
-	//goal was to introduce less transparent material but it's pretty ugly honestly...
-	// diffuse_scale = 1.0
-	// if ((g_renderer(NULL)->shading_flag & FLAG_REFRACTION) != 0u
-	// 	&& hit->object->material.refractivity > 0.0)
-	// 	diffuse_scale = 0.0;
-	diffuse_col = compute_diffuse_lighting(hit);
-	if (g_renderer(NULL)->shading_flag & FLAG_REFRACTION
-	 	&& hit->object->material.refractivity > 0.0)
-		diffuse_col = color_scale_clamped(diffuse_col, 0.0);
+static t_color	shade_specular_hl(t_ray *ray, t_hit_info *hit)
+{
+	t_color	spec;
+	t_vec3	view_dir;
+	unsigned int	flags;
 
-	//specular, local highlight on the surface
-	spec_col = (t_color){0, 0, 0};
-	if ((g_renderer(NULL)->shading_flag & FLAG_SPECULAR) != 0u)
+	spec = (t_color){0, 0, 0};
+	flags = g_renderer(NULL)->shading_flag;
+	if ((flags & FLAG_SPECULAR) != 0u)
 	{
 		view_dir = vec_normalize(vec_mul(ray->direction, -1.0));
-		spec_col = compute_specular_highlight(&hit->object->material,
-					hit, view_dir);
+		spec = compute_specular_highlight(&hit->object->material, hit, view_dir);
 	}
+	return (spec);
+}
+
+//refracted contribution: trace, tint by hit_color, lerp by refractivity
+static t_color	shade_refraction(t_ray *ray, t_hit_info *hit, int depth)
+{
+	t_color	refr;
+	t_color	tinted;
+	double	k;
+
+	if ((g_renderer(NULL)->shading_flag & FLAG_REFRACTION) == 0u)
+		return ((t_color){0, 0, 0});
+	if (hit->object->material.refractivity <= 0.0)
+		return ((t_color){0, 0, 0});
+	refr = compute_refraction(&hit->object->material, ray, hit, depth);
+	tinted.r = (int)(refr.r * (hit->hit_color.r / 255.0));
+	tinted.g = (int)(refr.g * (hit->hit_color.g / 255.0));
+	tinted.b = (int)(refr.b * (hit->hit_color.b / 255.0));
+	k = hit->object->material.refractivity;
+	return (color_lerp(refr, tinted, k));
+}
+
+//reflection contribution, compute_reflection blends into base color
+//to allow "metalic" or "glossy", none-perfect mirrors (but cheap)
+static t_color	shade_reflection(t_ray *ray, t_hit_info *hit,
+	t_color base, int depth)
+{
+	if ((g_renderer(NULL)->shading_flag & FLAG_REFLECTION) == 0u)
+		return (base);
+	ray->depth = depth;
+	return (compute_reflection(&hit->object->material, ray, hit, base));
+}
+
+//shade_pixel():
+//Main entry to the shading pipeline, shades each pixel according to
+//material properties of hit point, scene configurations normal
+//steps :
+//	-orient normal of camera facing back of surface
+//	-get surface color from texture if any
+//	-apply bump map if any
+//	-get diffuse from color (Lambert + shadows/transparent shadows)
+//	-get spec highlight (Blinn-Phong)
+//	-add those two into a new pixel color
+//	-compute either refraction or reflection (or none) :
+//		-refraction + fresnel if refractive
+//		-reflection + fresnel if non-refractive and reflective
+t_color	shade_pixel(t_ray *ray, t_hit_info *hit, int depth)
+{
+	t_color	final_color;
+	t_color	add_ref;
+	t_color	diffuse_col;
+	t_color	spec_col;
+
+	orient_normal(ray, hit);
+	hit->hit_color = surface_color(hit);
+	apply_bump(hit);
+	diffuse_col = shade_diffuse(hit);
+	spec_col = shade_specular_hl(ray, hit);
 	final_color = color_add(diffuse_col, spec_col);
-
-	//either refraction or reflection, no ray_splitting
-	//first refraction
-	//transmission to add refracted+tinted ON TOP, not overwrite specular
-	if ((g_renderer(NULL)->shading_flag & FLAG_REFRACTION) != 0u
-		&& hit->object->material.refractivity > 0.0)
-	{
-		t_color refracted;
-
-		refracted = compute_refraction(&hit->object->material, ray, hit, depth);
-
-		/* tint by hit_color and mix by refractivity (your existing logic) */
-		transmitted.r = (int)(refracted.r * (hit->hit_color.r / 255.0));
-		transmitted.g = (int)(refracted.g * (hit->hit_color.g / 255.0));
-		transmitted.b = (int)(refracted.b * (hit->hit_color.b / 255.0));
-		transmitted = color_lerp(refracted, transmitted, hit->object->material.refractivity);
-
-		final_color = color_add(final_color, transmitted);
-	}
-	//else reflection, adding and lerp inside compute_reflection
-	else if ((g_renderer(NULL)->shading_flag & FLAG_REFLECTION) != 0u)
-	{
-		ray->depth = depth;
-		final_color = compute_reflection(&hit->object->material, ray, hit, final_color);
-	}
+	add_ref = shade_refraction(ray, hit, depth);
+	if (add_ref.r != 0 || add_ref.g != 0 || add_ref.b != 0)
+		final_color = color_add(final_color, add_ref);
+	else
+		final_color = shade_reflection(ray, hit, final_color, depth);
 	return (final_color);
 }

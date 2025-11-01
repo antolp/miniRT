@@ -33,6 +33,8 @@ void	build_basis_from_normal(t_vec3 a, t_vec3 *t, t_vec3 *b)
 
 //u = (atan2(z,x)+pi)/(2pi) and v = acos(y)/pi, using normalized local dir
 //will write bigger comment eventually since the maths are pretty nice
+//basically just returning an angle from hemisphere and equator of the sphere
+//using atan2() and asin().
 bool	get_uv_sphere(t_object *obj, t_vec3 *hit, t_vec2 *out_uv)
 {
 	t_sphere	*sp;

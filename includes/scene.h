@@ -38,7 +38,6 @@ typedef struct s_camera_basis
 	double	scale;
 }	t_camera_basis;
 
-
 typedef struct s_camera
 {
 	t_vec3	position;

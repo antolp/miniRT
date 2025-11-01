@@ -124,6 +124,8 @@ static t_color	handle_total_internal_reflection(t_ray *ray,
 //	The traced ray also has no depth, again decreasing cost.
 //Otherwise, trace the reflected ray.
 //Finally blend transmission and reflection according to Fresnel weight.
+//
+//OUTDATED
 static t_color	trace_and_blend_refraction(t_material *m, t_ray *ray,
 	t_hit_info *hit, t_vec3 refract_dir)
 {
@@ -137,9 +139,9 @@ static t_color	trace_and_blend_refraction(t_material *m, t_ray *ray,
 	refract_ray.origin = vec_add(hit->hit_point,
 			vec_mul(refract_dir, SHADOW_EPS));
 	refract_ray.direction = refract_dir;
-	col_t = trace_ray(&refract_ray, 1);
-	if (fw < FRESNEL_SPLIT_THRESHOLD)
-		return (color_scale_clamped(col_t, 1.0 - fw));
+	col_t = trace_ray(&refract_ray, ray->depth - 1);
+	// if (fw < FRESNEL_SPLIT_THRESHOLD)
+	// 	return (color_scale_clamped(col_t, 1.0 - fw));
 	reflect_ray = compute_reflected_ray(ray, hit);
 	col_r = trace_ray(&reflect_ray, ray->depth - 1);
 	col_t = color_scale_clamped(col_t, 1.0 - fw);
