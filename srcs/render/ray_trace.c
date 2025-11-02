@@ -64,7 +64,7 @@ t_color	trace_ray(t_ray *ray, int depth)
 //	if a =  1  surface fully faces the camera
 //	if a =  0  nearly touches surface 
 //	if a = -1  fully back-facing
-//hence k = 0.5 + 0.5 * a, darker side isn't pitch black
+//k = 0.5 + 0.5 * a, darker side isn't pitch black
 t_color	trace_fast_ray(t_ray *ray, int none)
 {
 	t_hit_info	hit;

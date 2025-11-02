@@ -52,13 +52,13 @@ double	vec_length_squared(t_vec3 v)
 //it's a scalar value defined as: a.x * b.x + a.y * b.y + a.z * b.z
 //extremely useful when dealing witgh angle calculations, projections, lighting 
 //
-//Let two UNIT vectors A and B :
+//Let two unit vectors A and B :
 //A . B = cos(delta), where delta is the angle between them.
 //
 // Quick tests with dot:
 // -orthogonal: |a . b| ~= 0 
-// -parallel: |a . b| ~= |a|*|b| (or ~= 1 if both UNIT).
-// -same hemisphere wrt normal n: A.N >= 0. (both unit)
+// -parallel: |a . b| ~= |a|*|b| (or ~= 1 if both unit vectors).
+// -same hemisphere relative to normal n: A.N >= 0. (if both unit vectors)
 //
 //it measures how "aligned" the two vectors are
 //If the dot product is:
@@ -66,7 +66,7 @@ double	vec_length_squared(t_vec3 v)
 //- Negative	-> vectors point in opposite directions
 //- Zero		-> vectors are perpendicular
 //
-//	https://en.wikipedia.org/wiki/Dot_product
+//https://en.wikipedia.org/wiki/Dot_product
 double	vec_dot(t_vec3 a, t_vec3 b)
 {
 	return (a.x * b.x + a.y * b.y + a.z * b.z);

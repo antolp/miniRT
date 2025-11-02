@@ -76,11 +76,12 @@ bool	init_scene(t_scene *s)
 	img = load_xpm_image(g_renderer(NULL)->mlx, "assets/wood.xpm");
 
 	t_texture_image	*img_sphere;
-	img_sphere = load_xpm_image(g_renderer(NULL)->mlx, "assets/2k_earth_daymap.xpm");
+	img_sphere = load_xpm_image(g_renderer(NULL)->mlx, "assets/2k_earth_daqewymap.xpm");
 	t_texture_image	*img_bump;
 	img_bump = load_xpm_image(g_renderer(NULL)->mlx, "assets/wood.xpm");
 	t_texture_image	*img42;
 	img42 = load_xpm_image(g_renderer(NULL)->mlx, "assets/42_500.xpm");
+	// img42 = load_xpm_image(g_renderer(NULL)->mlx, "wrongpath.xpm");
 
 	t_checkerboard *cb; 
 	cb = malloc(sizeof(t_checkerboard));
@@ -93,7 +94,7 @@ bool	init_scene(t_scene *s)
 
 	//skybox
 	// s->skybox.type = TEXTURE_NONE;
-	t_texture_image *sky = load_xpm_image(g_renderer(NULL)->mlx, "assets/autumn_field_puresky_8k.xpm");
+	t_texture_image *sky = load_xpm_image(g_renderer(NULL)->mlx, "assets/a21utumn_field_puresky_8k.xpm");
 	s->skybox.type = TEXTURE_IMAGE;
 	s->skybox.data = sky;
 
@@ -325,7 +326,7 @@ bool	init_scene(t_scene *s)
 
 	s->ambient_color = (t_color){255, 255, 255};
 	s->ambient_ratio = 0.25;
-	s->background_color = (t_color){10, 10, 40};
+	s->background_color = (t_color){100, 100, 200};
 	return (1);
 }
 
