@@ -28,7 +28,7 @@ MLX			= $(MLX_DIR)/libmlx.a
 CC			= cc
 # CFLAGS	= -Wall -Wextra -Werror -fsanitize=address -g 
 # CFLAGS		= -Wall -Wextra -Werror -g 
-CFLAGS		= -g
+CFLAGS		= -g3 -O3 -ffast-math
 INCLUDES	= -I./includes -I$(LIBFT_DIR) -I$(MLX_DIR) -Ilibft/includes
 LDFLAGS		= -L$(LIBFT_DIR) -lft -L$(MLX_DIR) -lmlx -lX11 -lXext -lm
 

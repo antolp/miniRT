@@ -31,6 +31,6 @@ void	apply_bump(t_hit_info *hit)
 
 	flags = g_renderer(NULL)->shading_flag;
 	if ((flags & FLAG_BUMP_MAP) != 0u
-		&& hit->object->material.bump_maps.type == TEXTURE_IMAGE)
+		&& hit->object->material.texture.has_bump_maps == true)
 		apply_bump_from_image(hit->object, hit->hit_point, &hit->normal);
 }

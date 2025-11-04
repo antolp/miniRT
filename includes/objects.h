@@ -53,6 +53,8 @@ typedef struct s_texture
 {
 	t_texture_type	type;
 	void			*data; // texture image or procedural config
+	bool			has_bump_maps;
+	t_texture_image	*bumps_data;
 }	t_texture;
 
 //reflectance and refractance mutually exclusive because it's a pain in the ass
@@ -65,7 +67,6 @@ typedef struct s_material
 	double		ior;				// index of refraction, different roles whether reflective or refractive.
 	double		refractivity;		// [0, 1] if more than 0, transparent and nothing else
 	t_texture	texture;
-	t_texture	bump_maps;
 	double      bump_strength;
 }	t_material;
 
