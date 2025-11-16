@@ -1,0 +1,113 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   assigners.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/16 22:57:46 by epinaud           #+#    #+#             */
+/*   Updated: 2025/11/16 23:43:59 by epinaud          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "rt.h"
+
+//>> Warning for char ending atof call ?
+static void	parse_valset(void *valset[], t_property_type type, char *line)
+{
+	int	ret_atof;
+
+	ret_atof = 0;
+	while (*valset)
+	{
+		if (type == PROP_COLOUR)
+			ret_atof = ft_atoi2(line, *valset);
+		else if (type == PROP_POSITION || type == PROP_DIRECTION)
+			ret_atof = ft_atof(line, *valset);
+		if (type == PROP_COLOUR)
+			printf("Sum is now %d with len of %d\n", **(int **)valset, ret_atof);
+		else if (type == PROP_POSITION || type == PROP_DIRECTION)
+			printf("Sum is now %f with len of %d\n", **(double **)valset, ret_atof);
+		if (ret_atof < 1 || !ft_strchr(";,\n\0", line[ret_atof]))
+			put_err("Invalid data : Unexpected or Missing value\n");
+		line += ret_atof + 1;
+		valset++;
+	}
+}
+
+static void	checker_assigner(t_texture *dst, char *line)
+{
+	t_checkerboard	*cb;
+
+	cb = malloc(sizeof(t_checkerboard));
+	if (!cb)
+		put_err("Malloc faillure: t_checkerboard");
+	*cb = (t_checkerboard){0};
+	parse_valset((void *[]){&cb->color1.r, &cb->color1.g, &cb->color1.b, 0}, PROP_COLOUR, line);
+	line = ft_strchr(line, ';') + 1;
+	if (!line)
+		put_err("Checkerboard : Insufficient parameter count");
+	parse_valset((void *[]){&cb->color2.r, &cb->color2.g, &cb->color2.b, 0}, PROP_COLOUR, line);
+	line = ft_strchr(line, ';') + 1;
+	if (!line)
+		put_err("Checkerboard : Insufficient parameter count");
+	printf("line is now %s\n", line);
+	set_property(PROP_SIZE, &cb->scale_u, line);		
+	line = ft_strchr(line, ';') + 1;
+	if (!line)
+		put_err("Checkerboard : Insufficient parameter count\n Expecting: checker=R,G,B;R,G,B;scaleU;scaleV");
+	set_property(PROP_SIZE, &cb->scale_v, line);
+	*dst = (t_texture){.type = TEXTURE_CHECKER, .data = cb};
+}
+
+static void	assign_vec(t_vec3 *vec, t_property_type type, char *line)
+{
+	parse_valset((void *[]){&vec->x, &vec->y, &vec->z, 0}, PROP_DIRECTION, line);
+	if (type == PROP_DIRECTION && (!vec->x && !vec->y && !vec->z))
+		put_err("Invalid vector dimensions : one axis should not be 0");
+	printf("Valset coordinates : %f,%f,%f \n",
+		vec->x, vec->y, vec->z);
+}
+
+static void	assign_path(t_texture *img, char *line)
+{
+	if (ft_strlen(line) < 4
+		|| !ft_strnstr(line + ft_strlen(line) - 4, ".xpm", 4))
+		put_err("Invalid file name: expecting *.xpm");
+	img->type = TEXTURE_IMAGE;
+	img->data = load_xpm_image(g_renderer(NULL)->mlx, line);
+	if (!img->data)
+		put_err("XPM image loading: faillure");
+}
+
+//Rooter charged to determine the relevant assigner 
+//and assert the integrity of and for a given property value
+bool	set_property(size_t type, void *dst, char *line)
+{
+	static t_property_rules	props[] = {
+	[PROP_POSITION] = {PROP_POSITION, FLT_MIN, FLT_MAX},
+	[PROP_DIRECTION] = {PROP_DIRECTION, -1, 1},
+	[PROP_COLOUR] = {PROP_COLOUR, 0, 255},
+	[PROP_RATIO] = {PROP_RATIO, 0.0, 1.0},
+	[PROP_ANGLE] = {PROP_ANGLE, 0, 180},
+	[PROP_SIZE] = {PROP_SIZE, 0, FLT_MAX},
+	[PROP_PATH] = {PROP_PATH, 4, FLT_MAX}
+	};
+
+	printf(" >>> Calling setproperty with line %s\n", line);
+	if (!line)
+		put_err("Invalid data : missing parameter");
+	if (type == PROP_POSITION || type == PROP_DIRECTION)
+		assign_vec(dst, type, line);
+	else if (type == PROP_COLOUR)
+		parse_valset((void *[]){&((t_color *)dst)->r,
+			&((t_color *)dst)->g, &((t_color *)dst)->b, 0}, PROP_COLOUR, line);
+	else if (type == PROP_PATH)
+		assign_path(dst, line);
+	else if (type == PROP_CHECKER)
+		checker_assigner(dst, line);
+	else
+		if (ft_atof(line, (double *)dst) < 1)
+			put_err("[Atof-Atoi2] : Overflow or parsing error");
+	return (EXIT_SUCCESS);
+}

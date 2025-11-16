@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 18:10:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/16 17:19:46 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/16 23:46:33 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,31 +49,6 @@ void	put_err(char *msg)
 	exit(EXIT_FAILURE);
 }
 
-//>> Warning for char ending atof call ?
-void	parse_valset(char *line, void *valset[], t_property_type type)
-{
-	int	ret_atof;
-	
-	ret_atof = 0;
-	while (*valset) 
-	{
-		if (type == PROP_COLOUR)
-			ret_atof = ft_atoi2(line, *valset);
-		else if (type == PROP_POSITION || type == PROP_DIRECTION)
-			ret_atof = ft_atof(line, *valset);
-
-		if (type == PROP_COLOUR)
-			printf("Sum is now %d with len of %d\n", **(int **)valset, ret_atof);
-		else if (type == PROP_POSITION || type == PROP_DIRECTION)
-			printf("Sum is now %f with len of %d\n", **(double **)valset, ret_atof);
-
-		if (ret_atof < 1 || !ft_strchr(";,\n\0", line[ret_atof]))
-			put_err("Invalid data : Unexpected or Missing value\n");
-		line += ret_atof + 1;
-		valset++;
-	}
-}
-
 //Count and check object quantity
 void	check_range(double val, t_property_rules range)
 {
@@ -83,93 +58,6 @@ void	check_range(double val, t_property_rules range)
 		ft_dprintf(STDERR_FILENO, "Expecting value between [%f] and [%f]", range.min, range.max);
 		put_err("Parameter has out of range value");
 	}
-}
-
-void	check_path(char *line)
-{
-	// char	*line;
-
-	// if (ft_strchr(line, ' '))
-	// 	line = ft_substr(line, 0, ft_strchr(line, ' ') - line);
-	// else
-	// 	line = ft_substr(line, 0, ft_strlen(line));
-	if (ft_strlen(line) < 4
-		|| !ft_strnstr(line + ft_strlen(line) - 4, ".xpm", 4))
-		put_err("Invalid file name: expecting *.xpm");
-	// return (line);
-}
-
-//Charged to assert the integrity of given property value
-bool	set_property(size_t type, void *dst, char *line)
-{
-	t_morph	un;
-	float	sum;
-	static t_property_rules	props[] = {
-		[PROP_POSITION] = {PROP_POSITION, FLT_MIN, FLT_MAX},
-		[PROP_DIRECTION] = {PROP_DIRECTION, -1, 1},
-		[PROP_COLOUR] = {PROP_COLOUR, 0, 255},
-		[PROP_RATIO] = {PROP_RATIO, 0.0, 1.0},
-		[PROP_ANGLE] = {PROP_ANGLE, 0, 180},
-		[PROP_SIZE] = {PROP_SIZE, 0, FLT_MAX},
-		[PROP_PATH] = {PROP_PATH, 4, FLT_MAX}
-		// {PROP_VALUE, {PROP_VALUE, FLT_MIN, FLT_MAX}
-	};
-	
-	printf(" >>> Calling setproperty with line %s\n", line);
-	if (!line)
-		put_err("Invalid data : missing parameter");
-	sum = 0;
-	if (type == PROP_POSITION || type == PROP_DIRECTION)
-	{
-		// t_vec3	*vec = dst;
-		un.vec = dst;
-
-		parse_valset(line, (void *[]){&un.vec->x, &un.vec->y, &un.vec->z, 0}, PROP_DIRECTION);
-		// printf("String after vec3 parsing: %s\n", line);
-		if (type == PROP_DIRECTION && (!un.vec->x && !un.vec->y && !un.vec->z))
-			put_err("Invalid vector dimensions : one axis should not be 0");
-		printf("Valset coordinates : %f,%f,%f \n",
-		un.vec->x, un.vec->y, un.vec->z);
-	}
-	else if (type == PROP_COLOUR)
-		parse_valset(line, (void *[]){&((t_color *)dst)->r, &((t_color *)dst)->g,
-			&((t_color *)dst)->b, 0}, PROP_COLOUR);
-	else if (type == PROP_PATH)
-	{
-		check_path(line);
-		((t_texture *)dst)->type = TEXTURE_IMAGE;
-		((t_texture *)dst)->data = load_xpm_image(g_renderer(NULL)->mlx, line);
-		//check proper xmp img loading
-	}
-	else if (type == PROP_CHECKER)
-	{
-		t_checkerboard	*cb;
-
-		cb = malloc(sizeof(t_checkerboard));
-		if (!cb)
-			return (false);
-		*cb = (t_checkerboard){0};
-		parse_valset(line, (void *[]){&cb->color1.r, &cb->color1.g, &cb->color1.b, 0}, PROP_COLOUR);
-		line = ft_strchr(line, ';') + 1;
-		if (!line)
-			put_err("Checkerboard : Insufficient parameter count");
-		parse_valset(line, (void *[]){&cb->color2.r, &cb->color2.g, &cb->color2.b, 0}, PROP_COLOUR);
-		line = ft_strchr(line, ';') + 1;
-		if (!line)
-			put_err("Checkerboard : Insufficient parameter count");
-		printf("line is now %s\n", line);
-		set_property(PROP_SIZE, &cb->scale_u, line);		
-		line = ft_strchr(line, ';') + 1;
-		if (!line)
-			put_err("Checkerboard : Insufficient parameter count\n Expecting: checker=R,G,B;R,G,B;scaleU;scaleV");
-		set_property(PROP_SIZE, &cb->scale_v, line);
-		*(t_texture *)dst = (t_texture){.type = TEXTURE_CHECKER, .data = cb};
-	}
-	else {
-		if (ft_atof(line, (double *)dst) < 1)
-			put_err("[Atof-Atoi2] : Overflow or parsing error");
-	}
-	return (1);
 }
 
 // Will validate the integrity of user provided parameters for the specified shape
@@ -182,70 +70,6 @@ bool	set_property(size_t type, void *dst, char *line)
 // 	[OBJ_CONE] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_SIZE, true}, {PROP_COLOUR, true}},
 // 	[OBJ_TRIANGLE] = {{PROP_POSITION, true}, {PROP_POSITION, true}, {PROP_POSITION, true}, {PROP_COLOUR, true}}
 // };
-
-t_material_dispatcher	*build_dispatcher(void **vals)
-{
-	static t_material_dispatcher disp[] = {
-	[MAT_REFLECT] = {.key = "refl", .processing_type = PROP_SIZE},
-	[MAT_REFRACT] = {.key = "refr", .processing_type = PROP_SIZE},
-	[MAT_IDX_REFRACT] = {.key = "idx_refr", .processing_type = PROP_SIZE},
-	[MAT_SPECULAR] = {.key = "spec", .processing_type = PROP_SIZE},
-	[MAT_SHINE] = {.key = "shine", .processing_type = PROP_SIZE},
-	[MAT_CHECKER] = {.key = "checker", .processing_type = PROP_CHECKER},
-	[MAT_BUMP] = {.key = "bump", .processing_type = PROP_PATH},
-	[MAT_IMG] = {.key = "image", .processing_type = PROP_PATH}, NULL};
-	size_t	i;
-
-	i = 0;
-	while (vals[i])
-	{
-		disp[i].val = vals[i];
-		i++;
-	}
-	return (disp);
-}
-
-void	parse_mats(t_material *mat, char **line)
-{
-	size_t	len;
-	size_t	i;
-	t_material_dispatcher	*mat_disp;
-
-	mat_disp = build_dispatcher((void *[]){[MAT_REFLECT] = &mat->reflectivity, 
-		[MAT_REFRACT] = &mat->refractivity, [MAT_IDX_REFRACT] = &mat->ior,
-		[MAT_SPECULAR] = &mat->specular_strength, [MAT_SHINE] = &mat->shininess,
-		[MAT_CHECKER] = &mat->texture, [MAT_IMG] = &mat->texture,
-		[MAT_BUMP] = &mat->bump_maps, NULL});
-	while (*line && **line != '\n')
-	{
-		i = 0;
-		while (mat_disp[i].key)
-		{
-			printf("Checking mat:  %s in line %s\n", mat_disp[i].key, *line);
-			len = ft_strlen(mat_disp[i].key);
-			
-			if (!ft_strncmp(mat_disp[i].key, *line, len) && ft_strchr("=:", (*line)[len]))
-			{
-				printf("Found the right mat <3\nRemaining val %s\n", *line + len + 1);
-				set_property(mat_disp[i].processing_type, mat_disp[i].val, *line + len + 1);
-			}
-			i++;
-		}
-		line++;
-	}
-	if (!mat->shininess)
-	mat->shininess = 32;
-	if (!mat->ior)
-	{
-		if (mat->reflectivity)
-			mat->ior = 1.3;
-		else if (mat->refractivity)
-			mat->ior = 1.02;
-		else
-			mat->ior = 1.00;
-	}
-}
-
 void	parse_object(char **line)
 {
 	size_t					i;
@@ -261,7 +85,7 @@ void	parse_object(char **line)
 	[OBJ_PLANE] = {"pl", 0, 0, SIZE_MAX, build_plane},
 	[OBJ_CYLINDER] = {"cy", 0, 0, SIZE_MAX, build_cylinder},
 	[OBJ_CONE] = {"co", 0, 0, SIZE_MAX, build_cone},
-	[OBJ_TRIANGLE] = {"tr", 0, 0, SIZE_MAX, &build_triangle}};
+	[OBJ_TRIANGLE] = {"tr", 0, 0, SIZE_MAX, build_triangle}};
 
 	i = 1;
 	while (i < sizeof(assets) / sizeof(*assets))
@@ -294,9 +118,9 @@ void	parse_rtconfig(char *path)
 
 	parser = parser_data();
 	printf("Path %s of size %zu\n", path, ft_strlen(path));
-	if (ft_strlen(path) < 3
-		|| !ft_strnstr(&path[ft_strlen(path) - 3], ".rt", 3))
-			put_err("Invalid file name");
+	if (ft_strlen(path) < 3 || !ft_strrnstr(path, ".rt", 3))
+		// || !ft_strnstr(&path[ft_strlen(path) - 3], ".rt", 3))
+		put_err("Invalid file name");
 	fd = open(path, O_RDONLY);
 	if (fd == -1)
 		return (put_err("Failled to open path"));
