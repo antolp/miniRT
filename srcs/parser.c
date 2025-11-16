@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 18:10:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/01 00:07:03 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/16 17:19:46 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,11 @@ void	clear_content(t_list *elm)
 	if (!elm->content)
 		return ;
 	obj = elm->content;
+	
 	if (obj->shape)
 		free(obj->shape);
-	//free image path in material
-		//if (obj->material.texture.)
 	if (obj->material.texture.data)
 		free(obj->material.texture.data);
-
 	if (elm->content)
 		free(elm->content);
 }
@@ -87,19 +85,19 @@ void	check_range(double val, t_property_rules range)
 	}
 }
 
-//!!!Now rendered obsolete by the dynamic material dispatcher
-// bool	set_mat(size_t type, t_material *mat, char *line, void *dst)
-// {
-// 	if (type >= MAT_REFLECT && type <= MAT_SHINE)
-// 		set_property(PROP_SIZE, dst, line);	
-// 	else if (type == MAT_IMG)
-// 		set_property(PROP_PATH, dst, line);
-// 	else if (type == MAT_CHECKER)
-// 	{
-		
-// 	}
-// 	//check values range
-// }
+void	check_path(char *line)
+{
+	// char	*line;
+
+	// if (ft_strchr(line, ' '))
+	// 	line = ft_substr(line, 0, ft_strchr(line, ' ') - line);
+	// else
+	// 	line = ft_substr(line, 0, ft_strlen(line));
+	if (ft_strlen(line) < 4
+		|| !ft_strnstr(line + ft_strlen(line) - 4, ".xpm", 4))
+		put_err("Invalid file name: expecting *.xpm");
+	// return (line);
+}
 
 //Charged to assert the integrity of given property value
 bool	set_property(size_t type, void *dst, char *line)
@@ -112,11 +110,10 @@ bool	set_property(size_t type, void *dst, char *line)
 		[PROP_COLOUR] = {PROP_COLOUR, 0, 255},
 		[PROP_RATIO] = {PROP_RATIO, 0.0, 1.0},
 		[PROP_ANGLE] = {PROP_ANGLE, 0, 180},
-		[PROP_SIZE] = {PROP_SIZE, FLT_MIN, FLT_MAX},
-		[PROP_PATH] = {PROP_PATH, 0, 0}
+		[PROP_SIZE] = {PROP_SIZE, 0, FLT_MAX},
+		[PROP_PATH] = {PROP_PATH, 4, FLT_MAX}
 		// {PROP_VALUE, {PROP_VALUE, FLT_MIN, FLT_MAX}
 	};
-	
 	
 	printf(" >>> Calling setproperty with line %s\n", line);
 	if (!line)
@@ -129,7 +126,7 @@ bool	set_property(size_t type, void *dst, char *line)
 
 		parse_valset(line, (void *[]){&un.vec->x, &un.vec->y, &un.vec->z, 0}, PROP_DIRECTION);
 		// printf("String after vec3 parsing: %s\n", line);
-		if (PROP_DIRECTION && (!un.vec->x && !un.vec->y && !un.vec->z))
+		if (type == PROP_DIRECTION && (!un.vec->x && !un.vec->y && !un.vec->z))
 			put_err("Invalid vector dimensions : one axis should not be 0");
 		printf("Valset coordinates : %f,%f,%f \n",
 		un.vec->x, un.vec->y, un.vec->z);
@@ -139,19 +136,10 @@ bool	set_property(size_t type, void *dst, char *line)
 			&((t_color *)dst)->b, 0}, PROP_COLOUR);
 	else if (type == PROP_PATH)
 	{
-		char	*path;
-
-		if (ft_strchr(line, ' '))
-			path = ft_substr(line, 0, ft_strchr(line, ' ') - line);
-		else
-			path = ft_substr(line, 0, ft_strlen(line));
-		if (ft_strlen(path) < 4
-			|| !ft_strnstr(path + ft_strlen(path) - 4, ".xpm", 4))
-			put_err("Invalid file name: expecting *.xpm");
+		check_path(line);
 		((t_texture *)dst)->type = TEXTURE_IMAGE;
-		((t_texture *)dst)->data = load_xpm_image(g_renderer(NULL)->mlx, path);
+		((t_texture *)dst)->data = load_xpm_image(g_renderer(NULL)->mlx, line);
 		//check proper xmp img loading
-		free(path);
 	}
 	else if (type == PROP_CHECKER)
 	{
@@ -174,7 +162,7 @@ bool	set_property(size_t type, void *dst, char *line)
 		line = ft_strchr(line, ';') + 1;
 		if (!line)
 			put_err("Checkerboard : Insufficient parameter count\n Expecting: checker=R,G,B;R,G,B;scaleU;scaleV");
-		set_property(PROP_SIZE, &cb->scale_u, line);
+		set_property(PROP_SIZE, &cb->scale_v, line);
 		*(t_texture *)dst = (t_texture){.type = TEXTURE_CHECKER, .data = cb};
 	}
 	else {
@@ -204,6 +192,7 @@ t_material_dispatcher	*build_dispatcher(void **vals)
 	[MAT_SPECULAR] = {.key = "spec", .processing_type = PROP_SIZE},
 	[MAT_SHINE] = {.key = "shine", .processing_type = PROP_SIZE},
 	[MAT_CHECKER] = {.key = "checker", .processing_type = PROP_CHECKER},
+	[MAT_BUMP] = {.key = "bump", .processing_type = PROP_PATH},
 	[MAT_IMG] = {.key = "image", .processing_type = PROP_PATH}, NULL};
 	size_t	i;
 
@@ -225,7 +214,8 @@ void	parse_mats(t_material *mat, char **line)
 	mat_disp = build_dispatcher((void *[]){[MAT_REFLECT] = &mat->reflectivity, 
 		[MAT_REFRACT] = &mat->refractivity, [MAT_IDX_REFRACT] = &mat->ior,
 		[MAT_SPECULAR] = &mat->specular_strength, [MAT_SHINE] = &mat->shininess,
-		[MAT_CHECKER] = &mat->texture, [MAT_IMG] = &mat->texture, NULL});
+		[MAT_CHECKER] = &mat->texture, [MAT_IMG] = &mat->texture,
+		[MAT_BUMP] = &mat->bump_maps, NULL});
 	while (*line && **line != '\n')
 	{
 		i = 0;
@@ -234,7 +224,8 @@ void	parse_mats(t_material *mat, char **line)
 			printf("Checking mat:  %s in line %s\n", mat_disp[i].key, *line);
 			len = ft_strlen(mat_disp[i].key);
 			
-			if (!ft_strncmp(mat_disp[i].key, *line, len) && ft_strchr("=:", (*line)[len])) {
+			if (!ft_strncmp(mat_disp[i].key, *line, len) && ft_strchr("=:", (*line)[len]))
+			{
 				printf("Found the right mat <3\nRemaining val %s\n", *line + len + 1);
 				set_property(mat_disp[i].processing_type, mat_disp[i].val, *line + len + 1);
 			}
@@ -266,10 +257,10 @@ void	parse_object(char **line)
 	[OBJ_LIGHT] = {"L", 0, 0, SIZE_MAX},
 	[OBJ_BACKGROUND] = {"BG", 0, 0, 1},
 	[OBJ_SKYBOX] = {"SB", 0, 0, 1},
-	[OBJ_SPHERE] = {"sp", 0, 0, SIZE_MAX},
-	[OBJ_PLANE] = {"pl", 0, 0, SIZE_MAX},
-	[OBJ_CYLINDER] = {"cy", 0, 0, SIZE_MAX},
-	[OBJ_CONE] = {"co", 0, 0, SIZE_MAX},
+	[OBJ_SPHERE] = {"sp", 0, 0, SIZE_MAX, build_sphere},
+	[OBJ_PLANE] = {"pl", 0, 0, SIZE_MAX, build_plane},
+	[OBJ_CYLINDER] = {"cy", 0, 0, SIZE_MAX, build_cylinder},
+	[OBJ_CONE] = {"co", 0, 0, SIZE_MAX, build_cone},
 	[OBJ_TRIANGLE] = {"tr", 0, 0, SIZE_MAX, &build_triangle}};
 
 	i = 1;
@@ -295,7 +286,6 @@ void	parse_object(char **line)
 	put_err("Unidentified asset type");
 }
 
-//Add *splited_line[] and *line to glob object so it can be reached and freed anywhere
 void	parse_rtconfig(char *path) 
 {
 	int		fd;

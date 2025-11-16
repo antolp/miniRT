@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 18:28:52 by epinaud           #+#    #+#             */
-/*   Updated: 2025/10/31 20:29:56 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/16 22:22:30 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,6 @@ typedef struct s_asset_format {
 	t_object	*(*shape_builder)(t_object *obj, char **line);
 }	t_asset_format;
 
-# define MAT_KEY 0
-# define MAT_DISPATCHER 1
-
 typedef union s_morph
 {
 	t_vec3	*vec;
@@ -76,7 +73,8 @@ typedef enum e_material_keys
 	MAT_SPECULAR,
 	MAT_SHINE,
 	MAT_CHECKER,
-	MAT_IMG
+	MAT_IMG,
+	MAT_BUMP
 }	t_material_keys;
 
 typedef struct s_material_dispatcher {
@@ -91,6 +89,10 @@ void	put_err(char *msg);
 
 //Shape builders
 t_list		*add_content(void *content);
+t_object	*build_sphere(t_object *obj, char **line);
+t_object	*build_plane(t_object *obj, char **line);
+t_object	*build_cylinder(t_object *obj, char **line);
+t_object	*build_cone(t_object *obj, char **line);
 t_object	*build_triangle(t_object *obj, char **line);
 bool		set_property(size_t type, void *dst, char *line);
 void		parse_mats(t_material *mat, char **line);
