@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 18:10:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/16 23:46:33 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/20 12:43:17 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,14 @@ void	clear_content(t_list *elm)
 		free(elm->content);
 }
 
+void	clear_lights(t_list *elm)
+{
+	if (!elm->content)
+		return ;
+	if (elm->content)
+		free(elm->content);
+}
+
 void	put_err(char *msg)
 {
 	// #include <errno.h>
@@ -42,9 +50,10 @@ void	put_err(char *msg)
 	ft_dprintf(STDERR_FILENO, msg);
 	ft_putchar_fd('\n', STDERR_FILENO);
 	ft_lstclear(&g_scene(0)->objects, clear_content);
+	ft_lstclear(&g_scene(0)->lights, clear_lights);
 	if (parser_data()->line)
 		free(parser_data()->line);
-	if(parser_data()->word_arr)
+	if (parser_data()->word_arr)
 		ft_free_dynarr(parser_data()->word_arr);
 	exit(EXIT_FAILURE);
 }
@@ -52,7 +61,6 @@ void	put_err(char *msg)
 //Count and check object quantity
 void	check_range(double val, t_property_rules range)
 {
-	// if (in_array(prop, chkRange, nb_elems(chkRange, sizeof(chkRange)))) {
 	if ( val < range.min || val > range.max )
 	{
 		ft_dprintf(STDERR_FILENO, "Expecting value between [%f] and [%f]", range.min, range.max);
@@ -75,34 +83,37 @@ void	parse_object(char **line)
 	size_t					i;
 	t_object				*object;
 	static t_asset_format	assets[] = {
-		// [OBJ_UNKNOWN] = {NULL},
-	[OBJ_AMBIANT_LIGHT] = {"A", 0, 0, 1},
-	[OBJ_CAMERA] = {"C", 0, 1, 1},
-	[OBJ_LIGHT] = {"L", 0, 0, SIZE_MAX},
-	[OBJ_BACKGROUND] = {"BG", 0, 0, 1},
-	[OBJ_SKYBOX] = {"SB", 0, 0, 1},
-	[OBJ_SPHERE] = {"sp", 0, 0, SIZE_MAX, build_sphere},
-	[OBJ_PLANE] = {"pl", 0, 0, SIZE_MAX, build_plane},
-	[OBJ_CYLINDER] = {"cy", 0, 0, SIZE_MAX, build_cylinder},
-	[OBJ_CONE] = {"co", 0, 0, SIZE_MAX, build_cone},
-	[OBJ_TRIANGLE] = {"tr", 0, 0, SIZE_MAX, build_triangle}};
+	[OBJ_AMBIANT_LIGHT] = {"A", 0, 0, 1, &build_ambiant_light},
+	[OBJ_CAMERA] = {"C", 0, 1, 1, &build_camera},
+	[OBJ_LIGHT] = {"L", 0, 0, SIZE_MAX, &build_light},
+	[OBJ_BACKGROUND] = {"BG", 0, 0, 1, &build_background},
+	[OBJ_SKYBOX] = {"SB", 0, 0, 1, &build_skybox},
+	[OBJ_SPHERE] = {"sp", 0, 0, SIZE_MAX, &build_sphere},
+	[OBJ_PLANE] = {"pl", 0, 0, SIZE_MAX, &build_plane},
+	[OBJ_CYLINDER] = {"cy", 0, 0, SIZE_MAX, &build_cylinder},
+	[OBJ_CONE] = {"co", 0, 0, SIZE_MAX, &build_cone},
+	[OBJ_TRIANGLE] = {"tr", 0, 0, SIZE_MAX, &build_triangle}};
 
 	i = 1;
 	while (i < sizeof(assets) / sizeof(*assets))
 	{
-		// printf("asset type is %s\n", assets[i].type);
 		if (ft_strcmp(*line, assets[i].type) == 0)
 		{
-			printf("Asset %s found. Remaining line :\n", assets[i].type);
+			printf("Asset %s found as index[%ld]. Remaining line :\n", assets[i].type, i);
 			line++;
 			put_recurse_dynarr(line);
-			object = malloc(sizeof(t_object));
-			if (!object)
-				put_err("Parser : Failled to malloc t_object");
-			*object = (t_object){0};
-			object->type = i;
-			assets[i].shape_builder(object, line);
-			assets[i].quantity++;
+			if (i < OBJ_TRIANGLE)
+			{
+				object = malloc(sizeof(t_object));
+				if (!object)
+					put_err("Parser : Failled to malloc t_object");
+				*object = (t_object){0};
+				object->type = i;
+				assets[i].shape_builder(object, line);
+				assets[i].quantity++;
+			}
+			else
+				assets[i].shape_builder(g_scene(NULL), line);
 			return ;
 		}
 		i++;
@@ -126,7 +137,7 @@ void	parse_rtconfig(char *path)
 		return (put_err("Failled to open path"));
 	while ((parser->line = get_next_line(fd)))
 	{
-		if (*parser->line == '\n') {
+		if (ft_strchr("#\n", *parser->line)) {
 			free(parser->line); 
 			continue ; }
 		index = 0;

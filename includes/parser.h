@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 18:28:52 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/16 22:22:30 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/20 12:46:53 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ typedef struct s_asset_format {
 	size_t	qtmax;
 	size_t	qtmin;
 	size_t	quantity;
-	t_object	*(*shape_builder)(t_object *obj, char **line);
+	void	(*shape_builder)(t_object *obj, char **line);
 }	t_asset_format;
 
 typedef union s_morph
@@ -89,12 +89,17 @@ void	put_err(char *msg);
 
 //Shape builders
 t_list		*add_content(void *content);
-t_object	*build_sphere(t_object *obj, char **line);
-t_object	*build_plane(t_object *obj, char **line);
-t_object	*build_cylinder(t_object *obj, char **line);
-t_object	*build_cone(t_object *obj, char **line);
-t_object	*build_triangle(t_object *obj, char **line);
-bool		set_property(size_t type, void *dst, char *line);
-void		parse_mats(t_material *mat, char **line);
+void	build_sphere(t_object *obj, char **line);
+void	build_plane(t_object *obj, char **line);
+void	build_cylinder(t_object *obj, char **line);
+void	build_cone(t_object *obj, char **line);
+void	build_triangle(t_object *obj, char **line);
+void	build_ambiant_light(t_scene *set, char **line);
+void	build_camera(t_scene *set, char **line);
+void	build_light(t_scene *set, char **line);
+void	build_background(t_scene *set, char **line);
+void	build_skybox(t_scene *set, char **line);
+bool	set_property(size_t type, void *dst, char *line);
+void	parse_mats(t_material *mat, char **line);
 
 #endif

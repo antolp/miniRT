@@ -1,6 +1,7 @@
 NAME		= miniRT
 OBJDIR		= .obj
-SRCS		= srcs/main.c srcs/init.c srcs/vector.c srcs/cli.c srcs/debug.c srcs/parser.c srcs/shape_builder.c srcs/assigners.c srcs/materials.c \
+SRCS		= srcs/main.c srcs/init.c srcs/vector.c srcs/cli.c srcs/debug.c \
+			  srcs/parser.c srcs/shape_builder.c srcs/assigners.c srcs/materials.c srcs/set_builder.c \
 			  srcs/render/render_test.c srcs/render/render.c srcs/render/ray_trace.c \
 			  srcs/render/render_frame.c \
 			  srcs/objects/plane.c srcs/objects/sphere.c srcs/objects/cylinder.c \

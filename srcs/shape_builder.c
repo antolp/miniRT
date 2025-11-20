@@ -6,13 +6,13 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 03:37:00 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/16 17:29:04 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/20 11:53:31 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
-t_object	*build_sphere(t_object *obj, char **line)
+void	build_sphere(t_object *obj, char **line)
 {
 	t_sphere	*shape;
 
@@ -31,10 +31,9 @@ t_object	*build_sphere(t_object *obj, char **line)
 	obj->get_uv = get_uv_sphere;
 	ft_lstadd_back(&g_scene(0)->objects, add_content(obj));
 	parse_mats(&obj->material, line);
-	return (obj);
 }
 
-t_object	*build_plane(t_object *obj, char **line)
+void	build_plane(t_object *obj, char **line)
 {
 	t_plane	*shape;
 
@@ -53,10 +52,9 @@ t_object	*build_plane(t_object *obj, char **line)
 	obj->get_normal = get_normal_plane;
 	obj->get_uv = get_uv_plane;
 	parse_mats(&obj->material, line);
-	return (obj);
 }
 
-t_object	*build_cylinder(t_object *obj, char **line)
+void	build_cylinder(t_object *obj, char **line)
 {
 	t_cylinder	*shape;
 
@@ -77,10 +75,9 @@ t_object	*build_cylinder(t_object *obj, char **line)
 	obj->get_normal = get_normal_cylinder;
 	obj->get_uv = get_uv_cylinder;
 	parse_mats(&obj->material, line);
-	return (obj);
 }
 
-t_object	*build_cone(t_object *obj, char **line)
+void	build_cone(t_object *obj, char **line)
 {
 	t_cone	*shape;
 
@@ -100,10 +97,9 @@ t_object	*build_cone(t_object *obj, char **line)
 	obj->get_normal = get_normal_cone;
 	obj->get_uv = get_uv_cone;
 	parse_mats(&obj->material, line);
-	return (obj);
 }
 
-t_object	*build_triangle(t_object *obj, char	**line)
+void	build_triangle(t_object *obj, char	**line)
 {
 	t_triangle	*shape;
 
@@ -128,5 +124,4 @@ t_object	*build_triangle(t_object *obj, char	**line)
 	// 	shape->p0.x, shape->p0.y, shape->p0.z,
 	// 	shape->p1.x, shape->p1.y, shape->p1.z,
 	// 	shape->p2.x, shape->p2.y, shape->p2.z);
-	return (obj);
 }
