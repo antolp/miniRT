@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   image_load.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/07/15 16:47:45 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/22 12:01:08 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,8 @@ static int	load_mlx_xpm(void *mlx, const char *path, t_texture_image *img)
 	h = 0;
 	img->mlx_img = mlx_xpm_file_to_image(mlx, (char *)path, &w, &h);
 	if (img->mlx_img == NULL)
-		return (ft_dprintf(2, "mlx_xpm_file_to_image() failed, %s\n"), path, 0);
+		return (ft_dprintf(2, "mlx_xpm_file_to_image() failed, %s\n", path),
+			put_err(""), 1);
 	img->width = w;
 	img->height = h;
 	return (1);

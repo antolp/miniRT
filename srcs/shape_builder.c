@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 03:37:00 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/20 11:53:31 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/22 12:23:13 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ void	build_cylinder(t_object *obj, char **line)
 	ft_lstadd_back(&g_scene(0)->objects, add_content(obj));
 	set_property(PROP_POSITION, &shape->center, *line++);
 	set_property(PROP_DIRECTION, &shape->axis, *line++);
+	shape->axis = vec_normalize(shape->axis);
 	set_property(PROP_SIZE, &shape->radius, *line++);
 	set_property(PROP_SIZE, &shape->height, *line++);
 	set_property(PROP_COLOUR, &obj->material.base_color, *line++);
@@ -90,6 +91,7 @@ void	build_cone(t_object *obj, char **line)
 	ft_lstadd_back(&g_scene(0)->objects, add_content(obj));
 	set_property(PROP_POSITION, &shape->apex, *line++);
 	set_property(PROP_DIRECTION, &shape->axis, *line++);
+	shape->axis = vec_normalize(shape->axis);
 	set_property(PROP_ANGLE, &shape->angle, *line++);
 	set_property(PROP_SIZE, &shape->height, *line++);
 	set_property(PROP_COLOUR, &obj->material.base_color, *line++);

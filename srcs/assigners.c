@@ -6,11 +6,26 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/16 22:57:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/16 23:43:59 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/22 20:41:44 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
+
+t_property_rules	get_prop_rules(size_t type)
+{
+	static t_property_rules	props[] = {
+	[PROP_POSITION] = {PROP_POSITION, FLT_MIN, FLT_MAX},
+	[PROP_DIRECTION] = {PROP_DIRECTION, -1, 1},
+	[PROP_COLOUR] = {PROP_COLOUR, 0, 255},
+	[PROP_RATIO] = {PROP_RATIO, 0.0, 1.0},
+	[PROP_ANGLE] = {PROP_ANGLE, 0, 180},
+	[PROP_SIZE] = {PROP_SIZE, 0, FLT_MAX},
+	[PROP_PATH] = {PROP_PATH, 4, FLT_MAX}
+	};
+	
+	return (props[type]);
+}
 
 //>> Warning for char ending atof call ?
 static void	parse_valset(void *valset[], t_property_type type, char *line)
@@ -30,6 +45,10 @@ static void	parse_valset(void *valset[], t_property_type type, char *line)
 			printf("Sum is now %f with len of %d\n", **(double **)valset, ret_atof);
 		if (ret_atof < 1 || !ft_strchr(";,\n\0", line[ret_atof]))
 			put_err("Invalid data : Unexpected or Missing value\n");
+		if (type == PROP_COLOUR)
+			check_range(**(int **)valset, get_prop_rules(type));
+		else if (type == PROP_POSITION || type == PROP_DIRECTION)
+			check_range(**(double **)valset, get_prop_rules(type));
 		line += ret_atof + 1;
 		valset++;
 	}
@@ -46,23 +65,23 @@ static void	checker_assigner(t_texture *dst, char *line)
 	parse_valset((void *[]){&cb->color1.r, &cb->color1.g, &cb->color1.b, 0}, PROP_COLOUR, line);
 	line = ft_strchr(line, ';') + 1;
 	if (!line)
-		put_err("Checkerboard : Insufficient parameter count");
+		put_err("Checkerboard : Missing separator ; or value");
 	parse_valset((void *[]){&cb->color2.r, &cb->color2.g, &cb->color2.b, 0}, PROP_COLOUR, line);
 	line = ft_strchr(line, ';') + 1;
 	if (!line)
-		put_err("Checkerboard : Insufficient parameter count");
+		put_err("Checkerboard : Missing separator ; or value");
 	printf("line is now %s\n", line);
 	set_property(PROP_SIZE, &cb->scale_u, line);		
 	line = ft_strchr(line, ';') + 1;
 	if (!line)
-		put_err("Checkerboard : Insufficient parameter count\n Expecting: checker=R,G,B;R,G,B;scaleU;scaleV");
+		put_err("Checkerboard : Missing separator ; or value\n Expecting: checker=R,G,B;R,G,B;scaleU;scaleV");
 	set_property(PROP_SIZE, &cb->scale_v, line);
 	*dst = (t_texture){.type = TEXTURE_CHECKER, .data = cb};
 }
 
 static void	assign_vec(t_vec3 *vec, t_property_type type, char *line)
 {
-	parse_valset((void *[]){&vec->x, &vec->y, &vec->z, 0}, PROP_DIRECTION, line);
+	parse_valset((void *[]){&vec->x, &vec->y, &vec->z, 0}, type, line);
 	if (type == PROP_DIRECTION && (!vec->x && !vec->y && !vec->z))
 		put_err("Invalid vector dimensions : one axis should not be 0");
 	printf("Valset coordinates : %f,%f,%f \n",
@@ -71,6 +90,7 @@ static void	assign_vec(t_vec3 *vec, t_property_type type, char *line)
 
 static void	assign_path(t_texture *img, char *line)
 {
+	strstripchr(line, "\n", ft_strlen(line));
 	if (ft_strlen(line) < 4
 		|| !ft_strnstr(line + ft_strlen(line) - 4, ".xpm", 4))
 		put_err("Invalid file name: expecting *.xpm");
@@ -84,16 +104,6 @@ static void	assign_path(t_texture *img, char *line)
 //and assert the integrity of and for a given property value
 bool	set_property(size_t type, void *dst, char *line)
 {
-	static t_property_rules	props[] = {
-	[PROP_POSITION] = {PROP_POSITION, FLT_MIN, FLT_MAX},
-	[PROP_DIRECTION] = {PROP_DIRECTION, -1, 1},
-	[PROP_COLOUR] = {PROP_COLOUR, 0, 255},
-	[PROP_RATIO] = {PROP_RATIO, 0.0, 1.0},
-	[PROP_ANGLE] = {PROP_ANGLE, 0, 180},
-	[PROP_SIZE] = {PROP_SIZE, 0, FLT_MAX},
-	[PROP_PATH] = {PROP_PATH, 4, FLT_MAX}
-	};
-
 	printf(" >>> Calling setproperty with line %s\n", line);
 	if (!line)
 		put_err("Invalid data : missing parameter");

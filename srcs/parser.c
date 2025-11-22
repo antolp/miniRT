@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 18:10:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/20 12:43:17 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/22 22:57:43 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,9 +61,10 @@ void	put_err(char *msg)
 //Count and check object quantity
 void	check_range(double val, t_property_rules range)
 {
-	if ( val < range.min || val > range.max )
+	// printf("Checking range for %f: [%f < > %f]\n", val, range.min, range.max);
+	if (val < range.min || val > range.max)
 	{
-		ft_dprintf(STDERR_FILENO, "Expecting value between [%f] and [%f]", range.min, range.max);
+		ft_dprintf(STDERR_FILENO, "Expecting value for type %u between [%f] and [%f]: ", range.type, range.min, range.max);
 		put_err("Parameter has out of range value");
 	}
 }
@@ -152,5 +153,4 @@ void	parse_rtconfig(char *path)
 	}
 	printf("Ceased to read file\n");
 	//!!! CHECK THAT ALL MANDATORY ASSETS ARE SET IN THE SCENE
-	ft_lstclear(&g_scene(0)->objects, clear_content);
 }

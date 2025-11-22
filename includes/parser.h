@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 18:28:52 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/20 12:46:53 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/21 14:56:08 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,25 +45,22 @@ typedef enum e_property_type
 	PROP_CHECKER
 }	t_property_type;
 
-typedef struct s_property_rules {
-	t_property_type	type_id;
+typedef struct s_property_rules
+{
+	t_property_type	type;
 	double			min;
 	double			max;
 }	t_property_rules;
 
-typedef struct s_asset_format {
-	char	*type;
-	size_t	qtmax;
-	size_t	qtmin;
-	size_t	quantity;
-	void	(*shape_builder)(t_object *obj, char **line);
-}	t_asset_format;
-
-typedef union s_morph
+typedef struct s_asset_format
 {
-	t_vec3	*vec;
-	t_color	*col;
-}	t_morph;
+	char	*type;
+	size_t	quantity;
+	size_t	qtmin;
+	size_t	qtmax;
+	void	(*shape_builder)();
+	// void	(*shape_builder)(t_object *obj, char **line);
+}	t_asset_format;
 
 typedef enum e_material_keys
 {
@@ -88,7 +85,7 @@ void	put_err(char *msg);
 
 
 //Shape builders
-t_list		*add_content(void *content);
+t_list	*add_content(void *content);
 void	build_sphere(t_object *obj, char **line);
 void	build_plane(t_object *obj, char **line);
 void	build_cylinder(t_object *obj, char **line);
@@ -101,5 +98,6 @@ void	build_background(t_scene *set, char **line);
 void	build_skybox(t_scene *set, char **line);
 bool	set_property(size_t type, void *dst, char *line);
 void	parse_mats(t_material *mat, char **line);
+void	check_range(double val, t_property_rules range);
 
 #endif

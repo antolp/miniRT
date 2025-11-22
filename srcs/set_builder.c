@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 09:34:39 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/20 12:37:55 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/22 12:17:28 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,11 @@ void	build_camera(t_scene *set, char **line)
 	//max 1
 	set_property(PROP_POSITION, &set->camera.position, *line++);
 	set_property(PROP_DIRECTION, &set->camera.direction, *line++);
+	set_property(PROP_ANGLE, &set->camera.fov, *line++);
 	
-	set->camera.fov = 60;
-	*line++;
-	//!!HANDLE OPTIONAL PROP
-	//set_property(PROP_ANGLE, &light->position, *line++);
+	// set->camera.fov = 60;
+	// (*line)++;
+	//!!HANDLE OPTIONAL PROP !?!
 	
 	
 	//exactly 1
