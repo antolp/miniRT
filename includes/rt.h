@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/10/12 18:36:19 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/25 01:27:51 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,7 @@ bool		init_scene(t_scene *s);
 int			key_hook(int keycode, void *param);
 t_renderer	*g_renderer(t_renderer *set);
 t_scene		*g_scene(t_scene *set);
+void		clear_minirt(void);
 
 //renderer
 t_color		trace_ray(t_ray *ray, int depth);
@@ -164,6 +165,7 @@ bool	get_uv_cone(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
 bool	get_uv_triangle(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
 void	init_cyl_uv_vars(t_cyl_uv_vars *v, t_object *obj);
 t_color	get_background_color(t_vec3 dir);
+void	destroy_texture(void *mlx, t_texture *tex);
 
 
 double	clamp01(double x);

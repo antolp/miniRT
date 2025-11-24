@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 03:37:00 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/24 23:08:57 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/25 00:03:55 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ void	build_sphere(t_object *obj, char **line)
 {
 	t_sphere	*shape;
 
-	shape = obj->shape;
 	printf(">>> Building sphere\n");
 	obj->shape = malloc(sizeof(t_sphere));
 	shape = obj->shape;
@@ -37,7 +36,6 @@ void	build_plane(t_object *obj, char **line)
 {
 	t_plane	*shape;
 
-	shape = obj->shape;
 	printf(">>> Building plane\n");
 	obj->shape = malloc(sizeof(t_plane));
 	shape = obj->shape;
@@ -61,9 +59,9 @@ void	build_cylinder(t_object *obj, char **line)
 	shape = obj->shape;
 	printf(">>> Building cylinder\n");
 	obj->shape = malloc(sizeof(t_cylinder));
+	shape = obj->shape;
 	if (!obj->shape)
 		put_err("build_cylinder : Failled to malloc t_cylinder");
-	shape = obj->shape;
 	*(t_cylinder *)(obj->shape) = (t_cylinder){0};
 	ft_lstadd_back(&g_scene(0)->objects, add_content(obj));
 	set_property(PROP_POSITION, &shape->center, *line++);
@@ -106,7 +104,7 @@ void	build_triangle(t_object *obj, char	**line)
 	t_triangle	*shape;
 
 	printf(">>> Building triangle\n");
-		obj->shape = malloc(sizeof(t_triangle));
+	obj->shape = malloc(sizeof(t_triangle));
 	shape = obj->shape;
 	if (!obj->shape)
 		put_err("build_cone : Failled to malloc t_triangle");

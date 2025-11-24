@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 18:10:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/24 23:23:08 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/25 01:24:16 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,45 +19,13 @@ t_parser	*parser_data(void)
 	return (&s);
 }
 
-void	clear_content(t_list *elm)
-{
-	t_object	*obj;
-
-	if (!elm->content)
-		return ;
-	obj = elm->content;
-	
-	if (obj->shape)
-		free(obj->shape);
-	if (obj->material.texture.data)
-	{
-		// destroy_texture();
-		free(obj->material.texture.data);
-	}
-	if (elm->content)
-		free(elm->content);
-}
-
-void	clear_lights(t_list *elm)
-{
-	if (!elm->content)
-		return ;
-	if (elm->content)
-		free(elm->content);
-}
-
 void	put_err(char *msg)
 {
 	// #include <errno.h>
 	// perror("open"); printf("open failed: %s\n", strerror(errno));
 	ft_dprintf(STDERR_FILENO, msg);
 	ft_putchar_fd('\n', STDERR_FILENO);
-	ft_lstclear(&g_scene(0)->objects, clear_content);
-	ft_lstclear(&g_scene(0)->lights, clear_lights);
-	if (parser_data()->line)
-		free(parser_data()->line);
-	if (parser_data()->word_arr)
-		ft_free_dynarr(parser_data()->word_arr);
+	clear_minirt();
 	exit(EXIT_FAILURE);
 }
 

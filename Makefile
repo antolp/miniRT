@@ -1,9 +1,9 @@
 NAME		= miniRT
 OBJDIR		= .obj
 SRCS		= srcs/main.c srcs/init.c srcs/vector.c srcs/cli.c srcs/debug.c \
-			  srcs/parser.c srcs/shape_builder.c srcs/assigners.c srcs/materials.c srcs/set_builder.c \
+			  srcs/parser/parser.c srcs/parser/shape_builder.c srcs/parser/assigners.c srcs/parser/materials.c srcs/parser/set_builder.c \
 			  srcs/render/render_test.c srcs/render/render.c srcs/render/ray_trace.c \
-			  srcs/render/render_frame.c \
+			  srcs/render/render_frame.c srcs/cleaner.c \
 			  srcs/objects/plane.c srcs/objects/sphere.c srcs/objects/cylinder.c \
 			  srcs/objects/cone.c srcs/objects/triangle.c \
 			  srcs/shading/diffuse_lights.c srcs/shading/shading.c srcs/shading/specular_highlight.c \

@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/11/22 12:01:08 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/25 01:32:17 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,7 @@ static int	load_mlx_xpm(void *mlx, const char *path, t_texture_image *img)
 	h = 0;
 	img->mlx_img = mlx_xpm_file_to_image(mlx, (char *)path, &w, &h);
 	if (img->mlx_img == NULL)
-		return (ft_dprintf(2, "mlx_xpm_file_to_image() failed, %s\n", path),
-			put_err(""), 1);
+		return (ft_dprintf(2, "mlx_xpm_file_to_image() failed, %s\n"), path, 0);
 	img->width = w;
 	img->height = h;
 	return (1);
@@ -59,7 +58,6 @@ static int	map_image_buffer(void *mlx, t_texture_image *img)
 			&img->bpp, &img->line_len, &img->endian);
 	if (img->addr == NULL)
 	{
-		ft_dprintf(2, "loaded image %s data couldn't be mapped.\n");
 		mlx_destroy_image(mlx, img->mlx_img);
 		img->mlx_img = NULL;
 		return (0);
@@ -81,14 +79,13 @@ t_texture_image	*load_xpm_image(void *mlx, const char *path)
 		return (NULL);
 	if (!load_mlx_xpm(mlx, path, img))
 	{
-		ft_dprintf(2, "image %s couldn't be loaded. please check the path.\n");
-		free(img);
-		return (NULL);
+		ft_dprintf(2, "image %s couldn't be loaded. please check the path.\n", path);
+		return (free(img), NULL);
 	}
 	if (!map_image_buffer(mlx, img))
 	{
-		free(img);
-		return (NULL);
+		ft_dprintf(2, "loaded image %s data couldn't be mapped.\n", path);
+		return (free(img), NULL);
 	}
 	if (img->bpp == 32)
 		img->bgra = 1;

@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/11/22 19:20:03 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/25 00:45:17 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,16 +35,6 @@ t_scene	*g_scene(t_scene *set)
 	return (s);
 }
 
-char	*test()
-{
-	return("test123");
-}
-
-void	g_test()
-{
-	printf("\ncoucou : %s\n", (char *)g_renderer(NULL)->mlx);
-}
-
 int	main(int argc, char	*argv[])
 {
 	t_scene		scene_g;
@@ -56,12 +46,9 @@ int	main(int argc, char	*argv[])
 	scene_g = (t_scene){0};
 	g_renderer(&renderer_g);
 	if (!init_renderer(&renderer_g, WIDTH, HEIGHT, "rt"))
-		put_err("Renderer init faillure"); // need to aadd a free() mechanism 
+		put_err("Renderer init faillure");
 	parse_rtconfig(argv[1]);
-	// return (0);
-	// if (!init_scene(&scene_g))
-	// 	return (1); // again, need to aadd a free() mechanism
-
+	// print_scene();
 	mlx_hook(renderer_g.win, KeyPress, KeyPressMask, key_hook, NULL);
 	// mlx_key_hook(renderer_g.mlx, key_hook, NULL);
 	mlx_loop_hook(renderer_g.mlx, render_loop, NULL);

@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 18:28:52 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/24 11:56:20 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/25 01:24:48 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,9 +80,9 @@ typedef struct s_material_dispatcher {
 	t_property_type		processing_type;
 }	t_material_dispatcher;
 
-void	parse_rtconfig(char *path);
-void	put_err(char *msg);
-
+void		parse_rtconfig(char *path);
+void		put_err(char *msg);
+t_parser	*parser_data(void);
 
 //Shape builders
 t_list	*add_content(void *content);

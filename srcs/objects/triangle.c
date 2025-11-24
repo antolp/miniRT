@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/10/15 21:54:52 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/25 00:29:11 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,8 +99,6 @@ bool	intersect_triangle(t_object *obj, t_ray *ray, double *t)
 //take two 
 void	get_normal_triangle(t_object *obj, t_vec3 *hit_point, t_vec3 *out_normal)
 {
-	printf("ENTERED GETNORMAL TRIANGLE\n");
-	return ;
 	t_triangle	*tri;
 	t_vec3		e1;
 	t_vec3		e2;

@@ -170,6 +170,7 @@ int	key_hook(int keycode, void *param)
 	//quit
 	if (keycode == XK_Escape)
 	{
+		clear_minirt();
 		printf("Exiting...\n");
 		exit(0);
 	}
