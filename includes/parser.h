@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 18:28:52 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/21 14:56:08 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/24 11:56:20 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ typedef struct s_asset_format
 	size_t	qtmin;
 	size_t	qtmax;
 	void	(*shape_builder)();
-	// void	(*shape_builder)(t_object *obj, char **line);
+	size_t	type_enum;
 }	t_asset_format;
 
 typedef enum e_material_keys
