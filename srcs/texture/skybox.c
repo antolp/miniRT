@@ -12,6 +12,28 @@
 
 #include "rt.h"
 
+//Some texture/uv mapping utils i'll put here for norm
+//
+//equivalent to fmin(fmax(x, 0.0), 1.0) but easier to read
+double	clamp01(double x)
+{
+	if (x < 0.0)
+		return (0.0);
+	if (x > 1.0)
+		return (1.0);
+	return (x);
+}
+
+//equivalent to x - floor(x)
+double	wrap01(double x)
+{
+	while (x >= 1.0)
+		x = x - 1.0;
+	while (x < 0.0)
+		x = x + 1.0;
+	return (x);
+}
+
 //mapping from inside a sphere is surprisingly straight forward
 static void	sky_equirect_uv(t_vec3 d, double *u, double *v)
 {
@@ -19,7 +41,7 @@ static void	sky_equirect_uv(t_vec3 d, double *u, double *v)
 	double not_v;
 	double len;
 
-	len = sqrt(vec_dot(d, d));
+	len = vec_length(d);
 	if (len > 0.0)
 		d = vec_mul(d, 1.0 / len);
 	not_u = 0.5 + atan2(d.z, d.x) / (2.0 * M_PI);

@@ -35,23 +35,6 @@ t_scene	*g_scene(t_scene *set)
 	return (s);
 }
 
-
-char	*test()
-{
-	return("test123");
-}
-
-void	g_test()
-{
-	printf("\ncoucou : %s\n", (char *)g_renderer(NULL)->mlx);
-}
-
-
-
-
-
-
-
 int	main(void)
 {
 	t_scene		scene_g;

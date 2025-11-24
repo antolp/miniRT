@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   bump_map2.c                                         :+:      :+:    :+:   */
+/*   bump_map_tb.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -17,7 +17,6 @@
 //T tangent, B bitangent. dot product of any vector between N, T and B is 0
 //(all perpendicular to each other)
 //
-//SHOULD REMOVE UNUSED PARAMETERS
 //
 //for plane, choose a relative "up" not parallel to N (Y as up, fallback to X as up).
 //rest is very straightforward, T = up × N  and  B = T * N
@@ -90,7 +89,7 @@ void	build_tb_triangle_fit(t_triangle *tr, t_vec3 N, t_vec3 *T, t_vec3 *B)
 //5498/compute-sphere-tangent-for-normal-mapping
 //here, we arent using spherical coordinates, but that little trick works
 //using 3d vector coordinates
-void	build_tb_sphere(t_sphere *sp, t_vec3 P, t_vec3 N, t_vec3 *T, t_vec3 *B)
+void	build_tb_sphere(t_sphere *sp, t_vec3 N, t_vec3 *T, t_vec3 *B)
 {
 	t_vec3	fallback;
 	t_vec3	t;
@@ -102,6 +101,5 @@ void	build_tb_sphere(t_sphere *sp, t_vec3 P, t_vec3 N, t_vec3 *T, t_vec3 *B)
 		fallback = t;
 	*T = vec_safe_normalize(t, fallback);
 	*B = vec_cross(N, *T);
-	(void)P;
 	(void)sp;
 }

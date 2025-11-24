@@ -17,8 +17,8 @@
 void	init_cyl_uv_vars(t_cyl_uv_vars *v, t_object *obj)
 {
 	v->cyl = (t_cylinder *)obj->shape;
-	v->A = vec_normalize(v->cyl->axis);
-	build_basis_from_normal(v->A, &v->T, &v->B);
+	v->axis = vec_normalize(v->cyl->axis);
+	build_basis_from_normal(v->axis, &v->tangent, &v->bitangent);
 	v->eps_h = fmax(1e-6, 5e-4 * v->cyl->height);
 	v->eps_r = fmax(1e-6, 5e-4 * v->cyl->radius);
 }
@@ -36,16 +36,16 @@ static bool	init_cone_uv_vars(t_object *obj, t_vec3 *hit, t_cone_uv_vars *v)
 	if (!obj || !hit || !v)
 		return (false);
 	v->cone = (t_cone *)obj->shape;
-	v->A = vec_normalize(v->cone->axis);
-	build_basis_from_normal(v->A, &v->T, &v->B);
-	v->P = *hit;
-	v->d = vec_sub(v->P, v->cone->apex);
-	v->s = vec_dot(v->d, v->A);
+	v->axis = vec_normalize(v->cone->axis);
+	build_basis_from_normal(v->axis, &v->tangent, &v->bitangent);
+	v->hit_p = *hit;
+	v->d = vec_sub(v->hit_p, v->cone->apex);
+	v->s = vec_dot(v->d, v->axis);
 	if (v->s < -1e-9)
 		return (false);
 	v->eps_h = fmax(1e-6, 5e-4 * v->cone->height);
 	v->eps_r = fmax(1e-6, 5e-4 * v->cone->height);
-	v->baseC = vec_add(v->cone->apex, vec_mul(v->A, v->cone->height));
+	v->base_c = vec_add(v->cone->apex, vec_mul(v->axis, v->cone->height));
 	v->r_base = v->cone->height * tan(v->cone->angle);
 	return (true);
 }
@@ -75,8 +75,8 @@ static bool	cone_try_side(t_cone_uv_vars *v, t_vec2 *out_uv)
 	double	u;
 	double	vcoord;
 
-	v->w = vec_sub(v->d, vec_mul(v->A, v->s));
-	v->rlen = sqrt(vec_dot(v->w, v->w));
+	v->w = vec_sub(v->d, vec_mul(v->axis, v->s));
+	v->rlen = vec_length(v->w);
 	v->r_here = v->s * tan(v->cone->angle);
 	if (v->s < -v->eps_h || v->s > v->cone->height + v->eps_h)
 		return (false);
@@ -85,8 +85,8 @@ static bool	cone_try_side(t_cone_uv_vars *v, t_vec2 *out_uv)
 	if (v->rlen > 0.0)
 		rdir = vec_mul(v->w, 1.0 / v->rlen);
 	else
-		rdir = v->T;
-	theta = atan2(vec_dot(rdir, v->B), vec_dot(rdir, v->T));
+		rdir = v->tangent;
+	theta = atan2(vec_dot(rdir, v->bitangent), vec_dot(rdir, v->tangent));
 	u = (theta + M_PI) / (2.0 * M_PI);
 	vcoord = v->s / v->cone->height;
 	out_uv->x = wrap01(u);
@@ -122,15 +122,15 @@ static bool	cone_try_base(t_cone_uv_vars *v, t_vec2 *out_uv)
 	double	x;
 	double	y;
 
-	db = vec_sub(v->P, v->baseC);
-	ht = fabs(vec_dot(db, v->A));
+	db = vec_sub(v->hit_p, v->base_c);
+	ht = fabs(vec_dot(db, v->axis));
 	if (ht > v->eps_h)
 		return (false);
 	r_xy = sqrt(vec_dot(db, db) - ht * ht);
 	if (r_xy > v->r_base + v->eps_r)
 		return (false);
-	x = vec_dot(db, v->T);
-	y = vec_dot(db, v->B);
+	x = vec_dot(db, v->tangent);
+	y = vec_dot(db, v->bitangent);
 	out_uv->x = clamp01(0.5 + x / (2.0 * v->r_base));
 	out_uv->y = clamp01(0.5 + y / (2.0 * v->r_base));
 	return (true);

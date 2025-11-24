@@ -13,29 +13,20 @@
 #ifndef SHADING_H
 # define SHADING_H
 
-#define FLAG_COUNT 9
+# define FLAG_COUNT 9
 # include "types.h"
 
 //Feature toggles
-//this is maxed out
-//because there's no more than 9 digits, in base 10
-//unless I add pages to the flag menu
-# define FLAG_SHADOW				((uint32_t)1 << 0)
-# define FLAG_TRANSPARENT_SHADOW	((uint32_t)1 << 1)
-# define FLAG_DIFFUSE				((uint32_t)1 << 2)
-# define FLAG_SPECULAR				((uint32_t)1 << 3)
-# define FLAG_REFLECTION			((uint32_t)1 << 4)
-# define FLAG_REFRACTION			((uint32_t)1 << 5)
-# define FLAG_FRESNEL				((uint32_t)1 << 6)
-# define FLAG_TEXTURE				((uint32_t)1 << 7)
-# define FLAG_BUMP_MAP				((uint32_t)1 << 8)
-// # define FLAG_SHALOW_REFRACTION		((uint32_t)1 << 9)
-// # define FLAG_CHEAP_FRESNEL			((uint32_t)1 << 10)
-// # define FLAG_EDIT_FAST				((uint32_t)1 << 11)
-# define DEFAULT_FLAGS ( \
-	FLAG_SHADOW | FLAG_TRANSPARENT_SHADOW | FLAG_DIFFUSE | \
-	FLAG_SPECULAR | FLAG_REFLECTION | FLAG_REFRACTION | FLAG_FRESNEL | \
-	FLAG_TEXTURE | FLAG_BUMP_MAP )
+# define FLAG_SHADOW              0x00000001u
+# define FLAG_TRANSPARENT_SHADOW  0x00000002u
+# define FLAG_DIFFUSE             0x00000004u
+# define FLAG_SPECULAR            0x00000008u
+# define FLAG_REFLECTION          0x00000010u
+# define FLAG_REFRACTION          0x00000020u
+# define FLAG_FRESNEL             0x00000040u
+# define FLAG_TEXTURE             0x00000080u
+# define FLAG_BUMP_MAP            0x00000100u
+
+# define DEFAULT_FLAGS 0x000001FFu
 
 #endif
-

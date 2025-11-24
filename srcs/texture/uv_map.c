@@ -47,7 +47,7 @@ bool	get_uv_sphere(t_object *obj, t_vec3 *hit, t_vec2 *out_uv)
 		return (false);
 	sp = (t_sphere *)obj->shape;
 	p = vec_sub(*hit, sp->center);
-	len = sqrt(vec_dot(p, p));
+	len = vec_length(p);
 	if (len <= 0.0)
 		return (false);
 	p = vec_mul(p, 1.0 / len);

@@ -67,7 +67,7 @@ int	is_cone_base( t_cone *co, t_vec3 P)
 //T direction from bottom center, fallback right direction
 //(shouldn't happen but it happens somehow)
 //B from cylinder axis
-void	build_tb_cylinder_side( t_cylinder *cy, t_vec3 P, t_vec3 N, t_vec3 *T, t_vec3 *B)
+void	build_tb_cylinder_side( t_cylinder *cy, t_vec3 P, t_vec3 *T, t_vec3 *B)
 {
 	t_vec3 A;
 	t_vec3 rdir;
@@ -81,7 +81,6 @@ void	build_tb_cylinder_side( t_cylinder *cy, t_vec3 P, t_vec3 N, t_vec3 *T, t_ve
 	h = vec_dot(d, A);
 	rdir = vec_sub(d, vec_mul(A, h));
 	rdir = vec_safe_normalize(rdir, (t_vec3){1.0, 0.0, 0.0});
-	(void)N;
 	*T = vec_safe_normalize(vec_cross(A, rdir), (t_vec3){0.0, 0.0, 1.0});
 	*B = A;
 }
@@ -90,7 +89,7 @@ void	build_tb_cylinder_side( t_cylinder *cy, t_vec3 P, t_vec3 N, t_vec3 *T, t_ve
 //B from slant
 //should do a drawing but reading the values doesnt make it too 
 //hard to get a rough idea, idk
-void	build_tb_cone_side( t_cone *co, t_vec3 P, t_vec3 N, t_vec3 *T, t_vec3 *B)
+void	build_tb_cone_side( t_cone *co, t_vec3 N, t_vec3 *T, t_vec3 *B)
 {
 	t_vec3 A;
 
@@ -98,5 +97,4 @@ void	build_tb_cone_side( t_cone *co, t_vec3 P, t_vec3 N, t_vec3 *T, t_vec3 *B)
 	*T = vec_safe_normalize(vec_cross(A, N), (t_vec3){1.0, 0.0, 0.0});
 	*B = vec_safe_normalize(vec_sub(A, vec_mul(N, vec_dot(A, N))), 
 		(t_vec3){0.0, 1.0, 0.0});
-	(void)P;
 }

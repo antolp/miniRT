@@ -14,21 +14,21 @@
 
 static int	build_triangle_basis(const t_triangle *tr, t_vec3 *U, t_vec3 *V)
 {
-	t_vec3 e0;
-	t_vec3 e1;
-	t_vec3 N;
-	double len;
+	t_vec3	e0;
+	t_vec3	e1;
+	t_vec3	normal;
+	double	len;
 
 	e0 = vec_sub(tr->p1, tr->p0);
-	len = sqrt(vec_dot(e0, e0));
+	len = vec_length(e0);
 	e0 = vec_mul(e0, 1.0 / len);
 	e1 = vec_sub(tr->p2, tr->p0);
-	N = vec_cross(e0, e1);
-	len = sqrt(vec_dot(N, N));
-	N = vec_mul(N, 1.0 / len);
+	normal = vec_cross(e0, e1);
+	len = vec_length(normal);
+	normal = vec_mul(normal, 1.0 / len);
 	*U = e0;
-	*V = vec_cross(N, *U);
-	len = sqrt(vec_dot(*V, *V));
+	*V = vec_cross(normal, *U);
+	len = vec_length(*V);
 	*V = vec_mul(*V, 1.0 / len);
 	return (1);
 }

@@ -56,7 +56,7 @@ double	caustic_gain(double ior, double cos_in, double cos_out)
 }
 
 //for norm
-static void	search_candidates(t_hit_shadow_var *ctx, t_list *objects)
+static void	search_candidates(t_hit_shadow_var *var, t_list *objects)
 {
 	t_object	*obj;
 	double		t;
@@ -64,15 +64,15 @@ static void	search_candidates(t_hit_shadow_var *ctx, t_list *objects)
 	while (objects)
 	{
 		obj = (t_object *)objects->content;
-		if (obj != ctx->ignore)
+		if (obj != var->ignore)
 		{
-			t = ctx->t_min;
-			if (obj->intersect(obj, ctx->ray, &t))
+			t = var->t_min;
+			if (obj->intersect(obj, var->ray, &t))
 			{
-				if (t > 1e-4 && t < ctx->t_min && t < ctx->max_t)
+				if (t > 1e-4 && t < var->t_min && t < var->max_t)
 				{
-					ctx->t_min = t;
-					ctx->hit->object = obj;
+					var->t_min = t;
+					var->hit->object = obj;
 				}
 			}
 		}
@@ -86,17 +86,17 @@ static void	search_candidates(t_hit_shadow_var *ctx, t_list *objects)
 bool	get_closest_hit_ignoring(t_ray *ray, double max_t,
 	t_object *ignore, t_hit_info *hit)
 {
-	t_hit_shadow_var	ctx;
+	t_hit_shadow_var	var;
 	t_list				*objects;
 
-	ctx = (t_hit_shadow_var){ray, ignore, max_t, DBL_MAX, hit};
+	var = (t_hit_shadow_var){ray, ignore, max_t, DBL_MAX, hit};
 	hit->object = NULL;
 	objects = g_scene(NULL)->objects;
-	search_candidates(&ctx, objects);
+	search_candidates(&var, objects);
 	if (!hit->object)
 		return (false);
 	hit->hit_point = vec_add(ray->origin,
-			vec_mul(ray->direction, ctx.t_min));
+			vec_mul(ray->direction, var.t_min));
 	hit->object->get_normal(hit->object,
 		&hit->hit_point, &hit->normal);
 	if (g_renderer(NULL)->shading_flag & FLAG_TEXTURE

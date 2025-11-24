@@ -18,9 +18,9 @@
 static void	cyl_uv_prep_hit(t_cyl_uv_vars *v, t_vec3 *hit)
 {
 	v->d = vec_sub(*hit, v->cyl->center);
-	v->h = vec_dot(v->d, v->A);
-	v->rv = vec_sub(v->d, vec_mul(v->A, v->h));
-	v->rlen = sqrt(vec_dot(v->rv, v->rv));
+	v->h = vec_dot(v->d, v->axis);
+	v->rv = vec_sub(v->d, vec_mul(v->axis, v->h));
+	v->rlen = vec_length(v->rv);
 }
 
 //get_uv_cylinder_side():
@@ -60,8 +60,8 @@ static bool	cylinder_try_side(t_cyl_uv_vars *v, t_vec3 *hit, t_vec2 *out_uv)
 	if (v->rlen > 0.0)
 		rdir = vec_mul(v->rv, 1.0 / v->rlen);
 	else
-		rdir = v->T;
-	theta = atan2(vec_dot(rdir, v->B), vec_dot(rdir, v->T));
+		rdir = v->tangent;
+	theta = atan2(vec_dot(rdir, v->bitangent), vec_dot(rdir, v->tangent));
 	u = (theta + M_PI) / (2.0 * M_PI);
 	vcoord = v->h / v->cyl->height;
 	out_uv->x = wrap01(u);
@@ -82,14 +82,14 @@ static bool	cylinder_try_one_cap(t_cyl_uv_vars *v, t_vec3 *hit,
 	double	y;
 
 	d = vec_sub(*hit, C);
-	h = vec_dot(d, v->A);
+	h = vec_dot(d, v->axis);
 	if (fabs(h) > v->eps_h)
 		return (false);
 	r_xy = sqrt(vec_dot(d, d) - h * h);
 	if (r_xy > v->cyl->radius + v->eps_r)
 		return (false);
-	x = vec_dot(d, v->T);
-	y = vec_dot(d, v->B);
+	x = vec_dot(d, v->tangent);
+	y = vec_dot(d, v->bitangent);
 	out_uv->x = clamp01(0.5 + x / (CAP_UV_SCALE * v->cyl->radius));
 	out_uv->y = clamp01(0.5 + y / (CAP_UV_SCALE * v->cyl->radius));
 	return (true);
@@ -106,7 +106,7 @@ static bool	cylinder_try_caps(t_cyl_uv_vars *v, t_vec3 *hit, t_vec2 *out_uv)
 	oui = cylinder_try_one_cap(v, hit, C, out_uv);
 	if (oui)
 		return (true);
-	C = vec_add(v->cyl->center, vec_mul(v->A, v->cyl->height));
+	C = vec_add(v->cyl->center, vec_mul(v->axis, v->cyl->height));
 	oui = cylinder_try_one_cap(v, hit, C, out_uv);
 	if (oui)
 		return (true);

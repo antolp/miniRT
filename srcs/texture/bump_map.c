@@ -54,7 +54,7 @@ static int	bump_init_vars(t_object *obj,
 	c->hit_p = hit_p;
 	c->du = 1.0 / (double)c->img->width;
 	c->dv = 1.0 / (double)c->img->height;
-	c->N = *normal;
+	c->normal = *normal;
 	return (1);
 }
 
@@ -75,7 +75,7 @@ static void	bump_build_tangent(t_bump_var *c)
 	else
 	{
 		ft_dprintf(2, "object type unrocognized ! %i", c->obj->type);
-		build_tb_plane((t_plane *)c->obj->shape, c->N, &c->T, &c->B);
+		build_tb_plane((t_plane *)c->obj->shape, c->normal, &c->tangent, &c->bitangent);
 	}
 }
 
@@ -85,9 +85,9 @@ static void	bump_apply_normal(t_bump_var *c, t_vec3 *normal)
 	t_vec3	g;
 	t_vec3	n2;
 
-	g = vec_add(vec_mul(c->T, c->dhdu), vec_mul(c->B, c->dhdv));
-	n2 = vec_add(c->N, vec_mul(g, c->mat->bump_strength));
-	*normal = vec_safe_normalize(n2, c->N);
+	g = vec_add(vec_mul(c->tangent, c->dhdu), vec_mul(c->bitangent, c->dhdv));
+	n2 = vec_add(c->normal, vec_mul(g, c->mat->bump_strength));
+	*normal = vec_safe_normalize(n2, c->normal);
 }
 
 //applies a bump map on normal at hit point

@@ -12,28 +12,6 @@
 
 #include "rt.h"
 
-//equivalent to fmin(fmax(x, 0.0), 1.0);
-//easier to read
-//will probably replace previous expressions with calls to this
-double	clamp01(double x)
-{
-	if (x < 0.0)
-		return (0.0);
-	if (x > 1.0)
-		return (1.0);
-	return (x);
-}
-
-//equivalent to x - floor(x);
-double	wrap01(double x)
-{
-	while (x >= 1.0)
-		x = x - 1.0;
-	while (x < 0.0)
-		x = x + 1.0;
-	return (x);
-}
-
 //checkeroard_uv():
 //Computes the checkerboard color at a given UV coordinate.
 //alternates between two colors based on the sum of integer UV grid coords
@@ -57,7 +35,7 @@ t_color  checkeroard_uv(const t_checkerboard *cb, t_vec2 uv)
     return (out);
 }
 
-//for norm and readability
+//to add readability, avoid redundances
 static bool	object_uv(t_object *obj, t_vec3 *hit_p, t_vec2 *uv)
 {
 	if (obj == NULL || obj->get_uv == NULL)
@@ -65,48 +43,113 @@ static bool	object_uv(t_object *obj, t_vec3 *hit_p, t_vec2 *uv)
 	return (obj->get_uv(obj, hit_p, uv));
 }
 
-//returns the color at this hit point:
-//	- if CHECKER flag on and texture is TEX_CHECKER -> procedural color
-//	- otherwise -> material.base_color (image sampling to be added later)
+bool	get_checker_color(t_object *obj, t_material *mat,
+			t_hit_info *hit, t_color *out)
+{
+	t_vec2			uv;
+	t_texture		*tex;
+	t_checkerboard	*chk;
+
+	if (mat->texture.type != TEXTURE_CHECKER)
+		return (false);
+	if (mat->texture.data == NULL)
+		return (false);
+	if (object_uv(obj, &hit->hit_point, &uv) == false)
+		return (false);
+	tex = &mat->texture;
+	chk = (t_checkerboard *)tex->data;
+	*out = checkeroard_uv(chk, uv);
+	return (true);
+}
+
+bool	get_image_color(t_object *obj, t_material *mat,
+			t_hit_info *hit, t_color *out)
+{
+	t_vec2				uv;
+	t_texture			*tex;
+	t_texture_image		*img;
+
+	if (mat->texture.type != TEXTURE_IMAGE)
+		return (false);
+	if (mat->texture.data == NULL)
+		return (false);
+	if (object_uv(obj, &hit->hit_point, &uv) == false)
+		return (false);
+	tex = &mat->texture;
+	img = (t_texture_image *)tex->data;
+	uv.x = wrap01(uv.x);
+	uv.y = wrap01(uv.y);
+	*out = sample_image_nearest(img, uv.x, uv.y);
+	return (true);
+}
+
+//returns the color at given hit point
+//either checker, image sampling or base_color
 t_color	get_hit_color(t_hit_info *hit)
 {
 	t_object		*obj;
 	t_material		*mat;
 	unsigned int	flags;
-	t_vec2			uv;
-	t_texture		*tex;
-	t_checkerboard	*chk;
-	t_texture_image	*img;
+	t_color			color;
 
 	obj = hit->object;
 	mat = &obj->material;
 	flags = g_renderer(NULL)->shading_flag;
-
 	if ((flags & FLAG_TEXTURE) != 0u)
 	{
-		if (mat->texture.type == TEXTURE_CHECKER && mat->texture.data != NULL)
-		{
-			if (object_uv(obj, &hit->hit_point, &uv) == true)
-			{
-				//planes produce unbounded uv !!
-				tex = &mat->texture;
-				chk = (t_checkerboard *)tex->data;
-				return (checkeroard_uv(chk, uv));
-			}
-		}
-		if (mat->texture.type == TEXTURE_IMAGE && mat->texture.data != NULL)
-		{
-			if (object_uv(obj, &hit->hit_point, &uv) == true)
-			{
-				tex = &mat->texture;
-				img = (t_texture_image *)tex->data;
-				//planes produce unbounded uv
-				//caps and triangle on uv
-				uv.x = wrap01(uv.x);
-				uv.y = wrap01(uv.y);
-				return (sample_image_nearest(img, uv.x, uv.y));
-			}
-		}
+		if (get_checker_color(obj, mat, hit, &color) == true)
+			return (color);
+		if (get_image_color(obj, mat, hit, &color) == true)
+			return (color);
 	}
 	return (mat->base_color);
 }
+
+
+
+
+// //returns the color at this hit point:
+// //	- if CHECKER flag on and texture is TEX_CHECKER -> procedural color
+// //	- otherwise -> material.base_color (image sampling to be added later)
+// t_color	get_hit_color(t_hit_info *hit)
+// {
+// 	t_object		*obj;
+// 	t_material		*mat;
+// 	unsigned int	flags;
+// 	t_vec2			uv;
+// 	t_texture		*tex;
+// 	t_checkerboard	*chk;
+// 	t_texture_image	*img;
+
+// 	obj = hit->object;
+// 	mat = &obj->material;
+// 	flags = g_renderer(NULL)->shading_flag;
+
+// 	if ((flags & FLAG_TEXTURE) != 0u)
+// 	{
+// 		if (mat->texture.type == TEXTURE_CHECKER && mat->texture.data != NULL)
+// 		{
+// 			if (object_uv(obj, &hit->hit_point, &uv) == true)
+// 			{
+// 				//planes produce unbounded uv !!
+// 				tex = &mat->texture;
+// 				chk = (t_checkerboard *)tex->data;
+// 				return (checkeroard_uv(chk, uv));
+// 			}
+// 		}
+// 		if (mat->texture.type == TEXTURE_IMAGE && mat->texture.data != NULL)
+// 		{
+// 			if (object_uv(obj, &hit->hit_point, &uv) == true)
+// 			{
+// 				tex = &mat->texture;
+// 				img = (t_texture_image *)tex->data;
+// 				//planes produce unbounded uv
+// 				//caps and triangle on uv
+// 				uv.x = wrap01(uv.x);
+// 				uv.y = wrap01(uv.y);
+// 				return (sample_image_nearest(img, uv.x, uv.y));
+// 			}
+// 		}
+// 	}
+// 	return (mat->base_color);
+// }

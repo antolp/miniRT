@@ -138,28 +138,28 @@
 //	(analytic solution)
 bool	intersect_sphere(t_object *obj, t_ray *ray, double *t)
 {
-t_quad		q;
-t_vec3		l;
-t_sphere	*s;
+	t_quad		q;
+	t_vec3		l;
+	t_sphere	*s;
 
-s = (t_sphere *)obj->shape;
-l = vec_sub(ray->origin, s->center);
-q.a = vec_dot(ray->direction, ray->direction);
-q.b = 2.0 * vec_dot(l, ray->direction);
-q.c = vec_dot(l, l) - s->radius * s->radius;
-q.d = q.b * q.b - 4 * q.a * q.c;
-if (q.d < 0)
-	return (false);
-q.sqrt_d = sqrt(q.d);
-q.t0 = (-q.b - q.sqrt_d) / (2 * q.a);
-q.t1 = (-q.b + q.sqrt_d) / (2 * q.a);
-if (q.t0 > 1e-4)
-	*t = q.t0;
-else if (q.t1 > 1e-4)
-	*t = q.t1;
-else
-	return (false);
-return (true);
+	s = (t_sphere *)obj->shape;
+	l = vec_sub(ray->origin, s->center);
+	q.a = vec_dot(ray->direction, ray->direction);
+	q.b = 2.0 * vec_dot(l, ray->direction);
+	q.c = vec_dot(l, l) - s->radius * s->radius;
+	q.d = q.b * q.b - 4 * q.a * q.c;
+	if (q.d < 0)
+		return (false);
+	q.sqrt_d = sqrt(q.d);
+	q.t0 = (-q.b - q.sqrt_d) / (2 * q.a);
+	q.t1 = (-q.b + q.sqrt_d) / (2 * q.a);
+	if (q.t0 > 1e-4)
+		*t = q.t0;
+	else if (q.t1 > 1e-4)
+		*t = q.t1;
+	else
+		return (false);
+	return (true);
 }
 
 //normal vector defined by direction from center of the sphere to hit_point

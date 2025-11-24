@@ -1,8 +1,8 @@
 NAME		= miniRT
 OBJDIR		= .obj
-SRCS		= srcs/main.c srcs/init.c srcs/vector.c srcs/cli.c srcs/debug.c \
+SRCS		= srcs/main.c srcs/init.c srcs/vector.c srcs/debug.c \
 			  srcs/render/render_test.c srcs/render/render.c srcs/render/ray_trace.c \
-			  srcs/render/render_frame.c \
+			  srcs/render/render_frame.c srcs/render/supersample.c srcs/render/downsample.c \
 			  srcs/objects/plane.c srcs/objects/sphere.c srcs/objects/cylinder.c \
 			  srcs/objects/cone.c srcs/objects/triangle.c \
 			  srcs/shading/diffuse_lights.c srcs/shading/shading.c srcs/shading/specular_highlight.c \
@@ -11,11 +11,10 @@ SRCS		= srcs/main.c srcs/init.c srcs/vector.c srcs/cli.c srcs/debug.c \
 			  srcs/texture/texture.c srcs/texture/uv_cylinder.c srcs/texture/uv_cone.c \
 			  srcs/texture/uv_triangle.c srcs/texture/uv_map.c srcs/texture/image_sample.c \
 			  srcs/texture/image_load.c srcs/texture/skybox.c \
-			  srcs/texture/bump_map.c srcs/texture/bump_map_t_tb.c srcs/texture/bump_map_utils.c \
-			  srcs/texture/bump_build.c
+			  srcs/texture/bump_map.c srcs/texture/bump_map_tb.c srcs/texture/bump_map_utils.c \
+			  srcs/texture/bump_build.c \
+			  srcs/edit/edit.c srcs/edit/flag_menu.c srcs/edit/edit_translate.c
 OBJS		= $(SRCS:%.c=$(OBJDIR)/%.o)
-
-
 
 LIBFT_DIR	= libft
 LIBFT		= $(LIBFT_DIR)/libft.a
@@ -23,11 +22,9 @@ LIBFT		= $(LIBFT_DIR)/libft.a
 MLX_DIR		= minilibx-linux
 MLX			= $(MLX_DIR)/libmlx.a
 
-
-
 CC			= cc
 # CFLAGS	= -Wall -Wextra -Werror -fsanitize=address -g 
-# CFLAGS		= -Wall -Wextra -Werror -g 
+# CFLAGS	= -Wall -Wextra -Werror -g3 -O3 -ffast-math 
 CFLAGS		= -g3 -O3 -ffast-math
 INCLUDES	= -I./includes -I$(LIBFT_DIR) -I$(MLX_DIR) -Ilibft/includes
 LDFLAGS		= -L$(LIBFT_DIR) -lft -L$(MLX_DIR) -lmlx -lX11 -lXext -lm

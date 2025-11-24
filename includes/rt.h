@@ -81,12 +81,28 @@ typedef enum e_render_mode
 	RENDER_EDIT_MENU
 }	t_render_mode;
 
+
+typedef enum e_edit_target
+{
+	EDIT_TARGET_CAMERA,
+	EDIT_TARGET_OBJECT,
+	EDIT_TARGET_LIGHT
+}	t_edit_target;
+
+typedef struct s_edit_state
+{
+	t_edit_target	target;
+	t_list			*current_obj;
+	t_list			*current_light;
+}	t_edit_state;
+
 typedef struct s_renderer
 {
 	void			*mlx;
 	void			*win;
 	t_img			img;
 	t_render_mode	mode;
+	t_edit_state	edit;
 	int				resolution_scale;	//potentially useful (antialiasing, real time mode)
 	bool			is_rendering;		//(redundant on single threaded logic)
 	bool			render_done;
@@ -94,8 +110,6 @@ typedef struct s_renderer
 	bool			supersampled;
 	int				shading_flag;
 }	t_renderer;
-
-
 
 bool		init_renderer(t_renderer *r, int width, int height, char *title);
 bool		init_scene(t_scene *s);
@@ -109,7 +123,8 @@ t_color		trace_fast_ray(t_ray *ray, int none);
 void		put_pixel(t_img *img, int x, int y, t_color color);
 int			render_loop(void *param);
 void		render_test_frame(int frame);
-void		render_full_frame(t_camera_basis *cb);
+void		render_high_quality_frame(void);
+void		render_edit_frame(void);
 void		render_supersampled_frame(t_camera_basis *cb, int samples);
 void		render_downsampled_frame(t_camera_basis *cb, int block_sizes);
 t_ray		create_ray_for_pixel(double x, double y,  t_camera_basis *cb);
@@ -173,7 +188,6 @@ int	is_near_zero(double x);
 t_texture_image	*load_xpm_image(void *mlx, const char *path);
 t_color	sample_image_nearest(const t_texture_image *img, double u, double v);
 
-
 //bump maps
 void	apply_bump_from_image(t_object *obj, t_vec3 hit_p, t_vec3 *normal);
 double	sample_height01(const t_texture_image *img, double u, double v);
@@ -185,12 +199,11 @@ void	bump_tangent_sphere(t_bump_var *c);
 void	build_tb_plane(t_plane *pl, t_vec3 N, t_vec3 *T, t_vec3 *B);
 void	build_tb_triangle_ortho(t_triangle *tr, t_vec3 N, t_vec3 *T, t_vec3 *B);
 void	build_tb_triangle_fit(t_triangle *tr, t_vec3 N, t_vec3 *T, t_vec3 *B);
-void	build_tb_sphere(t_sphere *sp, t_vec3 P, t_vec3 N, t_vec3 *T, t_vec3 *B);
+void	build_tb_sphere(t_sphere *sp, t_vec3 N, t_vec3 *T, t_vec3 *B);
 int		is_cylinder_cap(t_cylinder *cy, t_vec3 P);
-void	build_tb_cylinder_side(t_cylinder *cy, t_vec3 P, t_vec3 N, t_vec3 *T, t_vec3 *B);
+void	build_tb_cylinder_side( t_cylinder *cy, t_vec3 P, t_vec3 *T, t_vec3 *B);
 int		is_cone_base(t_cone *co, t_vec3 P);
-void	build_tb_cone_side(t_cone *co, t_vec3 P, t_vec3 N, t_vec3 *T, t_vec3 *B);
-
+void	build_tb_cone_side( t_cone *co, t_vec3 N, t_vec3 *T, t_vec3 *B);
 
 //maths
 t_vec3		vec_add(t_vec3 a, t_vec3 b);
@@ -208,10 +221,25 @@ t_vec3		vec_safe_normalize(t_vec3 v, t_vec3 fallback);
 void	print_color(char *s, t_color c);
 void	print_vec3(char *s, t_vec3 v);
 void	print_scene(void);
+void	print_help(void);
+void	print_obj(t_object *obj);
+void	print_light(t_light *light);
 
 //a trier
 t_color	compute_fast_preview(t_ray *ray, t_hit_info *hit);
 void	orient_normal(t_ray *ray, t_hit_info *hit);
+
+//edit mode
+int	handle_open_flags_menu(int keycode, t_renderer *r);
+int	handle_edit_menu_keys_wrapper(int keycode, t_renderer *r);
+
+void	editor_translate_sphere(t_sphere *s, t_vec3 delta);
+void	editor_translate_plane(t_plane *p, t_vec3 delta);
+void	editor_translate_cylinder(t_cylinder *c, t_vec3 delta);
+void	editor_translate_cone(t_cone *c, t_vec3 delta);
+void	editor_translate_triangle(t_triangle *t, t_vec3 delta);
+
+
 
 
 #endif

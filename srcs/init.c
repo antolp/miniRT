@@ -36,6 +36,9 @@ bool	init_renderer(t_renderer *r, int width, int height, char *title)
 	r->render_done = 0;
 	r->supersampled = false;
 	r->shading_flag = DEFAULT_FLAGS;
+	r->edit.target = EDIT_TARGET_CAMERA;
+	r->edit.current_obj = NULL;
+	r->edit.current_light = NULL;
 	return (1);
 }
 
@@ -58,8 +61,6 @@ t_list	*add_content(void *content)
 // // --- FEATURE HIGHLIGHT : texture and shape UV mapping ---
 // // two reflective spheres
 // //
-
-
 bool	init_scene(t_scene *s)
 {
 	t_plane			*plane;
@@ -76,7 +77,7 @@ bool	init_scene(t_scene *s)
 	img = load_xpm_image(g_renderer(NULL)->mlx, "assets/wood.xpm");
 
 	t_texture_image	*img_sphere;
-	img_sphere = load_xpm_image(g_renderer(NULL)->mlx, "assets/2k_earth_daqewymap.xpm");
+	img_sphere = load_xpm_image(g_renderer(NULL)->mlx, "assets/2k_earth_daymap.xpm");
 	t_texture_image	*img_bump;
 	img_bump = load_xpm_image(g_renderer(NULL)->mlx, "assets/bumpgrunge.xpm");
 	t_texture_image	*img42;
@@ -103,6 +104,7 @@ bool	init_scene(t_scene *s)
 
 	//skybox
 	// s->skybox.type = TEXTURE_NONE;
+	// s->skybox.data = NULL;
 	t_texture_image *sky = load_xpm_image(g_renderer(NULL)->mlx, "assets/autumn_field_puresky_8k.xpm");
 	s->skybox.type = TEXTURE_IMAGE;
 	s->skybox.data = sky;
@@ -207,8 +209,8 @@ bool	init_scene(t_scene *s)
 	obj->material.specular_strength = 1.3;
 	obj->material.ior = 1.035;
 	obj->material.refractivity = 0.9;
-	obj->material.texture.type = TEXTURE_IMAGE;
-	obj->material.texture.data = img42;
+	obj->material.texture.type = TEXTURE_NONE;
+	obj->material.texture.data = NULL;
 	// obj->material.texture.type = TEXTURE_CHECKER;
 	// obj->material.texture.data = cb1;
 	// obj->material.texture.has_bump_maps = false;
@@ -245,8 +247,8 @@ bool	init_scene(t_scene *s)
 	// obj->material.texture.type = TEXTURE_NONE;
 	// obj->material.texture.type = TEXTURE_CHECKER;
 	// obj->material.texture.data = cb;
-	obj->material.texture.type = TEXTURE_IMAGE;
-	obj->material.texture.data = img42;
+	obj->material.texture.type = TEXTURE_NONE;
+	obj->material.texture.data = NULL;
 	// obj->material.texture.has_bump_maps = false;
 	// obj->material.texture.bumps_data = NULL;
 	obj->material.texture.has_bump_maps = true;

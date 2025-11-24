@@ -111,17 +111,13 @@ static void	add_light_contribution(t_color *color, t_hit_info *hit,
 //(cheap but cool)
 t_color	compute_diffuse_lighting(t_hit_info *hit)
 {
-	t_scene			*scene;
 	t_list			*node;
 	t_light			*light;
 	t_color			color;
 	t_color			atten;
-	unsigned int	flags;
 
-	scene = g_scene(NULL);
-	flags = g_renderer(NULL)->shading_flag;
-	color = compute_ambient_light(hit->hit_color, scene);
-	node = scene->lights;
+	color = compute_ambient_light(hit->hit_color, g_scene(NULL));
+	node = g_scene(NULL)->lights;
 	while (node)
 	{
 		light = (t_light *)node->content;
