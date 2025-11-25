@@ -103,7 +103,8 @@ typedef struct s_renderer
 	t_img			img;
 	t_render_mode	mode;
 	t_edit_state	edit;
-	int				resolution_scale;	//potentially useful (antialiasing, real time mode)
+	int				resolution_scale;
+	bool			should_quit;
 	bool			is_rendering;		//(redundant on single threaded logic)
 	bool			render_done;
 	bool			has_drawn_realtime;
@@ -229,17 +230,79 @@ void	print_light(t_light *light);
 t_color	compute_fast_preview(t_ray *ray, t_hit_info *hit);
 void	orient_normal(t_ray *ray, t_hit_info *hit);
 
-//edit mode
-int	handle_open_flags_menu(int keycode, t_renderer *r);
-int	handle_edit_menu_keys_wrapper(int keycode, t_renderer *r);
 
+
+//=== EDIT MODE ===
+int		handle_open_flags_menu(int keycode, t_renderer *r);
+int		handle_edit_menu_keys_wrapper(int keycode, t_renderer *r);
+
+//scene edition
+int		handle_scene_edit_active_keys(int keycode, t_cli_var *var);
+int		handle_scene_edit_keys(int keycode, t_cli_var *var);
+void	editor_cycle_selection(t_renderer *r, t_scene *scene, int keycode);
+
+//misc
+int	handle_mode_switch(int keycode, t_renderer *r);
+int	handle_quit(int keycode);
+int	handle_supersample_toggle(int keycode, t_renderer *r);
+
+//camera
+int	handle_camera_fov_out(int keycode, t_cli_var *var);
+int	handle_camera_fov_in(int keycode, t_cli_var *var);
+int	handle_camera_pitch(int keycode, t_cli_var *var);
+int	handle_camera_yaw(int keycode, t_cli_var *var);
+
+//print
+void	edit_print_sphere(t_object *obj);
+void	edit_print_plane(t_object *obj);
+void	edit_print_cylinder(t_object *obj);
+void	edit_print_cone(t_object *obj);
+void	edit_print_triangle(t_object *obj);
+void	editor_print_current_object(t_renderer *r);
+void	editor_print_current_light(t_renderer *r);
+void	editor_print_current(t_renderer *r);
+
+//high-level props move
+void	editor_print_move(t_renderer *r, char *dir);
+int		handle_props_move_ws(int keycode, t_cli_var *var);
+int		handle_props_move_ad(int keycode, t_cli_var *var);
+int		handle_props_move_tg(int keycode, t_cli_var *var);
+//translation
+void	editor_translate(t_cli_var *var, t_vec3 delta);
+void	editor_translate_camera(t_cli_var *var, t_vec3 delta);
+void	editor_translate_object(t_cli_var *var, t_vec3 delta);
+void	editor_translate_light(t_cli_var *var, t_vec3 delta);
+//object specific translation
 void	editor_translate_sphere(t_sphere *s, t_vec3 delta);
 void	editor_translate_plane(t_plane *p, t_vec3 delta);
 void	editor_translate_cylinder(t_cylinder *c, t_vec3 delta);
 void	editor_translate_cone(t_cone *c, t_vec3 delta);
 void	editor_translate_triangle(t_triangle *t, t_vec3 delta);
 
+//high-level props rotation
+int		handle_props_rotate_yaw(int keycode, t_cli_var *var);
+void	editor_rotate_object_yaw(t_cli_var *var, double angle_deg);
+int		handle_props_rotate_pitch(int keycode, t_cli_var *var);
+void	editor_rotate_object_pitch(t_cli_var *var, double angle_deg);
+//rotation
+t_vec3	rotate_yaw(t_vec3 dir, double angle_deg);
+t_vec3	vec_rotate_yaw(t_vec3 v, double angle_deg);
+t_vec3	rotate_pitch(t_vec3 dir, double angle_deg);
+t_vec3	vec_rotate_axis(t_vec3 v, t_vec3 axis, double angle_deg);
+t_vec3	editor_triangle_center(t_triangle *tri);
 
-
+//high-level props property/scale editing
+int		handle_props_scale_primary(int keycode, t_cli_var *var);
+int		handle_props_scale_secondary(int keycode, t_cli_var *var);
+//scaling
+void	editor_scale_object_primary(t_cli_var *var, double factor);
+void	editor_scale_object_secondary(t_cli_var *var, double factor);
+//object specific scaling
+void	editor_scale_sphere_radius(t_object *obj, double factor);
+void	editor_scale_cylinder_radius(t_object *obj, double factor);
+void	editor_scale_cylinder_height(t_object *obj, double factor);
+void	editor_scale_cone_height(t_object *obj, double factor);
+void	editor_scale_cone_angle(t_object *obj, double factor);
 
 #endif
+

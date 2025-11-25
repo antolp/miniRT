@@ -12,45 +12,6 @@
 
 #include "rt.h"
 
-static void	print_help1(void)
-{
-	printf("enter scene editing:\n");
-	printf("  1          : Edit objects\n");
-	printf("  2          : Edit lights\n");
-	printf("in scene editing mode :\n");
-	printf("  WASD/TG    : move prop (aligned with camera axis)\n");
-	printf("  ] / [      : Cycle through prop list\n");
-	printf("  P          : Print info about current selected prop\n");
-	printf("  0          : quit scene editing mode\n\n");
-	printf("Misc:\n");
-	printf("  Z          : Zoom in  (decrease FOV)\n");
-	printf("  X          : Zoom out (increase FOV)\n\n");
-	printf("  B          : Print shading_flag value\n");
-	printf("  P          : Print the scene informations\n");
-}
-
-void	print_help(void)
-{
-	printf("=== Controls ===\n");
-	printf("Global:\n");
-	printf("  E / e      : Switch to EDIT mode (from a rendered frame)\n");
-	printf("  R / r      : Switch to HIGH QUALITY RENDER mode (from EDIT mode)\n");
-	printf("  M          : Open the shading menu");
-	printf("  U          : Toggle SSAA supersampling ");
-	printf("(Warning !! this highly increases the rendering time !)\n");
-	printf("  ESC        : Quit the program\n\n");
-	printf("camera movement:\n");
-	printf("  W / S      : Move camera forward / backward\n");
-	printf("  A / D      : Move camera left / right\n");
-	printf("  T / G      : Move camera up / down\n\n");
-	printf("camera rotation:\n");
-	printf("  Q / K      : Yaw left\n");
-	printf("  E / ;      : Yaw right\n");
-	printf("  O          : Pitch up\n");
-	printf("  L          : Pitch down\n\n");
-	print_help1();
-}
-
 void	print_vec3(char *s, t_vec3 v)
 {
 	if (ft_strlen(s) > 5)

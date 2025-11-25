@@ -35,6 +35,15 @@ t_scene	*g_scene(t_scene *set)
 	return (s);
 }
 
+int	handle_close(void *param)
+{
+	//here, add some free() mechanism
+	(void)param;
+	printf("Exiting...\n");
+	exit(0);
+	return (0);
+} 
+
 int	main(void)
 {
 	t_scene		scene_g;
@@ -47,8 +56,8 @@ int	main(void)
 		return (1); // again, need to aadd a free() mechanism
 	g_scene(&scene_g);
 	mlx_hook(renderer_g.win, KeyPress, KeyPressMask, key_hook, NULL);
-	// mlx_key_hook(renderer_g.mlx, key_hook, NULL);
 	mlx_loop_hook(renderer_g.mlx, render_loop, NULL);
+	mlx_hook(renderer_g.win, DestroyNotify, 0, handle_close, NULL);
 	mlx_loop(renderer_g.mlx);
 	return (0);
 }

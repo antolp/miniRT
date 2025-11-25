@@ -1,6 +1,7 @@
 #include "rt.h"
 
-t_color	supersample_sample_row(t_vec2 pixel, t_supersample_var *var, int i)
+static t_color	supersample_sample_row(t_vec2 pixel, t_supersample_var *var, 
+	int i)
 {
 	t_color	acc;
 	t_vec2	uv;
@@ -24,7 +25,7 @@ t_color	supersample_sample_row(t_vec2 pixel, t_supersample_var *var, int i)
 	return (acc);
 }
 
-t_color	supersample_accumulate(t_vec2 pixel, t_supersample_var *var)
+static t_color	supersample_accumulate(t_vec2 pixel, t_supersample_var *var)
 {
 	t_color	acc;
 	t_color	row_color;
@@ -43,7 +44,7 @@ t_color	supersample_accumulate(t_vec2 pixel, t_supersample_var *var)
 	return (acc);
 }
 
-t_color	supersample_pixel(t_vec2 pixel, t_camera_basis *cb, int samples)
+static t_color	supersample_pixel(t_vec2 pixel, t_camera_basis *cb, int samples)
 {
 	t_supersample_var	var;
 	t_color				acc;
@@ -60,7 +61,7 @@ t_color	supersample_pixel(t_vec2 pixel, t_camera_basis *cb, int samples)
 	return (acc);
 }
 
-void	render_supersampled_row(int y, t_camera_basis *cb,
+static void	render_supersampled_row(int y, t_camera_basis *cb,
 			int samples, t_renderer *r)
 {
 	int		x;

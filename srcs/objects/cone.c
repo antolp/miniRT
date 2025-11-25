@@ -69,7 +69,7 @@ static void	compute_quad(t_quad *q, t_cone_side_vars v)
 //the radius of ou cyliner in a give point on the axis
 //
 //no drawing for now, i have one drawn on my textbook
-bool	intersect_infinite_cone_side(t_ray *ray, t_cone *cone,
+static bool	intersect_infinite_cone_side(t_ray *ray, t_cone *cone,
 	double *t_hit, t_vec3 *point)
 {
 	t_cone_side_vars	v;

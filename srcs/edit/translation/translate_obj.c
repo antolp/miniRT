@@ -1,6 +1,6 @@
 #include "rt.h"
 
-//object specific translation functions.
+//object specific translation functions
 void	editor_translate_sphere(t_sphere *s, t_vec3 delta)
 {
 	s->center = vec_add(s->center, delta);

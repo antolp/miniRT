@@ -32,6 +32,7 @@ bool	init_renderer(t_renderer *r, int width, int height, char *title)
 		return (0);
 	r->mode = RENDER_HIGH_QUALITY;
 	r->resolution_scale = 1;
+	r->should_quit = 0;
 	r->is_rendering = 0;
 	r->render_done = 0;
 	r->supersampled = false;
@@ -65,6 +66,8 @@ bool	init_scene(t_scene *s)
 {
 	t_plane			*plane;
 	t_sphere		*sphere;
+	t_cylinder		*cyl;
+	t_cone			*co;
 	t_object		*obj;
 	t_light			*light;
 	t_triangle		*tri;
@@ -155,8 +158,6 @@ bool	init_scene(t_scene *s)
 		return (false);
 	sphere->center = (t_vec3){-50.97, 7.7, 23.76};
 	sphere->radius = 7.7;
-	// sphere->center = (t_vec3){12, 20, 35};
-	// sphere->radius = 7.7;
 	obj = malloc(sizeof(t_object));
 	if (!obj)
 		return (false);
@@ -184,6 +185,66 @@ bool	init_scene(t_scene *s)
 	obj->get_uv = get_uv_sphere;
 	ft_lstadd_back(&s->objects, add_content(obj));
 
+	// ---------- CYLINDER ----------
+	//refractive, transmissive sphere
+	cyl = malloc(sizeof(t_cylinder));
+	if (!cyl)
+		return (false);
+	cyl->center = (t_vec3){-30.97, 13.7, 23.76};
+	cyl->axis = vec_normalize((t_vec3){1, 0.8, 0});
+	cyl->radius = 2.7;
+	cyl->height = 10;
+	obj = malloc(sizeof(t_object));
+	if (!obj)
+		return (false);
+	obj->type = OBJ_CYLINDER;
+	obj->shape = cyl;
+	obj->material.base_color = (t_color){200, 210, 100};
+	obj->material.reflectivity = 1;
+	obj->material.ior = 1;
+	obj->material.shininess = 32;
+	obj->material.specular_strength = 1;
+	obj->material.refractivity = 0;
+	obj->material.texture.type = TEXTURE_NONE;
+	obj->material.texture.data = NULL;
+	obj->material.texture.has_bump_maps = false;
+	obj->material.texture.bumps_data = NULL;
+	obj->material.bump_strength = 1;
+	obj->intersect = intersect_cylinder;
+	obj->get_normal = get_normal_cylinder;
+	obj->get_uv = get_uv_cylinder;
+	ft_lstadd_back(&s->objects, add_content(obj));
+
+	// ---------- CONE ----------
+	//refractive, transmissive sphere
+	co = malloc(sizeof(t_cone));
+	if (!cyl)
+		return (false);
+	co->apex =  (t_vec3){-57.46, 10.13, 29.58};
+	co->axis = vec_normalize((t_vec3){-0.66, -0.69, -0.30});
+	co->angle = 0.3;
+	co->height = 8;
+	obj = malloc(sizeof(t_object));
+	if (!obj)
+		return (false);
+	obj->type = OBJ_CONE;
+	obj->shape = co;
+	obj->material.base_color = (t_color){100, 210, 200};
+	obj->material.reflectivity = 1;
+	obj->material.ior = 0.2;
+	obj->material.shininess = 32;
+	obj->material.specular_strength = 1;
+	obj->material.refractivity = 0;
+	obj->material.texture.type = TEXTURE_NONE;
+	obj->material.texture.data = NULL;
+	obj->material.texture.has_bump_maps = false;
+	obj->material.texture.bumps_data = NULL;
+	obj->material.bump_strength = 1;
+	obj->intersect = intersect_cone;
+	obj->get_normal = get_normal_cone;
+	obj->get_uv = get_uv_cone;
+	ft_lstadd_back(&s->objects, add_content(obj));
+	
 	// // ---------- TRIANGLE SQUARE IMAGE MAPPING ----------
 	// // could write a small function that generates the right coordinates
 	// // for each triangles depending of the image ratio
