@@ -6,32 +6,22 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 18:28:52 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/25 01:24:48 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/25 02:05:30 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef	PARSER_H
+#ifndef PARSER_H
 # define PARSER_H
-#include "rt.h"
+# include "rt.h"
+
+# define ERR_CHECKER_FORMAT "Checkerboard : Missing separator ; or value\n \
+	checker=R,G,B;R,G,B;scaleU;scaleV"
 
 typedef struct s_parser
 {
 	char	*line;
 	char	**word_arr;
 }	t_parser;
-
-// typedef enum e_objects_props
-// {
-// 	PROP_POSITION = 0,
-// 	PROP_DIRECTION = 1 << 0,
-// 	PROP_COLOUR = 1 << 1,
-// 	PROP_SIZE = 1 << 2,
-// 	PROP_RATIO = 1 << 3,
-// 	PROP_PATH = 1 << 4,
-// 	PROP_DIAMETER = 1 << 5,
-// 	PROP_ANGLE = 1 << 6,
-// 	PROP_AXIS = 1 << 7
-// }	t_object_props;
 
 typedef enum e_property_type
 {
@@ -74,7 +64,8 @@ typedef enum e_material_keys
 	MAT_BUMP
 }	t_material_keys;
 
-typedef struct s_material_dispatcher {
+typedef struct s_material_dispatcher
+{
 	char				*key;
 	void				*val;
 	t_property_type		processing_type;
@@ -84,20 +75,24 @@ void		parse_rtconfig(char *path);
 void		put_err(char *msg);
 t_parser	*parser_data(void);
 
+//Parser modules
+bool		set_property(size_t type, void *dst, char *line);
+void		parse_mats(t_material *mat, char **line);
+
+//Utils
+void		check_range(double val, t_property_rules range);
+t_list		*add_content(void *content);
+
 //Shape builders
-t_list	*add_content(void *content);
-void	build_sphere(t_object *obj, char **line);
-void	build_plane(t_object *obj, char **line);
-void	build_cylinder(t_object *obj, char **line);
-void	build_cone(t_object *obj, char **line);
-void	build_triangle(t_object *obj, char **line);
-void	build_ambiant_light(t_scene *set, char **line);
-void	build_camera(t_scene *set, char **line);
-void	build_light(t_scene *set, char **line);
-void	build_background(t_scene *set, char **line);
-void	build_skybox(t_scene *set, char **line);
-bool	set_property(size_t type, void *dst, char *line);
-void	parse_mats(t_material *mat, char **line);
-void	check_range(double val, t_property_rules range);
+void		build_sphere(t_object *obj, char **line);
+void		build_plane(t_object *obj, char **line);
+void		build_cylinder(t_object *obj, char **line);
+void		build_cone(t_object *obj, char **line);
+void		build_triangle(t_object *obj, char **line);
+void		build_ambiant_light(t_scene *set, char **line);
+void		build_camera(t_scene *set, char **line);
+void		build_light(t_scene *set, char **line);
+void		build_background(t_scene *set, char **line);
+void		build_skybox(t_scene *set, char **line);
 
 #endif
