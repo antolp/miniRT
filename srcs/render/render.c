@@ -72,9 +72,15 @@ int	render_loop(void *param)
 {
 	static int	frame = 0;
 	t_renderer	*r;
-
 	(void)param;
 	r = g_renderer(NULL);
+
+	if (r->should_quit == true)
+	{
+		//here, add a free() mechanism (again)
+		printf("Exiting...\n");
+		exit(0);
+	}
 	if (r->mode == RENDER_TEST)
 		render_test_frame(frame++);
 	else if (r->mode == RENDER_EDIT)

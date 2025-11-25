@@ -79,19 +79,20 @@ static void	render_supersampled_row(int y, t_camera_basis *cb,
 	}
 }
 
-void	render_supersampled_frame(t_camera_basis *cb, int samples)
+void	render_supersampled_step(t_camera_basis *cb, int samples)
 {
-	int			y;
 	t_renderer	*r;
+	int			y;
 
 	r = g_renderer(NULL);
-	y = 0;
-	while (y < HEIGHT)
-	{
-		render_supersampled_row(y, cb, samples, r);
-		if (y % 50 == 0)
-			printf("%d%%\n", (y * 100 / HEIGHT));
-		mlx_put_image_to_window(r->mlx, r->win, r->img.img, 0, 0);
-		y++;
-	}
+	if (r->should_quit == true)
+		return ;
+	y = r->render_y;
+	if (y >= HEIGHT)
+		return ;
+	render_supersampled_row(y, cb, samples, r);
+	if (y % 50 == 0)
+		printf("%d%%\n", (y * 100 / HEIGHT));
+	mlx_put_image_to_window(r->mlx, r->win, r->img.img, 0, 0);
+	r->render_y++;
 }

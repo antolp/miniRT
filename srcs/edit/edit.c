@@ -72,10 +72,17 @@ static int	init_cli_var(t_cli_var *var, void *param)
 	return (0);
 }
 
+//not using var on should_quit check
+//because init_var returns 1 on is_rendering
+//(avoids going down key_hook when a render is being computed)
 int	key_hook(int keycode, void *param)
 {
 	t_cli_var	var;
+	t_renderer	*r;
 
+	r = g_renderer(NULL);
+	if (keycode == XK_Escape)
+		r->should_quit = true;
 	if (init_cli_var(&var, param))
 		return (0);
 	if (handle_scene_edit_keys(keycode, &var))
@@ -88,3 +95,4 @@ int	key_hook(int keycode, void *param)
 		return (0);
 	return (0);
 }
+

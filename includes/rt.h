@@ -110,6 +110,7 @@ typedef struct s_renderer
 	bool			has_drawn_realtime;
 	bool			supersampled;
 	int				shading_flag;
+	int				render_y;
 }	t_renderer;
 
 bool		init_renderer(t_renderer *r, int width, int height, char *title);
@@ -126,7 +127,7 @@ int			render_loop(void *param);
 void		render_test_frame(int frame);
 void		render_high_quality_frame(void);
 void		render_edit_frame(void);
-void		render_supersampled_frame(t_camera_basis *cb, int samples);
+void		render_supersampled_step(t_camera_basis *cb, int samples);
 void		render_downsampled_frame(t_camera_basis *cb, int block_sizes);
 t_ray		create_ray_for_pixel(double x, double y,  t_camera_basis *cb);
 

@@ -54,8 +54,7 @@ static void	init_camera_basis(t_camera_basis *cb, t_camera *cam,
 	cb->scale = tan(cam->fov * M_PI / 360.0);
 }
 
-
-static void	render_full_frame(t_camera_basis *cb)
+static void	render_full_frame_step(t_camera_basis *cb)
 {
 	int			x;
 	int			y;
@@ -63,43 +62,53 @@ static void	render_full_frame(t_camera_basis *cb)
 	t_color		color;
 	t_renderer	*r;
 
-	y = 0;
 	r = g_renderer(NULL);
-	while (y < HEIGHT)
+	if (r->should_quit == true)
+		return ;
+	y = r->render_y;
+	if (y >= HEIGHT)
+		return ;
+	x = -1;
+	while (x++ < WIDTH)
 	{
-		x = 0;
-		while (x < WIDTH)
-		{
-			ray = create_ray_for_pixel(x, y, cb);
-			color = trace_ray(&ray, 10);
-			put_pixel(&r->img, x, y, color);
-			x++;
-		}
-		if (r->mode == RENDER_HIGH_QUALITY && y % 50 == 0)
-			printf("%d%%\n", (y * 100 / HEIGHT));
-		mlx_put_image_to_window(r->mlx, r->win, r->img.img, 0, 0);
-		y++;
+		if (r->should_quit == true)
+			return ;
+		ray = create_ray_for_pixel(x, y, cb);
+		color = trace_ray(&ray, 10);
+		put_pixel(&r->img, x, y, color);
 	}
+	if (r->mode == RENDER_HIGH_QUALITY && y % 50 == 0)
+		printf("%d%%\n", (y * 100 / HEIGHT));
+	mlx_put_image_to_window(r->mlx, r->win, r->img.img, 0, 0);
+	r->render_y++;
 }
 
 void	render_high_quality_frame(void)
 {
 	t_scene			*s;
 	t_renderer		*r;
-	t_camera_basis	cb;
+	static t_camera_basis	cb;
 
 	r = g_renderer(NULL);
 	s = g_scene(NULL);
-	if (r->is_rendering || r->render_done)
+	if (r->render_done == true || r->should_quit == true)
 		return ;
-	init_camera_basis(&cb, &s->camera, WIDTH, HEIGHT);
+	if (r->is_rendering == false)
+	{
+		init_camera_basis(&cb, &s->camera, WIDTH, HEIGHT);
+		r->render_y = 0;
+		r->is_rendering = true;
+	}
 	if (r->supersampled == false)
-		render_full_frame(&cb);
-	if (r->supersampled == true)
-		render_supersampled_frame(&cb, SAMPLE_LVL);
-	r->is_rendering = false;
-	r->render_done = true;
-	printf("HQ Render Finished. Press E to edit.\n");
+		render_full_frame_step(&cb);
+	else
+		render_supersampled_step(&cb, SAMPLE_LVL);
+	if (r->render_y >= HEIGHT)
+	{
+		r->is_rendering = false;
+		r->render_done = true;
+		printf("HQ Render Finished. Press E to edit.\n");
+	}
 }
 
 void	render_edit_frame()

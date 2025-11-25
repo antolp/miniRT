@@ -21,7 +21,7 @@ SRCS		= srcs/main.c srcs/init.c srcs/vector.c srcs/debug.c \
 			  srcs/edit/scaling/props_scale.c srcs/edit/scaling/scale.c srcs/edit/scaling/scale_obj.c \
 			  srcs/edit/printing/printing.c srcs/edit/printing/edit_printobj.c \
 			  srcs/edit/camera.c srcs/edit/editscene_keys.c srcs/edit/editscene_keys2.c srcs/edit/misc.c \
-			  srcs/edit/select.c srcs/edit/set_target.c
+			  srcs/edit/select.c
 
 OBJS		= $(SRCS:%.c=$(OBJDIR)/%.o)
 
