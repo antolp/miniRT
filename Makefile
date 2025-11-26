@@ -2,9 +2,10 @@ NAME		= miniRT
 OBJDIR		= .obj
 SRCS		= srcs/main.c srcs/init.c srcs/vector.c srcs/vector2.c \
 			  srcs/debug_scene.c srcs/debug_objects.c srcs/debug_props.c \
+			  srcs/parser/parser.c srcs/parser/shape_builder.c srcs/parser/assigners.c srcs/parser/materials.c srcs/parser/set_builder.c \
 			  srcs/render/render.c \
 			  srcs/render/render_test.c srcs/render/ray_trace.c srcs/render/render_frame.c \
-			  srcs/render/supersample.c srcs/render/downsample.c \
+			  srcs/render/supersample.c srcs/render/downsample.c srcs/cleaner.c \
 			  srcs/objects/plane.c srcs/objects/sphere.c srcs/objects/triangle.c \
 			  srcs/objects/cylinder.c srcs/objects/cone.c srcs/objects/helpers.c \
 			  srcs/shading/shading.c \
@@ -29,6 +30,9 @@ SRCS		= srcs/main.c srcs/init.c srcs/vector.c srcs/vector2.c \
 			  srcs/edit/select.c srcs/edit/misc.c 
 
 OBJS		= $(SRCS:%.c=$(OBJDIR)/%.o)
+DEPS		= $(SRCS:%.c=$(OBJDIR)/%.d)
+
+
 
 LIBFT_DIR	= libft
 LIBFT		= $(LIBFT_DIR)/libft.a
@@ -38,14 +42,14 @@ MLX			= $(MLX_DIR)/libmlx.a
 
 CC			= cc
 # CFLAGS	= -Wall -Wextra -Werror -fsanitize=address -g 
-CFLAGS		= -Wall -Wextra -Werror -g3 -O3 -ffast-math 
-# CFLAGS		= -g3 -O3 -ffast-math
+CFLAGS		= -Wall -Wextra -Werror -g3 -O3 -ffast-math -MMD
+# CFLAGS		= -g3 -O3 -ffast-math -MMD
 INCLUDES	= -I./includes -I$(LIBFT_DIR) -I$(MLX_DIR) -Ilibft/includes
 LDFLAGS		= -L$(LIBFT_DIR) -lft -L$(MLX_DIR) -lmlx -lX11 -lXext -lm
 
 all: $(NAME)
 
-$(NAME): $(LIBFT) $(MLX) $(OBJS) 
+$(NAME): $(LIBFT) $(MLX) $(OBJS)
 	@echo ">>> Linking $(NAME)"
 	$(CC) $(CFLAGS) $(OBJS) $(LDFLAGS) -o $(NAME)
 
@@ -53,8 +57,6 @@ $(OBJDIR)/%.o: %.c
 	@echo ">>> Compiling $<"
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
-
-
 
 ftbranch:
 	@echo ">>> Checking out libft main branch"
@@ -91,3 +93,5 @@ relibft:
 	make re -C $(LIBFT_DIR)
 
 re: ftbranch fclean relibft all
+
+-include $(OBJS:.o=.d)

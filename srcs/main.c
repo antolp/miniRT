@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/11/26 05:06:35 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/26 18:35:36 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,19 +44,20 @@ int	handle_close(void *param)
 	return (0);
 }
 
-//need to aadd a free() mechanism
-//on every return
-int	main(void)
+int	main(int argc, char	*argv[])
 {
 	t_scene		scene_g;
 	t_renderer	renderer_g;
 
-	if (!init_renderer(&renderer_g, WIDTH, HEIGHT, "rt"))
-		return (1);
-	g_renderer(&renderer_g);
-	if (!init_scene(&scene_g))
-		return (1);
+	if (argc != 2)
+		put_err("Insufficient parameter count : .rt config file path might be missing");
 	g_scene(&scene_g);
+	scene_g = (t_scene){0};
+	g_renderer(&renderer_g);
+	if (!init_renderer(&renderer_g, WIDTH, HEIGHT, "rt"))
+		put_err("Renderer init faillure");
+	parse_rtconfig(argv[1]);
+	// print_scene();
 	mlx_hook(renderer_g.win, KeyPress, KeyPressMask, key_hook, NULL);
 	mlx_loop_hook(renderer_g.mlx, render_loop, NULL);
 	mlx_hook(renderer_g.win, DestroyNotify, 0, handle_close, NULL);

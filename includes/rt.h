@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rt.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/11/26 05:54:50 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/26 18:30:31 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # include "mlx.h"
 # include "scene.h"
 # include "shading.h"
+# include "parser.h"
 
 # define M_PI 3.14159265358979323846
 # define SAMPLE_LVL 7
@@ -117,6 +118,7 @@ bool		init_scene(t_scene *s);
 int			key_hook(int keycode, void *param);
 t_renderer	*g_renderer(t_renderer *set);
 t_scene		*g_scene(t_scene *set);
+void		clear_minirt(void);
 
 //renderer
 t_color		trace_ray(t_ray *ray, int depth);
@@ -182,14 +184,14 @@ bool		get_closest_hit_ignoring(t_ray *ray, double max_t,
 				t_object *ignore, t_hit_info *hit);
 
 //texture
-t_color		get_hit_color(t_hit_info *hit);
-bool		get_uv_plane(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
-bool		get_uv_sphere(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
-bool		get_uv_cylinder(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
-bool		get_uv_cone(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
-bool		get_uv_triangle(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
-void		init_cyl_uv_vars(t_cyl_uv_vars *v, t_object *obj);
-t_color		get_background_color(t_vec3 dir);
+t_color	get_hit_color(t_hit_info *hit);
+bool	get_uv_plane(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
+bool	get_uv_sphere(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
+bool	get_uv_cylinder(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
+bool	get_uv_cone(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
+bool	get_uv_triangle(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
+void	init_cyl_uv_vars(t_cyl_uv_vars *v, t_object *obj);
+t_color	get_background_color(t_vec3 dir);
 
 double		clamp01(double x);
 double		wrap01(double x);

@@ -3,30 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   image_sample.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/11/26 05:52:26 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/26 18:29:53 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
-
-//destroy mlx image and frees texture pointer
-void	destroy_texture(void *mlx, t_texture *tex)
-{
-	t_tex_img	*img;
-
-	if (tex == NULL)
-		return ;
-	if (tex->type == TEXTURE_IMAGE && tex->data != NULL)
-	{
-		img = (t_tex_img *)tex->data;
-		if (img->mlx_img != NULL && mlx != NULL)
-			mlx_destroy_image(mlx, img->mlx_img);
-		free(img);
-	}
-}
 
 static int	clamp(int v, int lo, int hi)
 {

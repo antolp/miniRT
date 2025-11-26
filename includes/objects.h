@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   objects.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/11/26 05:52:26 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/26 18:26:55 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,14 +49,14 @@ typedef struct s_checkerboard
 	double		scale_v;
 }	t_checkerboard;
 
-//appart from checkerboard, pseudo-random noise could be a cool proc texture
+// appart from checkerboard, pseudo-random noise could be a cool proc texture
 typedef struct s_texture
 {
 	t_texture_type	type;
 	void			*data; // texture image or procedural config
 }	t_texture;
 
-//main material struct
+//reflectance and refractance mutually exclusive because it's a pain in the ass
 typedef struct s_material
 {
 	t_color		base_color;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   types.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/07/15 16:47:45 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/10/14 03:06:52 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,12 @@ typedef enum e_object_type
 	OBJ_SPHERE,
 	OBJ_CYLINDER,
 	OBJ_CONE,
-	OBJ_TRIANGLE
+	OBJ_TRIANGLE,
+	OBJ_AMBIANT_LIGHT,
+	OBJ_CAMERA,
+	OBJ_LIGHT,
+	OBJ_BACKGROUND,
+	OBJ_SKYBOX
 }	t_object_type;
 
 typedef enum e_texture_type

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   misc.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 02:29:44 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/11/26 02:47:54 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/26 18:47:15 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ int	handle_quit(int keycode)
 	{
 		g_renderer(NULL)->should_quit = true;
 		printf("Exiting...\n");
+		clear_minirt();
 		exit(0);
 	}
 	return (0);
