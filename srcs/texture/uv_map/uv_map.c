@@ -6,7 +6,7 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/11/26 04:56:37 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/26 17:04:24 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ bool	get_uv_plane(t_object *obj, t_vec3 *hit, t_vec2 *out_uv)
 	d = vec_sub(*hit, pl->point);
 	uv.x = vec_dot(d, t);
 	uv.y = vec_dot(d, b);
-	out_uv->x = uv.x;
-	out_uv->y = uv.y;
+	out_uv->x = uv.x / 10;
+	out_uv->y = uv.y / 10;
 	return (true);
 }

@@ -240,6 +240,7 @@ If you omit them, **defaults** apply (see 7. Defaults Table).
 - `shine=<float>` — **shininess** (specular exponent, e.g., 16–256)
 - `checker=R,G,B;R,G,B;s1;s2` — procedural checkerboard, the first two R,G,B are the colors of the tiles, s1 and s2 are the scale of each tile in u, v 2d coordinates
 - `image=assets/image.xpm` — XPM image texture
+- `bump=assets/image.xpm` — XPM image bump map
 
 > **Fresnel rule**: 
 If `refl = 0` and `refr = 0` , the Fresnel equation will not be visible.
