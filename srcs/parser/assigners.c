@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/16 22:57:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/26 01:05:54 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/26 16:15:05 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,15 +36,10 @@ static void	parse_valset(void *valset[], t_property_type type, char *line)
 	ret_atof = 0;
 	while (*valset)
 	{
-		printf("Parse_Valset: Getting ready to parse param %s\n", line);
 		if (type == PROP_COLOUR)
 			ret_atof = ft_atoi2(line, *valset);
 		else if (type == PROP_POSITION || type == PROP_DIRECTION)
 			ret_atof = ft_atof(line, *valset);
-		if (type == PROP_COLOUR)
-			printf("INT: Sum is now %d with len of %d\n", **(int **)valset, ret_atof);
-		else if (type == PROP_POSITION || type == PROP_DIRECTION)
-			printf("FLOAT: Sum is now %f with len of %d\n", **(double **)valset, ret_atof);
 		if (ret_atof < 1 || !ft_strchr(";,\n\0 ", line[ret_atof]))
 			put_err("Invalid data : Unexpected or Missing value\n");
 		if (type == PROP_COLOUR)
@@ -109,8 +104,8 @@ bool	set_property(size_t type, void *dst, char *line)
 			put_err("Invalid vector dimensions : one axis should not be 0");
 	}
 	else if (type == PROP_COLOUR)
-		parse_valset((void *[]){&(((t_color *)dst)->r), &(((t_color *)dst)->g),
-			&(((t_color *)dst)->b), 0}, PROP_COLOUR, line);
+		parse_valset((void *[]){&((t_color *)dst)->r, &((t_color *)dst)->g,
+			&((t_color *)dst)->b, 0}, type, line);
 	else if (type == PROP_PATH)
 		assign_path(dst, line);
 	else if (type == PROP_CHECKER)

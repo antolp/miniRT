@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 01:23:25 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/25 01:40:42 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/26 15:16:23 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,12 @@ static void	clear_content(t_list *elm)
 	if (!elm->content)
 		return ;
 	obj = elm->content;
-	if (obj->shape)
-		free(obj->shape);
 	if (obj->material.texture.data)
 		destroy_texture(g_renderer(0)->mlx, &obj->material.texture);
+	if (obj->material.bump_maps.data)
+		destroy_texture(g_renderer(0)->mlx, &obj->material.bump_maps);
+	if (obj->shape)
+		free(obj->shape);
 	if (elm->content)
 		free(elm->content);
 }

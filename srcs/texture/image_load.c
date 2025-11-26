@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/11/25 01:32:17 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/26 15:26:35 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,22 +91,22 @@ t_texture_image	*load_xpm_image(void *mlx, const char *path)
 		img->bgra = 1;
 	else
 		img->bgra = 0;
-		ft_dprintf(1, "loaded xpm: %s (%dx%d, bpp=%d, line=%d, endian=%d)\n",
-            path, img->width, img->height, img->bpp, img->line_len, img->endian);
+	ft_dprintf(1, "loaded xpm: %s (%dx%d, bpp=%d, line=%d, endian=%d)\n",
+		path, img->width, img->height, img->bpp, img->line_len, img->endian);
 	return (img);
 }
 
 //destroy mlx image and frees texture pointer
 void	destroy_texture(void *mlx, t_texture *tex)
 {
-	t_texture_image *img;
+	t_texture_image	*img;
 
 	if (tex == NULL)
 		return ;
-	if (tex->type == TEXTURE_IMAGE && tex->data != NULL)
+	if (tex->data != NULL)
 	{
 		img = (t_texture_image *)tex->data;
-		if (img->mlx_img != NULL && mlx != NULL)
+		if (img->mlx_img && mlx && tex->type == TEXTURE_IMAGE)
 			mlx_destroy_image(mlx, img->mlx_img);
 		free(img);
 	}

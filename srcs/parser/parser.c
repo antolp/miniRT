@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 18:10:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/26 01:21:26 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/26 15:48:11 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,14 @@
 
 t_parser	*parser_data(void)
 {
-	static t_parser s = (t_parser){0};
+	static t_parser	s = (t_parser){0};
 
 	return (&s);
 }
 
 void	put_err(char *msg)
 {
-	// #include <errno.h>
-	// perror("open"); printf("open failed: %s\n", strerror(errno));
+	perror(msg);
 	ft_dprintf(STDERR_FILENO, msg);
 	ft_putchar_fd('\n', STDERR_FILENO);
 	clear_minirt();
@@ -30,7 +29,6 @@ void	put_err(char *msg)
 }
 
 //Check a given property against a range of values
-//Test >>> printf("Checking range for %f: [%f < > %f]\n", val, range.min, range.max);
 void	check_range(double val, t_property_rules range)
 {
 	if (val < range.min || val > range.max)

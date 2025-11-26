@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 09:34:39 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/26 01:20:32 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/26 01:59:24 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,9 @@
 void	build_ambiant_light(t_scene *set, char **line)
 {
 	//max 1
+	printf("Scene color values %d, %d, %d\n With ptrs %p, %p, %p\n",
+		 set->ambient_color.r, set->ambient_color.g, set->ambient_color.b,
+		 &set->ambient_color.r, &set->ambient_color.g, &set->ambient_color.b);
 	set_property(PROP_RATIO, &set->ambient_ratio, *line++);
 	set_property(PROP_COLOUR, &set->ambient_color, *line++);
 	//ratio

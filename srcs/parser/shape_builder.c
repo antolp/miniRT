@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 03:37:00 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/25 00:03:55 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/26 15:44:55 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ void	build_sphere(t_object *obj, char **line)
 {
 	t_sphere	*shape;
 
-	printf(">>> Building sphere\n");
 	obj->shape = malloc(sizeof(t_sphere));
 	shape = obj->shape;
 	if (!obj->shape)
@@ -36,7 +35,6 @@ void	build_plane(t_object *obj, char **line)
 {
 	t_plane	*shape;
 
-	printf(">>> Building plane\n");
 	obj->shape = malloc(sizeof(t_plane));
 	shape = obj->shape;
 	if (!obj->shape)
@@ -57,7 +55,6 @@ void	build_cylinder(t_object *obj, char **line)
 	t_cylinder	*shape;
 
 	shape = obj->shape;
-	printf(">>> Building cylinder\n");
 	obj->shape = malloc(sizeof(t_cylinder));
 	shape = obj->shape;
 	if (!obj->shape)
@@ -80,7 +77,6 @@ void	build_cone(t_object *obj, char **line)
 {
 	t_cone	*shape;
 
-	printf(">>> Building cone\n");
 	obj->shape = malloc(sizeof(t_cone));
 	shape = obj->shape;
 	if (!obj->shape)
@@ -103,7 +99,6 @@ void	build_triangle(t_object *obj, char	**line)
 {
 	t_triangle	*shape;
 
-	printf(">>> Building triangle\n");
 	obj->shape = malloc(sizeof(t_triangle));
 	shape = obj->shape;
 	if (!obj->shape)
@@ -119,5 +114,4 @@ void	build_triangle(t_object *obj, char	**line)
 	obj->intersect = intersect_triangle;
 	obj->get_normal = get_normal_triangle;
 	obj->get_uv = get_uv_triangle;
-	printf("My triangle has %d mat \n", obj->material.texture.type);
 }
