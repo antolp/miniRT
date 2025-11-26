@@ -6,7 +6,7 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/07/15 16:47:45 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/26 04:49:31 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,8 @@ static bool	init_cone_uv_vars(t_object *obj, t_vec3 *hit, t_cone_uv_vars *v)
 //	r_here = s * tan(angle)  (expected cone radius at height s).
 //
 //then, check if we’re within the side surface :
-//	s in [-eps_h, height+eps_h] and |rlen - r_here| ≤ eps_r (unless r_here ~= 0 near apex).
+//	s in [-eps_h, height+eps_h] and |rlen - r_here| ≤ eps_r
+//		(unless r_here ~= 0 near apex).
 //Get a stable radial direction rdir:
 //	if rlen>0 -> rdir = w / rlen; else use T as fallback (apex).
 //
@@ -100,11 +101,13 @@ static bool	cone_try_side(t_cone_uv_vars *v, t_vec2 *out_uv)
 //
 //first, test if point on the base plane
 //	db = P - baseC  (vector from base center to hit point)
-// 	ht = |dot(db, A)| gives us how far we are off the base plane along its normal A
+// 	ht = |dot(db, A)| gives us how far we are off the base plane
+//		along its normal A
 //	If ht =< eps_h, point P is on the base plane. 
 //
 //then, test if point inside the base disk
-//	r_xy = sqrt(|db|^2 - ht^2) is the in-plane distance from the center (Pythagorea)
+//	r_xy = sqrt(|db|^2 - ht^2) is the in-plane distance from the center
+//		(that's Pythagorea)
 //	(remove the height part). Must be =< r_base + eps_r to be inside the disk.
 //
 //get 2D coords on that plane.

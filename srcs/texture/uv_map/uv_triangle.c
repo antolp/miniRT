@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   uv_cylinder.c                                      :+:      :+:    :+:   */
+/*   uv_triangle.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/07/15 16:47:45 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/26 04:57:07 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,28 +92,30 @@ static int	barycentric(const t_triangle *tr, t_vec3 P, t_bary_out *out)
 	return (1);
 }
 
+// p1 -> (1,0)
+// p2 -> (0,1)
 static bool	tri_uv_fit(const t_triangle *tr, t_vec3 *hit, t_vec2 *out_uv)
 {
 	t_bary_out	bc;
 
 	if (barycentric(tr, *hit, &bc) == 0)
 		return (false);
-	out_uv->x = bc.b1; // p1 -> (1,0)
-	out_uv->y = bc.b2; // p2 -> (0,1)
+	out_uv->x = bc.b1;
+	out_uv->y = bc.b2;
 	return (true);
 }
 
 static bool	tri_uv_ortho(const t_triangle *tr, t_vec3 *hit, t_vec2 *out_uv)
 {
-	t_vec3	U;
-	t_vec3	V;
+	t_vec3	u;
+	t_vec3	v;
 	t_vec3	d;
 
-	if (build_triangle_basis(tr, &U, &V) == 0)
+	if (build_triangle_basis(tr, &u, &u) == 0)
 		return (false);
 	d = vec_sub(*hit, tr->p0);
-	out_uv->x = vec_dot(d, U);
-	out_uv->y = vec_dot(d, V);
+	out_uv->x = vec_dot(d, u);
+	out_uv->y = vec_dot(d, v);
 	return (true);
 }
 

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   edit_flag.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/24 20:10:12 by anle-pag          #+#    #+#             */
+/*   Updated: 2025/11/26 02:30:59 by anle-pag         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "rt.h"
 
 const char	*flag_get_name(int index)
@@ -37,7 +49,6 @@ uint32_t	flag_get_bit(int index)
 		return (0);
 	return (bits[index]);
 }
-
 
 static int	key_to_index(int keycode)
 {

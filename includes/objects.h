@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   objects.c                                          :+:      :+:    :+:   */
+/*   objects.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/07/15 16:47:45 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/26 05:52:26 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,26 +27,27 @@ typedef enum e_tri_uv_mode
 }	t_tri_uv_mode;
 
 //like so_long, XPM ONLY
-typedef struct s_texture_image {
-    void   *mlx_img;      // handle from mlx_xpm_file_to_image
-    char   *addr;         // from mlx_get_data_addr
-    int     bpp;
-    int     line_len;
-    int     endian;
-    int     width;
-    int     height;
-    int     bgra;         // 1 if BGRA ordering, happens sometimes
-} t_texture_image;
+typedef struct s_texture_image
+{
+	void		*mlx_img;		// handle from mlx_xpm_file_to_image
+	char		*addr;			// from mlx_get_data_addr
+	int			bpp;
+	int			line_len;
+	int			endian;
+	int			width;
+	int			height;
+	int			bgra;			// 1 if BGRA ordering, happens sometimes
+}	t_tex_img;
 
 //parametric checker texture
 //immensely useful when debugging
 typedef struct s_checkerboard
 {
-    t_color color1;
-    t_color color2;
-    double  scale_u;
-    double  scale_v;
-}   t_checkerboard;
+	t_color		color1;
+	t_color		color2;
+	double		scale_u;
+	double		scale_v;
+}	t_checkerboard;
 
 //appart from checkerboard, pseudo-random noise could be a cool proc texture
 typedef struct s_texture
@@ -55,18 +56,18 @@ typedef struct s_texture
 	void			*data; // texture image or procedural config
 }	t_texture;
 
-//reflectance and refractance mutually exclusive because it's a pain in the ass
+//main material struct
 typedef struct s_material
 {
 	t_color		base_color;
-	double		shininess;			// [~10, ~300] specular exponent (Blinn-Phong)
-	double		specular_strength;	// [0, 1 (or a bit more)], intensity of highlight
-	double		reflectivity;		// [0, 1], used only if reflective
-	double		ior;				// index of refraction, different roles whether reflective or refractive.
-	double		refractivity;		// [0, 1] if more than 0, transparent and nothing else
+	double		shininess;
+	double		specular_strength;
+	double		reflectivity;
+	double		ior;
+	double		refractivity;
 	t_texture	texture;
 	t_texture	bump_maps;
-	double      bump_strength;
+	double		bump_strength;
 }	t_material;
 
 typedef struct s_sphere
@@ -116,7 +117,7 @@ typedef struct s_object
 	bool			(*intersect)(struct s_object *, t_ray *, double *t);
 	void			(*get_normal)(struct s_object *obj, t_vec3 *hit,
 			t_vec3 *out_normal);
-	bool			(*get_uv)(struct s_object *, t_vec3 *hit, t_vec2 *out_uv);
+	bool			(*get_uv)(struct s_object *, t_vec3 * hit, t_vec2 * out_uv);
 }	t_object;
 
 #endif

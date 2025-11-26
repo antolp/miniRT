@@ -6,7 +6,7 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/07/15 16:47:45 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/26 03:17:23 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,16 +55,6 @@ static bool	intersect_cone_caps(t_ray *ray, t_cone *cone,
 	return (true);
 }
 
-//helper for norm
-static void	compute_quad(t_quad *q, t_cone_side_vars v)
-{
-	q->a = v.dv * v.dv - v.cos2 * vec_dot(v.d, v.d);
-	q->b = 2.0 * (v.dv * v.cov - v.cos2 * vec_dot(v.d, v.co));
-	q->c = v.cov * v.cov - v.cos2 * vec_dot(v.co, v.co);
-	q->d = q->b * q->b - 4.0 * q->a * q->c;
-	return;
-}
-
 //very similar to cylinder, except we use cos2 to compute
 //the radius of ou cyliner in a give point on the axis
 //
@@ -81,7 +71,7 @@ static bool	intersect_infinite_cone_side(t_ray *ray, t_cone *cone,
 	v.cos2 = pow(cos(cone->angle), 2.0);
 	v.dv = vec_dot(v.d, cone->axis);
 	v.cov = vec_dot(v.co, cone->axis);
-	compute_quad(&q, v);
+	compute_quad_cone(&q, v);
 	if (q.d < 0.0)
 		return (false);
 	q.sqrt_d = sqrt(q.d);

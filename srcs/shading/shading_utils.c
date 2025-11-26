@@ -6,11 +6,29 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/07/15 16:47:45 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/26 03:53:00 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
+
+//orient_normal();
+//if normal same direction as ray vector, shading wil leak
+//from below surface (e.g. inside of circle, behind a plane/triangle, etc)
+//fix it by flipping normal, also tell the refraction logic that the ray
+//is "inside" the object (which is stupid, you are never "inside" a surface)
+void	orient_normal(t_ray *ray, t_hit_info *hit)
+{
+	double	dp;
+
+	hit->is_outside = 1;
+	dp = vec_dot(hit->normal, ray->direction);
+	if (dp >= 0.0)
+	{
+		hit->is_outside = 0;
+		hit->normal = vec_mul(hit->normal, -1.0);
+	}
+}
 
 t_color	color_scale_sat(t_color c, double s)
 {
@@ -38,8 +56,8 @@ t_color	color_scale_sat(t_color c, double s)
 //needs rewrite
 t_color	color_scale_clamped(t_color c, double s)
 {
-	t_color r;
-	double  x;
+	t_color	r;
+	double	x;
 
 	if (s < 0.0)
 		s = 0.0;
@@ -53,9 +71,9 @@ t_color	color_scale_clamped(t_color c, double s)
 	if (x > 255.0)
 		x = 255.0;
 	r.g = (int)x;
-	x = c.b * s; 
-	if (x > 255.0) 
-	x = 255.0;
+	x = c.b * s;
+	if (x > 255.0)
+		x = 255.0;
 	r.b = (int)x;
 	return (r);
 }

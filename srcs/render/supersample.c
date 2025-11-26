@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   supersample.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/26 03:21:30 by anle-pag          #+#    #+#             */
+/*   Updated: 2025/11/26 03:23:08 by anle-pag         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "rt.h"
 
-static t_color	supersample_sample_row(t_vec2 pixel, t_supersample_var *var, 
+static t_color	supersample_sample_row(t_vec2 pixel, t_supersample_var *var,
 	int i)
 {
 	t_color	acc;

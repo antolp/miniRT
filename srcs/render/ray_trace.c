@@ -6,7 +6,7 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/07/15 16:47:45 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/26 05:24:05 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ bool	get_closest_hit(t_ray *ray, t_hit_info *hit)
 	double		t_min;
 
 	t_min = DBL_MAX;
-	hit->object = NULL; 
+	hit->object = NULL;
 	objects = g_scene(NULL)->objects;
 	while (objects)
 	{
@@ -51,7 +51,6 @@ t_color	trace_ray(t_ray *ray, int depth)
 
 	if (!get_closest_hit(ray, &hit))
 		return (get_background_color(ray->direction));
-	// printf("%f %f %f\n",hit.hit_point.x, hit.hit_point.y, hit.hit_point.z);
 	return (shade_pixel(ray, &hit, depth));
 }
 
@@ -68,17 +67,14 @@ t_color	trace_ray(t_ray *ray, int depth)
 t_color	trace_fast_ray(t_ray *ray, int none)
 {
 	t_hit_info	hit;
-	t_vec3		V;
-	t_color		c;
-	double	k;
+	t_vec3		v;
+	double		k;
 
 	(void)none;
 	if (!get_closest_hit(ray, &hit))
 		return (get_background_color(ray->direction));
-		// return (g_scene(NULL)->background_color);
-	//if ((g_renderer(NULL)->shading_flag & FLAG_EDIT_FAST) == 0u)
 	orient_normal(ray, &hit);
-	V = vec_normalize(vec_mul(ray->direction, -1.0));
-	k = 0.5 + 0.5 * vec_dot(hit.normal, V);
+	v = vec_normalize(vec_mul(ray->direction, -1.0));
+	k = 0.5 + 0.5 * vec_dot(hit.normal, v);
 	return (color_scale_clamped(hit.object->material.base_color, k));
 }

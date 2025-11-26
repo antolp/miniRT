@@ -6,7 +6,7 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/07/15 16:47:45 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/26 05:57:13 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,10 +55,6 @@ t_list	*add_content(void *content)
 	return (node);
 }
 
-
-
-
-
 // // --- FEATURE HIGHLIGHT : texture and shape UV mapping ---
 // // two reflective spheres
 // //
@@ -76,16 +72,16 @@ bool	init_scene(t_scene *s)
 	s->camera.direction = vec_normalize((t_vec3){0.58, -0.10, -0.81});
 	s->camera.fov = 60;
 
-	t_texture_image	*img;
-	img = load_xpm_image(g_renderer(NULL)->mlx, "assets/wood.xpm");
+	// t_tex_img	*img;
+	// img = load_xpm_image(g_renderer(NULL)->mlx, "assets/wood.xpm");
 
-	t_texture_image	*img_sphere;
-	img_sphere = load_xpm_image(g_renderer(NULL)->mlx, "assets/2k_earth_daymap.xpm");
-	t_texture_image	*img_bump;
+	// t_tex_img	*img_sphere;
+	// img_sphere = load_xpm_image(g_renderer(NULL)->mlx, "assets/2k_earth_daymap.xpm");
+	t_tex_img	*img_bump;
 	img_bump = load_xpm_image(g_renderer(NULL)->mlx, "assets/bumpgrunge.xpm");
-	t_texture_image	*img42;
-	img42 = load_xpm_image(g_renderer(NULL)->mlx, "assets/42_500_1.xpm");
-	// img42 = load_xpm_image(g_renderer(NULL)->mlx, "wrongpath.xpm");
+	// t_tex_img	*img42;
+	// img42 = load_xpm_image(g_renderer(NULL)->mlx, "assets/42_500_1.xpm");
+	// // img42 = load_xpm_image(g_renderer(NULL)->mlx, "wrongpath.xpm");
 
 	t_checkerboard *cb; 
 	cb = malloc(sizeof(t_checkerboard));
@@ -108,7 +104,7 @@ bool	init_scene(t_scene *s)
 	//skybox
 	// s->skybox.type = TEXTURE_NONE;
 	// s->skybox.data = NULL;
-	t_texture_image *sky = load_xpm_image(g_renderer(NULL)->mlx, "assets/autumn_field_puresky_8k.xpm");
+	t_tex_img *sky = load_xpm_image(g_renderer(NULL)->mlx, "assets/autumn_field_puresky_8k.xpm");
 	s->skybox.type = TEXTURE_IMAGE;
 	s->skybox.data = sky;
 

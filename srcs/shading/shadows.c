@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   shadows.c                                   :+:      :+:    :+:   */
+/*   shadows.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/07/15 16:47:45 by anle-pag         ###   ########.fr       */
+/*   Created: 2025/11/26 03:43:11 by anle-pag          #+#    #+#             */
+/*   Updated: 2025/11/26 03:50:57 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,13 +78,13 @@ static t_color	trace_shadow(t_ray *ray, t_color *trans,
 	while (steps < MAX_SHADOW_STEPS)
 	{
 		if (!get_closest_hit_ignoring(ray, remain, NULL, &hit))
-			break;
+			break ;
 		step_len = get_step_length(&hit.hit_point, &ray->origin);
 		if (hit.object->material.refractivity <= 0.0)
 			return ((t_color){0, 0, 0});
 		apply_refraction_tint(trans, &hit, ray, light_scale);
-		ray->origin = vec_add(hit.hit_point, vec_mul(ray->direction,
-			SHADOW_EPS));
+		ray->origin = vec_add(hit.hit_point,
+				vec_mul(ray->direction, SHADOW_EPS));
 		remain = remain - step_len;
 		if (remain <= 0.0)
 			break ;

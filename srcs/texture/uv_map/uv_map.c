@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   texture.c                                          :+:      :+:    :+:   */
+/*   uv_map.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/07/15 16:47:45 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/26 04:56:37 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,19 +64,19 @@ bool	get_uv_sphere(t_object *obj, t_vec3 *hit, t_vec2 *out_uv)
 //projects a hit point onto a plane's local orthonormal basis to get UV coords
 bool	get_uv_plane(t_object *obj, t_vec3 *hit, t_vec2 *out_uv)
 {
-	t_plane	*pl;
-	t_vec3		T;
-	t_vec3		B;
+	t_plane		*pl;
+	t_vec3		t;
+	t_vec3		b;
 	t_vec3		d;
 	t_vec2		uv;
 
 	if (obj == NULL || hit == NULL || out_uv == NULL)
 		return (false);
 	pl = (t_plane *)obj->shape;
-	build_basis_from_normal(vec_normalize(pl->normal), &T, &B);
+	build_basis_from_normal(vec_normalize(pl->normal), &t, &b);
 	d = vec_sub(*hit, pl->point);
-	uv.x = vec_dot(d, T);
-	uv.y = vec_dot(d, B);
+	uv.x = vec_dot(d, t);
+	uv.y = vec_dot(d, b);
 	out_uv->x = uv.x;
 	out_uv->y = uv.y;
 	return (true);

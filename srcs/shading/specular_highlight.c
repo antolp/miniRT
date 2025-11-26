@@ -6,7 +6,7 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/07/15 16:47:45 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/26 04:01:47 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ bool	is_in_shadow(t_vec3 point, t_vec3 light_pos)
 	t_ray		shadow_ray;
 	t_vec3		light_dir;
 	double		light_dist;
+	double		dist_to_hit;
 	t_hit_info	hit;
 
 	light_dir = vec_sub(light_pos, point);
@@ -49,7 +50,7 @@ bool	is_in_shadow(t_vec3 point, t_vec3 light_pos)
 	shadow_ray.direction = light_dir;
 	if (get_closest_hit(&shadow_ray, &hit))
 	{
-		double dist_to_hit = vec_length(vec_sub(hit.hit_point, shadow_ray.origin));
+		dist_to_hit = vec_length(vec_sub(hit.hit_point, shadow_ray.origin));
 		if (dist_to_hit < light_dist)
 			return (true);
 	}
@@ -103,9 +104,11 @@ static t_color	compute_specular_component(t_material *m, t_hit_info *hit,
 	return (c);
 }
 
-//for each light, check if the intersection point is in the shadow of another object
+//for each light, check if the intersection point is in the shadow
+//of another object
 //if not, compute the specular highlight at that specific point on object
-t_color	compute_specular_highlight(t_material *m, t_hit_info *hit, t_vec3 view_dir)
+t_color	compute_specular_highlight(t_material *m,
+			t_hit_info *hit, t_vec3 view_dir)
 {
 	t_color		result;
 	t_list		*node;
@@ -117,10 +120,11 @@ t_color	compute_specular_highlight(t_material *m, t_hit_info *hit, t_vec3 view_d
 	while (node)
 	{
 		light = (t_light *)node->content;
-		if (should_skip_light(hit->hit_point, light, g_renderer(NULL)->shading_flag))
+		if (should_skip_light(hit->hit_point, light,
+				g_renderer(NULL)->shading_flag))
 		{
 			node = node->next;
-			continue;
+			continue ;
 		}
 		tmp = compute_specular_component(m, hit, view_dir, light);
 		result = color_add(result, tmp);

@@ -6,7 +6,7 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/07/15 16:47:45 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/26 05:25:49 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,12 @@
 //                   ⟍  .
 //                     ⟍|
 //  -------------------[x]----------------
-//                 	    |\ 
-//                      . \ 
-//                      |θ1\ 
-//                      .   \ refracted 
-//                      |    \  ray
-//                      .     \ 
+//                 	    |l 
+//                      . l 
+//                      |θ1l 
+//                      .   l refracted 
+//                      |    l  ray
+//                      .     l 
 //the angles aren't steep enough, it's just to give an idea
 //the formulas can be found in this form in the openGL docs :
 //	https://registry.khronos.org/OpenGL-Refpages/gl4/html/refract.xhtml
@@ -125,7 +125,9 @@ static t_color	handle_total_internal_reflection(t_ray *ray,
 //Otherwise, trace the reflected ray.
 //Finally blend transmission and reflection according to Fresnel weight.
 //
-//OUTDATED
+//(cheap but ugly way to make fresnel cheaper)
+// if (fw < FRESNEL_SPLIT_THRESHOLD)
+// 	return (color_scale_clamped(col_t, 1.0 - fw));
 static t_color	trace_and_blend_refraction(t_material *m, t_ray *ray,
 	t_hit_info *hit, t_vec3 refract_dir)
 {
@@ -140,8 +142,6 @@ static t_color	trace_and_blend_refraction(t_material *m, t_ray *ray,
 			vec_mul(refract_dir, SHADOW_EPS));
 	refract_ray.direction = refract_dir;
 	col_t = trace_ray(&refract_ray, ray->depth - 1);
-	// if (fw < FRESNEL_SPLIT_THRESHOLD)
-	// 	return (color_scale_clamped(col_t, 1.0 - fw));
 	reflect_ray = compute_reflected_ray(ray, hit);
 	col_r = trace_ray(&reflect_ray, ray->depth - 1);
 	col_t = color_scale_clamped(col_t, 1.0 - fw);
@@ -161,7 +161,6 @@ t_color	compute_refraction(t_material *m, t_ray *ray, t_hit_info *hit,
 	int depth)
 {
 	t_vec3		refract_dir;
-	t_ray		refract_ray;
 	double		eta;
 
 	if (is_refraction_disabled(depth, g_renderer(NULL)->shading_flag))

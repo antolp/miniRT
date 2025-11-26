@@ -6,7 +6,7 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/07/15 16:47:45 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/26 03:22:30 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,15 @@ static int	color_cycle_component(double t, double phase)
 }
 
 //returns a color based on the frame index, creates the "shift (raibow effect)"
-//value of each color channels correspond to thirds of sine wave (2π/3 = 2.09 etc) 
+//value of each color channels correspond to thirds of sine wave
+//(2π/3 = 2.09 etc)
 static t_color	cycle_color(int frame)
 {
 	double	t;
 	double	scale;
 	t_color	color;
 
-	scale = 0.03; 
+	scale = 0.03;
 	t = (double)frame * scale;
 	color.r = color_cycle_component(t, 0.0);
 	color.g = color_cycle_component(t, 2.09);

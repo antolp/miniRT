@@ -6,12 +6,11 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/07/15 16:47:45 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/26 03:24:20 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
-
 
 //init_camera_basis()
 //this one is not self evident, basically initializes a bunch of infos about
@@ -85,8 +84,8 @@ static void	render_full_frame_step(t_camera_basis *cb)
 
 void	render_high_quality_frame(void)
 {
-	t_scene			*s;
-	t_renderer		*r;
+	t_scene					*s;
+	t_renderer				*r;
 	static t_camera_basis	cb;
 
 	r = g_renderer(NULL);
@@ -111,7 +110,7 @@ void	render_high_quality_frame(void)
 	}
 }
 
-void	render_edit_frame()
+void	render_edit_frame(void)
 {
 	t_scene			*s;
 	t_renderer		*r;

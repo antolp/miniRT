@@ -6,7 +6,7 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/07/15 16:47:45 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/26 02:57:43 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,9 +64,10 @@
 //
 //shamelessly copied C++ implementation from :
 //en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
-//good ressources to understand the overall idea :
-////www.scratchapixel.com/lessons/3d-basic-rendering/
-//	ray-tracing-rendering-a-triangle/moller-trumbore-ray-triangle-intersection.html
+//good ressource to understand the overall idea :
+//www.scratchapixel.com/lessons/3d-basic-rendering/
+//ray-tracing-rendering-a-triangle/
+//moller-trumbore-ray-triangle-intersection.html
 bool	intersect_triangle(t_object *obj, t_ray *ray, double *t)
 {
 	t_triangle	*tri;
@@ -97,7 +98,8 @@ bool	intersect_triangle(t_object *obj, t_ray *ray, double *t)
 
 //normal is vector perpendicular to a vector formed by any point on triangle
 //take two 
-void	get_normal_triangle(t_object *obj, t_vec3 *hit_point, t_vec3 *out_normal)
+void	get_normal_triangle(t_object *obj, t_vec3 *hit_point,
+			t_vec3 *out_normal)
 {
 	t_triangle	*tri;
 	t_vec3		e1;

@@ -6,7 +6,7 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/07/15 16:47:45 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/26 05:24:37 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,12 @@
 //https://en.wikipedia.org/wiki/Schlick%27s_approximation
 //i don't understand this
 //thank you mister Schlick
-double fresnel_schlick(double cos_theta, double ior)
+double	fresnel_schlick(double cos_theta, double ior)
 {
-	double r0;
-    r0 = pow((1.0 - ior) / (1.0 + ior), 2.0);
-    return (r0 + (1.0 - r0) * pow(1.0 - cos_theta, 5.0));
+	double	r0;
+
+	r0 = pow((1.0 - ior) / (1.0 + ior), 2.0);
+	return (r0 + (1.0 - r0) * pow(1.0 - cos_theta, 5.0));
 }
 
 //if fresnel toggled on :
@@ -29,8 +30,8 @@ double fresnel_schlick(double cos_theta, double ior)
 double	get_fresnel_weight(t_material *m, t_ray *ray, t_hit_info *hit)
 {
 	double	weight;
-	double cos_theta;
-	double F0;
+	double	cos_theta;
+	double	f0;
 
 	weight = m->reflectivity;
 	if ((g_renderer(NULL)->shading_flag & FLAG_FRESNEL) != 0u)
@@ -40,8 +41,8 @@ double	get_fresnel_weight(t_material *m, t_ray *ray, t_hit_info *hit)
 	}
 	else
 	{
-		F0 = fresnel_schlick(1.0, m->ior);
-		weight = weight * F0;
+		f0 = fresnel_schlick(1.0, m->ior);
+		weight = weight * f0;
 	}
 	return (fmax(0.0, fmin(1.0, weight)));
 }
@@ -68,7 +69,6 @@ t_color	compute_reflection(t_material *m, t_ray *ray, t_hit_info *hit,
 {
 	t_ray			reflect_ray;
 	t_color			reflected;
-	double			cos_theta;
 	double			weight;
 
 	if (ray->depth <= 0)
@@ -77,6 +77,6 @@ t_color	compute_reflection(t_material *m, t_ray *ray, t_hit_info *hit,
 		return (current);
 	weight = get_fresnel_weight(m, ray, hit);
 	reflect_ray = compute_reflected_ray(ray, hit);
-	reflected = trace_ray(&reflect_ray, ray->depth-1);
+	reflected = trace_ray(&reflect_ray, ray->depth - 1);
 	return (color_lerp(current, reflected, weight));
 }

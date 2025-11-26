@@ -6,7 +6,7 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/07/15 16:47:45 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/26 05:06:35 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,32 +28,34 @@ t_renderer	*g_renderer(t_renderer *set)
 
 t_scene	*g_scene(t_scene *set)
 {
-	static t_scene *s = NULL;
+	static t_scene	*s = NULL;
 
 	if (!s)
 		s = set;
 	return (s);
 }
 
+//here, add some free() mechanism
 int	handle_close(void *param)
 {
-	//here, add some free() mechanism
 	(void)param;
 	printf("Exiting...\n");
 	exit(0);
 	return (0);
-} 
+}
 
+//need to aadd a free() mechanism
+//on every return
 int	main(void)
 {
 	t_scene		scene_g;
 	t_renderer	renderer_g;
 
 	if (!init_renderer(&renderer_g, WIDTH, HEIGHT, "rt"))
-		return (1); // need to aadd a free() mechanism 
+		return (1);
 	g_renderer(&renderer_g);
 	if (!init_scene(&scene_g))
-		return (1); // again, need to aadd a free() mechanism
+		return (1);
 	g_scene(&scene_g);
 	mlx_hook(renderer_g.win, KeyPress, KeyPressMask, key_hook, NULL);
 	mlx_loop_hook(renderer_g.mlx, render_loop, NULL);

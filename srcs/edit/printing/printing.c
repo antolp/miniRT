@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   printing.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/26 02:29:55 by anle-pag          #+#    #+#             */
+/*   Updated: 2025/11/26 02:53:35 by anle-pag         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "rt.h"
 
 static void	print_help1(void)
@@ -26,10 +38,12 @@ void	print_help(void)
 	printf("=== Controls ===\n");
 	printf("Global:\n");
 	printf("  E / e      : Switch to EDIT mode (from a rendered frame)\n");
-	printf("  R / r      : Switch to HIGH QUALITY RENDER mode (from EDIT mode)\n");
+	printf("  R / r      : Switch to HIGH QUALITY RENDER mode");
+	printf(" (from EDIT mode)\n");
 	printf("  M          : Open the shading menu\n");
 	printf("  U          : Toggle SSAA supersampling\n");
-	printf("               (Warning !! SSAA highly increases the rendering time !)\n");
+	printf("               (Warning !! SSAA highly increases");
+	printf(" the rendering time !)\n");
 	printf("  ESC        : Quit the program\n\n");
 	printf("Camera :\n");
 	printf("  camera movement:\n");

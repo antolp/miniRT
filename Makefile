@@ -1,27 +1,32 @@
 NAME		= miniRT
 OBJDIR		= .obj
-SRCS		= srcs/main.c srcs/init.c srcs/vector.c srcs/debug.c \
-			  srcs/render/render_test.c srcs/render/render.c srcs/render/ray_trace.c \
-			  srcs/render/render_frame.c srcs/render/supersample.c srcs/render/downsample.c \
-			  srcs/objects/plane.c srcs/objects/sphere.c srcs/objects/cylinder.c \
-			  srcs/objects/cone.c srcs/objects/triangle.c \
-			  srcs/shading/diffuse_lights.c srcs/shading/shading.c srcs/shading/specular_highlight.c \
-			  srcs/shading/reflection.c srcs/shading/refraction.c srcs/shading/shadows.c \
-			  srcs/shading/shadow_utils.c srcs/shading/shading_utils.c srcs/shading/shading_texture.c\
-			  srcs/texture/texture.c srcs/texture/uv_cylinder.c srcs/texture/uv_cone.c \
-			  srcs/texture/uv_triangle.c srcs/texture/uv_map.c srcs/texture/image_sample.c \
-			  srcs/texture/image_load.c srcs/texture/skybox.c \
-			  srcs/texture/bump_map.c srcs/texture/bump_map_tb.c srcs/texture/bump_map_utils.c \
-			  srcs/texture/bump_build.c \
-			  srcs/edit/edit.c srcs/edit/flag_menu.c srcs/edit/edit_flag.c \
+SRCS		= srcs/main.c srcs/init.c srcs/vector.c srcs/vector2.c \
+			  srcs/debug_scene.c srcs/debug_objects.c srcs/debug_props.c \
+			  srcs/render/render.c \
+			  srcs/render/render_test.c srcs/render/ray_trace.c srcs/render/render_frame.c \
+			  srcs/render/supersample.c srcs/render/downsample.c \
+			  srcs/objects/plane.c srcs/objects/sphere.c srcs/objects/triangle.c \
+			  srcs/objects/cylinder.c srcs/objects/cone.c srcs/objects/helpers.c \
+			  srcs/shading/shading.c \
+			  srcs/shading/diffuse_lights.c  srcs/shading/specular_highlight.c srcs/shading/shadows.c \
+			  srcs/shading/shadow_utils.c srcs/shading/reflection.c srcs/shading/refraction.c \
+			  srcs/shading/shading_texture.c srcs/shading/shading_utils.c \
+			  srcs/texture/texture.c \
+			  srcs/texture/image_load.c srcs/texture/image_sample.c srcs/texture/skybox.c \
+			  srcs/texture/uv_map/uv_cylinder.c srcs/texture/uv_map/uv_cone.c \
+			  srcs/texture/uv_map/uv_map.c srcs/texture/uv_map/uv_triangle.c \
+			  srcs/texture/bump_map/bump_map.c srcs/texture/bump_map/bump_map_tb.c \
+			  srcs/texture/bump_map/bump_map_utils.c srcs/texture/bump_map/bump_build.c \
+			  srcs/edit/edit.c \
+			  srcs/edit/flag_menu.c srcs/edit/edit_flag.c \
 			  srcs/edit/translation/props_move.c srcs/edit/translation/translate.c \
 			  srcs/edit/translation/translate_obj.c \
-			  srcs/edit/rotation/props_rotate.c srcs/edit/rotation/rotate.c srcs/edit/rotation/rotate_obj_yaw.c \
-			  srcs/edit/rotation/rotate_obj_pitch.c \
+			  srcs/edit/rotation/props_rotate.c srcs/edit/rotation/rotate.c \
+			  srcs/edit/rotation/rotate_obj_pitch.c srcs/edit/rotation/rotate_obj_yaw.c \
 			  srcs/edit/scaling/props_scale.c srcs/edit/scaling/scale.c srcs/edit/scaling/scale_obj.c \
 			  srcs/edit/printing/printing.c srcs/edit/printing/edit_printobj.c \
-			  srcs/edit/camera.c srcs/edit/editscene_keys.c srcs/edit/editscene_keys2.c srcs/edit/misc.c \
-			  srcs/edit/select.c
+			  srcs/edit/camera.c srcs/edit/editscene_keys.c srcs/edit/editscene_keys2.c \
+			  srcs/edit/select.c srcs/edit/misc.c 
 
 OBJS		= $(SRCS:%.c=$(OBJDIR)/%.o)
 
@@ -33,8 +38,8 @@ MLX			= $(MLX_DIR)/libmlx.a
 
 CC			= cc
 # CFLAGS	= -Wall -Wextra -Werror -fsanitize=address -g 
-# CFLAGS	= -Wall -Wextra -Werror -g3 -O3 -ffast-math 
-CFLAGS		= -g3 -O3 -ffast-math
+CFLAGS		= -Wall -Wextra -Werror -g3 -O3 -ffast-math 
+# CFLAGS		= -g3 -O3 -ffast-math
 INCLUDES	= -I./includes -I$(LIBFT_DIR) -I$(MLX_DIR) -Ilibft/includes
 LDFLAGS		= -L$(LIBFT_DIR) -lft -L$(MLX_DIR) -lmlx -lX11 -lXext -lm
 

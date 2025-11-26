@@ -6,29 +6,11 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/07/15 16:47:45 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/26 03:56:01 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
-
-//orient_normal();
-//if normal same direction as ray vector, shading wil leak
-//from below surface (e.g. inside of circle, behind a plane/triangle, etc)
-//fix it by flipping normal, also tell the refraction logic that the ray
-//is "inside" the object (which is stupid, you are "inside a surface")
-void	orient_normal(t_ray *ray, t_hit_info *hit)
-{
-	double	dp;
-
-	hit->is_outside = 1;
-	dp = vec_dot(hit->normal, ray->direction);
-	if (dp >= 0.0)
-	{
-		hit->is_outside = 0;
-		hit->normal = vec_mul(hit->normal, -1.0);
-	}
-}
 
 static t_color	shade_diffuse(t_hit_info *hit)
 {
@@ -47,18 +29,19 @@ static t_color	shade_diffuse(t_hit_info *hit)
 
 static t_color	shade_specular_hl(t_ray *ray, t_hit_info *hit)
 {
-	t_color	spec;
-	t_vec3	view_dir;
-	unsigned int	flags;
+	t_color		spec_hl;
+	t_vec3		view_dir;
+	uint32_t	flags;
 
-	spec = (t_color){0, 0, 0};
+	spec_hl = (t_color){0, 0, 0};
 	flags = g_renderer(NULL)->shading_flag;
 	if ((flags & FLAG_SPECULAR) != 0u)
 	{
 		view_dir = vec_normalize(vec_mul(ray->direction, -1.0));
-		spec = compute_specular_highlight(&hit->object->material, hit, view_dir);
+		spec_hl = compute_specular_highlight(&hit->object->material,
+				hit, view_dir);
 	}
-	return (spec);
+	return (spec_hl);
 }
 
 //refracted contribution: trace, tint by hit_color, lerp by refractivity

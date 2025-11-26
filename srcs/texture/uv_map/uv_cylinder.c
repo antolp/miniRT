@@ -6,7 +6,7 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/07/15 16:47:45 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/26 04:56:15 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,15 +99,15 @@ static bool	cylinder_try_one_cap(t_cyl_uv_vars *v, t_vec3 *hit,
 //Handles the bottom then top cap of the cylinder
 static bool	cylinder_try_caps(t_cyl_uv_vars *v, t_vec3 *hit, t_vec2 *out_uv)
 {
-	t_vec3	C;
+	t_vec3	c;
 	bool	oui;
 
-	C = v->cyl->center;
-	oui = cylinder_try_one_cap(v, hit, C, out_uv);
+	c = v->cyl->center;
+	oui = cylinder_try_one_cap(v, hit, c, out_uv);
 	if (oui)
 		return (true);
-	C = vec_add(v->cyl->center, vec_mul(v->axis, v->cyl->height));
-	oui = cylinder_try_one_cap(v, hit, C, out_uv);
+	c = vec_add(v->cyl->center, vec_mul(v->axis, v->cyl->height));
+	oui = cylinder_try_one_cap(v, hit, c, out_uv);
 	if (oui)
 		return (true);
 	return (false);

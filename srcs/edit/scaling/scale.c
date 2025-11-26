@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   scale.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/26 02:30:12 by anle-pag          #+#    #+#             */
+/*   Updated: 2025/11/26 02:51:59 by anle-pag         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "rt.h"
 
 static void	editor_scale_triangle_uniform(t_object *obj, double factor)
@@ -18,7 +30,6 @@ static void	editor_scale_triangle_uniform(t_object *obj, double factor)
 	off = vec_mul(off, factor);
 	tri->p2 = vec_add(center, off);
 }
-
 
 void	editor_scale_object_primary(t_cli_var *var, double factor)
 {

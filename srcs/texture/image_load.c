@@ -6,7 +6,7 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/11/21 19:04:12 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/26 05:52:26 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 
 //allocates the image texture struct in heap
 //	add explicit malloc error message
-static t_texture_image	*tex_image_alloc(void)
+static t_tex_img	*tex_image_alloc(void)
 {
-	t_texture_image	*img;
+	t_tex_img	*img;
 
-	img = (t_texture_image *)malloc(sizeof(t_texture_image));
+	img = (t_tex_img *)malloc(sizeof(t_tex_img));
 	if (img == NULL)
 		return (NULL);
 	img->mlx_img = NULL;
@@ -33,7 +33,7 @@ static t_texture_image	*tex_image_alloc(void)
 }
 
 //loads the MLX image and fills width/height
-static int	load_mlx_xpm(void *mlx, const char *path, t_texture_image *img)
+static int	load_mlx_xpm(void *mlx, const char *path, t_tex_img *img)
 {
 	int	w;
 	int	h;
@@ -52,7 +52,7 @@ static int	load_mlx_xpm(void *mlx, const char *path, t_texture_image *img)
 //not sure, but i think mlx_get_data_addr() returns a pointer to where the
 //image already got allocated, and populate the rest of the given pointer with
 //already computed and stored data
-static int	map_image_buffer(void *mlx, t_texture_image *img)
+static int	map_image_buffer(void *mlx, t_tex_img *img)
 {
 	img->addr = mlx_get_data_addr(img->mlx_img,
 			&img->bpp, &img->line_len, &img->endian);
@@ -65,12 +65,19 @@ static int	map_image_buffer(void *mlx, t_texture_image *img)
 	return (1);
 }
 
+void	print_xpm(t_tex_img *img, const char *path)
+{
+	ft_dprintf(1, "loaded xpm: %s (%dx%d, bpp=%d, line=%d, endian=%d)\n",
+		path, img->width, img->height, img->bpp,
+		img->line_len, img->endian);
+}
+
 //bgra useless
 //all function used are here :
 //https://harm-smits.github.io/42docs/libs/minilibx/prototypes
-t_texture_image	*load_xpm_image(void *mlx, const char *path)
+t_tex_img	*load_xpm_image(void *mlx, const char *path)
 {
-	t_texture_image	*img;
+	t_tex_img	*img;
 
 	if (mlx == NULL || path == NULL)
 		return (NULL);
@@ -79,7 +86,8 @@ t_texture_image	*load_xpm_image(void *mlx, const char *path)
 		return (NULL);
 	if (!load_mlx_xpm(mlx, path, img))
 	{
-		ft_dprintf(2, "image %s couldn't be loaded. please check the path.\n", path);
+		ft_dprintf(2, "image %s couldn't be loaded. please check the path.\n",
+			path);
 		return (free(img), NULL);
 	}
 	if (!map_image_buffer(mlx, img))
@@ -91,23 +99,6 @@ t_texture_image	*load_xpm_image(void *mlx, const char *path)
 		img->bgra = 1;
 	else
 		img->bgra = 0;
-		ft_dprintf(1, "loaded xpm: %s (%dx%d, bpp=%d, line=%d, endian=%d)\n",
-            path, img->width, img->height, img->bpp, img->line_len, img->endian);
+	print_xpm(img, path);
 	return (img);
-}
-
-//destroy mlx image and frees texture pointer
-void	destroy_texture(void *mlx, t_texture *tex)
-{
-	t_texture_image *img;
-
-	if (tex == NULL)
-		return ;
-	if (tex->type == TEXTURE_IMAGE && tex->data != NULL)
-	{
-		img = (t_texture_image *)tex->data;
-		if (img->mlx_img != NULL && mlx != NULL)
-			mlx_destroy_image(mlx, img->mlx_img);
-		free(img);
-	}
 }

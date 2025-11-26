@@ -1,5 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   editscene_keys2.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/26 02:29:34 by anle-pag          #+#    #+#             */
+/*   Updated: 2025/11/26 02:32:10 by anle-pag         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "rt.h"
 
+//split for norm
 int	handle_props(int keycode, t_cli_var *var)
 {
 	if (handle_props_move_ws(keycode, var))
@@ -19,7 +32,9 @@ int	handle_props(int keycode, t_cli_var *var)
 	return (1);
 }
 
-//main function for active keys in scene editing mode, 0 goes back to camera mode
+//main function for active keys in scene editing mode
+//0 goes back to camera mode
+//anything else does nothing
 int	handle_scene_edit_active_keys(int keycode, t_cli_var *var)
 {
 	if (keycode == XK_0)

@@ -1,31 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   select.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/26 02:29:41 by anle-pag          #+#    #+#             */
+/*   Updated: 2025/11/26 02:47:59 by anle-pag         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "rt.h"
-
-//two functions to cycle trough lists of obj/lights
-t_list	*editor_list_last(t_list *lst)
-{
-	if (lst == NULL)
-		return (NULL);
-	while (lst->next != NULL)
-		lst = lst->next;
-	return (lst);
-}
-
-t_list	*editor_list_prev_wrap(t_list *head, t_list *node)
-{
-	t_list	*prev;
-
-	if (head == NULL || node == NULL)
-		return (NULL);
-	if (head == node)
-		return (editor_list_last(head));
-	prev = head;
-	while (prev->next != NULL && prev->next != node)
-		prev = prev->next;
-	if (prev->next == node)
-		return (prev);
-	return (node);
-}
-
 
 //next/prev object
 static void	editor_next_object(t_renderer *r, t_scene *scene)

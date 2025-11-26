@@ -6,11 +6,27 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/07/15 16:47:45 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/26 05:52:26 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
+
+//destroy mlx image and frees texture pointer
+void	destroy_texture(void *mlx, t_texture *tex)
+{
+	t_tex_img	*img;
+
+	if (tex == NULL)
+		return ;
+	if (tex->type == TEXTURE_IMAGE && tex->data != NULL)
+	{
+		img = (t_tex_img *)tex->data;
+		if (img->mlx_img != NULL && mlx != NULL)
+			mlx_destroy_image(mlx, img->mlx_img);
+		free(img);
+	}
+}
 
 static int	clamp(int v, int lo, int hi)
 {
@@ -24,7 +40,7 @@ static int	clamp(int v, int lo, int hi)
 //reads one texel at byte offset 'byte_index' and returns it as t_color
 //always 32bpp BGRA in memory (img->bgra != 0), cham
 //for norm
-static t_color	fetch_texel(const t_texture_image *img, int byte_index)
+static t_color	fetch_texel(const t_tex_img *img, int byte_index)
 {
 	unsigned char	*p;
 	t_color			c;
@@ -66,14 +82,14 @@ static t_color	fetch_texel(const t_texture_image *img, int byte_index)
 //
 //"Nearest" sampling so no filtering just picks the closest texel
 //see bilinear filtering, sample 4 neighbors and interpolate in UV
-t_color	sample_image_nearest(const t_texture_image *img, double u, double v)
+//
+//use index as placeholder for norm
+t_color	sample_image_nearest(const t_tex_img *img, double u, double v)
 {
-	unsigned char	*ptr;
-	int				index;
-	t_color			out;
-	t_vec2			uvf;
-	t_vec2			img_coord;
-	
+	int		index;
+	t_vec2	uvf;
+	t_vec2	img_coord;
+
 	if (img == NULL || img->addr == NULL || img->width <= 0 || img->height <= 0)
 		return ((t_color){0, 0, 0});
 	uvf.x = wrap01(u);
@@ -84,6 +100,5 @@ t_color	sample_image_nearest(const t_texture_image *img, double u, double v)
 	img_coord.x = clamp(img_coord.x, 0, img->width - 1);
 	img_coord.y = clamp(img_coord.y, 0, img->height - 1);
 	index = img_coord.y * img->line_len + img_coord.x * (img->bpp / 8);
-	ptr = (unsigned char *)(img->addr + index);
-	return (fetch_texel(img, img_coord.y * img->line_len + img_coord.x * (img->bpp / 8)));
+	return (fetch_texel(img, index));
 }

@@ -6,29 +6,11 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/07/15 16:47:45 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/26 03:17:02 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
-
-static void	get_cap_info(t_cylinder *cyl, int i, t_vec3 *center, t_vec3 *normal)
-{
-	t_vec3	axis_n;
-
-	axis_n = vec_normalize(cyl->axis);
-	if (i == 0)
-	{
-		*center = cyl->center;                 // base center
-		*normal = vec_mul(axis_n, -1.0);       // base normal points outward
-	}
-	else
-	{
-		*center = vec_add(cyl->center, vec_mul(axis_n, cyl->height)); // top center
-		*normal = axis_n;                      // top normal
-	}
-}
-
 
 //check_cap()
 //the real ray-cap intersection check function
@@ -83,7 +65,8 @@ static bool	check_cap_hit(t_ray *ray, t_cylinder *cyl, t_cap_vars *v)
 	if (v->t <= 1e-4 || v->t >= v->best_t)
 		return (false);
 	v->p = vec_add(ray->origin, vec_mul(ray->direction, v->t));
-	if (vec_length_squared(vec_sub(v->p, v->center)) > cyl->radius * cyl->radius)
+	if (vec_length_squared(vec_sub(v->p, v->center))
+		> cyl->radius * cyl->radius)
 		return (false);
 	v->best_t = v->t;
 	v->best_p = v->p;
@@ -91,9 +74,8 @@ static bool	check_cap_hit(t_ray *ray, t_cylinder *cyl, t_cap_vars *v)
 	return (true);
 }
 
-
 //intersect_cylinder_caps()
-//tests the intersection between ray and the top and bottom "caps", circular faces
+//tests the intersection between ray and the top and bottom "caps"
 //either base (v.i == 0) or top face (v.i == 1)
 //first checks base then top cap, if not intersection, check bottom cap
 static bool	intersect_cylinder_caps(t_ray *ray, t_cylinder *cyl,
@@ -115,27 +97,6 @@ static bool	intersect_cylinder_caps(t_ray *ray, t_cylinder *cyl,
 	*t_hit = v.best_t;
 	*hit_point = v.best_p;
 	return (true);
-}
-
-//hit must lie between apex (0) and base (height)
-//use dot product to compare vector projection
-static bool	is_point_within_cylinder_height(t_vec3 point, t_cylinder *cyl)
-{
-	t_vec3	v;
-	double	proj;
-
-	v = vec_sub(point, cyl->center);
-	proj = vec_dot(v, cyl->axis);
-	return (proj >= 0.0 && proj <= cyl->height);
-}
-
-//helper for norm
-static void	compute_quad(t_quad *q, t_cyl_side_vars v, double radius)
-{
-	q->a = vec_dot(v.d_perp, v.d_perp);
-	q->b = 2.0 * vec_dot(v.d_perp, v.cto_perp);
-	q->c = vec_dot(v.cto_perp, v.cto_perp) - radius * radius;
-	q->d = q->b * q->b - 4.0 * q->a * q->c;
 }
 
 //intersect_infinite_cylinder_side()
@@ -211,7 +172,7 @@ static bool	intersect_infinite_cylinder_side(t_ray *ray, t_cylinder *cyl,
 	v.d = ray->direction;
 	v.d_perp = vec_sub(v.d, vec_mul(v.axis, vec_dot(v.d, v.axis)));
 	v.cto_perp = vec_sub(v.c_to_o, vec_mul(v.axis, vec_dot(v.c_to_o, v.axis)));
-	compute_quad(&q, v, cyl->radius);
+	compute_quad_cyl(&q, v, cyl->radius);
 	if (q.d < 0.0)
 		return (false);
 	q.sqrt_d = sqrt(q.d);

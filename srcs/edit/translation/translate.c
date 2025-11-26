@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   translate.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/11/26 02:30:19 by anle-pag          #+#    #+#             */
+/*   Updated: 2025/11/26 02:54:03 by anle-pag         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "rt.h"
 
 //camera
@@ -40,7 +52,6 @@ void	editor_translate_light(t_cli_var *var, t_vec3 delta)
 	light->position = vec_add(light->position, delta);
 	var->r->has_drawn_realtime = false;
 }
-
 
 //main translation entry point
 void	editor_translate(t_cli_var *var, t_vec3 delta)

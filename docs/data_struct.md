@@ -93,7 +93,7 @@ class t_texture {
   +data: void\*
 }
 
-class t_texture_image {
+class t_tex_img {
     void   *mlx_img;
     char   *addr;
     int     bpp;
@@ -114,7 +114,7 @@ class t_checkerboard {
 namespace Material {
   class t_material
   class t_texture
-  class t_texture_image
+  class t_tex_img
   class t_checkerboard 
   class data
 }
@@ -180,7 +180,7 @@ t_object "1" *-- "1" t_material : material
 t_material "1" *-- "1" t_texture : texture
 t_material "1" *-- "1" t_texture : bump_maps
 t_texture "1" *-- "1" data : data
-data "1" .. "1" t_texture_image
+data "1" .. "1" t_tex_img
 data "1" .. "1" t_checkerboard
 
 t_scene "1" *-- "1" t_camera : camera
@@ -217,11 +217,11 @@ The ***t_material*** contains information on how to  shade a pixel resulting fro
 - a ***t_texture*** that defines the texture of the surface.
 - a ***t_texture*** that defines a bump map.
 
-Finally, the ***t_texture*** contains informations on textures. The *`void *data`* points to either a ***t_checkboard*** or a ***t_texture_image*** allocated in heap. 
+Finally, the ***t_texture*** contains informations on textures. The *`void *data`* points to either a ***t_checkboard*** or a ***t_tex_img*** allocated in heap. 
 
 ***t_checkboard*** describes the characteristics of a checkboard texture : the color of each tile and their scale on each axis.
 
-***t_texture_image*** stores a pointer to the texture data in heap, and infos used to parse the right bytes during the uv-wrapping process (may add some more details here).
+***t_tex_img*** stores a pointer to the texture data in heap, and infos used to parse the right bytes during the uv-wrapping process (may add some more details here).
 
 For infos on the data primitives (t_color, t_vec3, etc), see the section 2) of this document : [*`.rt`* Scene Format](../docs/sceneinit_guide.md).
 
