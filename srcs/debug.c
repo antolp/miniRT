@@ -129,7 +129,8 @@ void	print_material(t_material *m)
 	print_texture("\t\t", m->texture);
 	printf("\tbump maps :\n");
 	printf("\t\tbump_strength : %f\n", m->bump_strength);
-	printf("\t\tbump map pl addr: %p\n", m->texture.bumps_data);
+	print_texture("\t bump:", m->bump_maps);
+
 }
 
 //if we want to push these, we may add the print_(shape)

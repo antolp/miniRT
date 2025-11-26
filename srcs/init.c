@@ -143,8 +143,8 @@ bool	init_scene(t_scene *s)
 	// obj->material.texture.data = cb_red;
 	obj->material.texture.type = TEXTURE_NONE;
 	obj->material.texture.data = NULL;
-	obj->material.texture.has_bump_maps = false;
-	obj->material.texture.bumps_data = NULL;
+	obj->material.bump_maps.type = TEXTURE_NONE;
+	obj->material.bump_maps.data = NULL;
 	obj->material.bump_strength = 1;
 	obj->intersect = intersect_sphere;
 	obj->get_normal = get_normal_sphere;
@@ -175,8 +175,8 @@ bool	init_scene(t_scene *s)
 	// obj->material.texture.data = cb_red;
 	obj->material.texture.type = TEXTURE_NONE;
 	obj->material.texture.data = NULL;
-	obj->material.texture.has_bump_maps = false;
-	obj->material.texture.bumps_data = NULL;
+	obj->material.bump_maps.type = TEXTURE_NONE;
+	obj->material.bump_maps.data = NULL;
 	// obj->material.texture.has_bump_maps = true;
 	// obj->material.texture.bumps_data = img_bump;
 	obj->material.bump_strength = 1;
@@ -207,8 +207,8 @@ bool	init_scene(t_scene *s)
 	obj->material.refractivity = 0;
 	obj->material.texture.type = TEXTURE_NONE;
 	obj->material.texture.data = NULL;
-	obj->material.texture.has_bump_maps = false;
-	obj->material.texture.bumps_data = NULL;
+	obj->material.bump_maps.type = TEXTURE_NONE;
+	obj->material.bump_maps.data = NULL;
 	obj->material.bump_strength = 1;
 	obj->intersect = intersect_cylinder;
 	obj->get_normal = get_normal_cylinder;
@@ -237,8 +237,8 @@ bool	init_scene(t_scene *s)
 	obj->material.refractivity = 0;
 	obj->material.texture.type = TEXTURE_NONE;
 	obj->material.texture.data = NULL;
-	obj->material.texture.has_bump_maps = false;
-	obj->material.texture.bumps_data = NULL;
+	obj->material.bump_maps.type = TEXTURE_NONE;
+	obj->material.bump_maps.data = NULL;
 	obj->material.bump_strength = 1;
 	obj->intersect = intersect_cone;
 	obj->get_normal = get_normal_cone;
@@ -276,8 +276,8 @@ bool	init_scene(t_scene *s)
 	// obj->material.texture.data = cb1;
 	// obj->material.texture.has_bump_maps = false;
 	// obj->material.texture.bumps_data = NULL;
-	obj->material.texture.has_bump_maps = true;
-	obj->material.texture.bumps_data = img_bump;
+	obj->material.bump_maps.type = TEXTURE_IMAGE;
+	obj->material.bump_maps.data = img_bump;
 	obj->material.bump_strength = 1;
 	obj->intersect = intersect_triangle;
 	obj->get_normal = get_normal_triangle;
@@ -312,8 +312,8 @@ bool	init_scene(t_scene *s)
 	obj->material.texture.data = NULL;
 	// obj->material.texture.has_bump_maps = false;
 	// obj->material.texture.bumps_data = NULL;
-	obj->material.texture.has_bump_maps = true;
-	obj->material.texture.bumps_data = img_bump;
+	obj->material.bump_maps.type = TEXTURE_IMAGE;
+	obj->material.bump_maps.data = img_bump;
 	obj->material.bump_strength = 1;
 	obj->intersect = intersect_triangle;
 	obj->get_normal = get_normal_triangle;
@@ -339,8 +339,8 @@ bool	init_scene(t_scene *s)
 	obj->material.refractivity = 0;
 	obj->material.texture.type = TEXTURE_CHECKER;
 	obj->material.texture.data = cb;
-	obj->material.texture.has_bump_maps = false;
-	obj->material.texture.bumps_data = NULL;
+	obj->material.bump_maps.type = TEXTURE_NONE;
+	obj->material.bump_maps.data = NULL;
 	obj->material.bump_strength = 0;
 	obj->intersect = intersect_plane;
 	obj->get_normal = get_normal_plane;

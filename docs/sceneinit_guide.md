@@ -52,10 +52,10 @@ More precise description below.
 ## 2) Some data primitives
 
 - **Color (RGB)**: integers **0–255**  
-  Example: `255,0,21`
+  Example: `255,0,21` (only accepts integer values)
 - **Vector (position/direction/axis)**: floats (e.g., `-12.5,0,3`)  
-  - Directions/axes must be **non-zero**.
-- **Angle** : degrees e.g. `60` (Camera FOV), `45.0` (Cone half-angle).
+  - Directions/axes must be **non-zero vectors**.
+- **Angle** : degrees e.g. `60` (Camera FOV), radiant e.g. `0.35` (Cone half-angle).
 - **Ratios**: floats in **[0.0, 1.0]** (ambient ratio, light intensity).
 - **Sizes**: strictly **> 0** (diameter, height).
 
@@ -132,7 +132,7 @@ Each section shows:
 
 ### 3.1.5 Skybox : `SB`
 
-    SB path=<assets/skyboxes/your_skybox.xpm>
+    SB path/to/skybox.xpm
 
 - Sets the scene’s skybox (XPM image)
 - Path should not contain spaces
@@ -140,7 +140,7 @@ Each section shows:
 
 **Example**
 
-    SB path=assets/skyboxes/clear_sky_2k.xpm
+    SB assets/skyboxes/clear_sky_2k.xpm
 
 ---
 ## 3.2 Objects :
@@ -157,7 +157,7 @@ Each section shows:
 **Examples**
 
 	#Earth textured sphere with a radius of &
-    sp 0,8,0 8.0 255,255,255 tex=image(path=assets/2k_earth_daymap.xpm) spec=0.6 shine=64
+    sp 0,8,0 8.0 255,255,255 image=assets/2k_earth_daymap.xpm spec=0.6 shine=64
 
 ---
 
@@ -173,7 +173,7 @@ Each section shows:
 **Examples**
 
 	#Checkerboard floor
-    pl 0,-2,0 0,1,0 255,255,255 tex=checker(c1=220,220,220;c2=30,30,30;su=2;sv=2) spec=0.2 shine=16
+    pl 0,-2,0 0,1,0 255,255,255 checker=220,220,220;30,30,30;0.1;0.1 refl=0.3 shine=25
 
 ---
 
@@ -188,8 +188,8 @@ Each section shows:
 
 **Example**
 
-	# Metallic cylinder (sort of) 
-    cy 8,-2,-3 0,1,0 2.0 6.0 200,180,160 refl=1.0 ior=0.18 spec=1.0 shine=256
+	# Metallic cylinder (sort of)
+    cy 8,-2,-3 0,1,0 2.0 6.0 200,180,160 refl=1.0 ior=0.2 spec=1.0 shine=256
 
 ---
 
@@ -212,17 +212,17 @@ Each section shows:
 
 ### 3.2.5 Triangle — `tr`  *(bonus shape)*
 
-    tr <x0,y0,z0> <x1,y1,z1> <x2,y2,z2> <R,G,B> [uv=<mode>] [material/texture keys...]
+    tr <x0,y0,z0> <x1,y1,z1> <x2,y2,z2> <R,G,B> [material/texture keys...]
 
 - Three vertices
 - Base color `<R,G,B>` integers `[0..255]`
-- Optional `uv=<mode>`; default `uv=0` = `TRI_UV_ORTHONORMAL`
 - A triangle is facing the camera when its vertices are arranged **anti-clockwise**, only useful when dealing with textures.
 
 **Example**
 
-    tr 0,0,-5 3,0,-5 0,3,-5 255,255,255 uv=0 tex=checker(c1=240,240,240;c2=40,40,40;su=4;sv=4) spec=0.3 shine=32
+    tr 0,0,-5 3,0,-5 0,3,-5 255,255,255 checker=240,240,240;=40,40,40;4;4 spec=0.3 shine=32
 
+>to add : Optional `uv=<mode>`; default `uv=0` = `TRI_UV_ORTHONORMAL`, `1` and `2` `TRI_UV_FIT` and `TRI_UV_FIT_OPPOSITE`
 ---
 
 
@@ -235,12 +235,11 @@ If you omit them, **defaults** apply (see 7. Defaults Table).
 
 - `refl=<float>` — **reflectivity** in `[0,1]` (ignored if `refr>0`)
 - `refr=<float>` — **refractivity** in `[0,1]`; if `refr>0` the surface is transmissive
-- `ior=<float>` — **index of refraction** (used by Fresnel/refraction if `refr>0`)
+- `idx_refr=<float>` — **index of refraction** (used by Fresnel/reflection/refraction)
 - `spec=<float>` — **specular strength** `[0,1(+)]` (Phong/Blinn-Phong amplitude)
 - `shine=<float>` — **shininess** (specular exponent, e.g., 16–256)
-- `tex=checker(c1=R,G,B;c2=R,G,B;su=S;sv=S)` — procedural checkerboard, c1 and c2 are the colors of the tiles, s1 and s2 are the scale of each tile in u, v 2d coordinates
-- `tex=image(path=assets/image.xpm)` — XPM image texture
-- For triangles only: `uv=0` — UV mode (`0` = `TRI_UV_ORTHONORMAL`, default), 1 and 2 allows mapping a whole image, triangles mapped to each opposite squared triangles of the image. If the triangles aren't square or arent set-up properly, this will fuck up the image proportion.
+- `checker=R,G,B;R,G,B;s1;s2` — procedural checkerboard, the first two R,G,B are the colors of the tiles, s1 and s2 are the scale of each tile in u, v 2d coordinates
+- `image=assets/image.xpm` — XPM image texture
 
 > **Fresnel rule**: 
 If `refl = 0` and `refr = 0` , the Fresnel equation will not be visible.
@@ -262,39 +261,33 @@ This scene demonstrates:
 - **Phong specular highlights** (spec/shine)
 - **Multiple shapes**: plane, sphere, cylinder, cone, triangle
 	```Scene
-	# --- Environment ---
-	A 0.12 255,255,255
-    C 0,2,15 0,0,-1 60
-    BG 10,10,20
-    SB path=assets/skyboxes/sky_2.xpm
+    # scene parameters
+    A 0.5 250,90,120
+    C -21.47,6.27,-7.19 0.81,0.0,0.59 35
+    BG 20,10,40
+    # SB assets/the_sky_is_on_fire_8k.xpm
 
-    # --- Lights ---
-	L -12,18,10 0.9 255,240,220
-    L 15,8,-5 0.6 180,200,255
-    L 0,5,0 0.3 255,120,120
+    # some lights
+    L -10.0,15.0,-10.0 0.7 255,220,200
+    L 12.0,10.0,-5.0 0.5 200,220,255
+    L 2.5,20.0,10.0 0.6 255,255,200
 
-    # --- Geometric Objects ---
-    # Ground: soft checker, low specular :
-    pl 0,-2,0 0,1,0 255,255,255 tex=checker(c1=220,220,220;c2=30,30,30;su=2;sv=2) spec=0.2 shine=16
+    # ground plane, checkered, lightly glossy
+    pl 0.0,0.0,0.0 0.0,1.0,0.0 255,255,255 checker=220,220,220;30,30,30;0.1;0.1 spec=0.2 shine=16.0 idx_refr=1 refl=0.2
 
-    # Mirror wall at the back :
-    pl 0,0,-30 0,0,1 255,255,255 refl=1.0 ior=0.01 spec=1.0 shine=256
+    # reflective, mirror sphere
+    sp 0.18,4.98,5.50 4.62 255,255,255 refl=1.0 idx_refr=0.01 spec=1.0 shine=256.0
+    #missing bump=assets/wood.xpm
 
-    # Textured earth sphere :
-    sp -6,0,-8 8.0 255,255,255 tex=image(path=assets/2k_earth_daymap.xpm) spec=0.6 shine=64
+    # orange slightly refractive (transparent) empty cone
+    co -2.76,5.21,0.10 0.10,0.92,0.38 9.6 5.34 255,150,60 spec=0.8 shine=64.0 idx_refr=0.15 refr=0.69
 
-    # Refractive glass sphere (Fresnel reflection; reflectivity ignored) :
-    sp 4,0,-10 6.0 200,180,255 refr=0.0005 ior=1.02 spec=1.0 shine=128
+    # wood solid narrow cylinder
+    cy 5.10,-0.50,0.27 -0.17,0.94,-0.28 1.44 11.33 200,180,160 image=wood.xpm spec=0.5 shine=64.0 
 
-    # Metallic cylinder :
-    cy 8,-2,-3 0,1,0 2.0 6.0 200,180,160 refl=1.0 ior=0.18 spec=1.0 shine=256
+    # yellow slightly reflective triangle
+    tr 23.24,6.90,11.77, -4.75,-1.86,25.95 3.50,15.96,22.60 236,255,125 idx_refr=0.2 refl=1
 
-    # Colored cone :
-    co -10,-2,-10 0,1,0 25.0 8.0 255,150,60 spec=0.8 shine=64
-
-    # Two triangles displaying an image :
-    tr 25,0,0 0,0,0 25,25,0 255,255,255 uv=0 tex=image(path=assets/image.xpm) uv=1 reflectivity=1 ior=1
-    tr 0,25,0 25,25,0 0,0,0 255,255,255 uv=0 tex=image(path=assets/image.xpm) uv=2 reflectivity=1 ior=1
 	```
 
 
@@ -357,3 +350,6 @@ When `refr > 0` :
 ---
 
 Voila voila
+
+# TO ADD
+> For triangles only: `uv=0` — UV mode (`0` = `TRI_UV_ORTHONORMAL`, default), 1 and 2 allows mapping a whole image, triangles mapped to each opposite squared triangles of the image. If the triangles aren't square or arent set-up properly, this will fuck up the image proportion.

@@ -40,15 +40,15 @@ static int	bump_init_vars(t_object *obj,
 {
 	t_material *mat = &obj->material;
 
-	if (mat->texture.has_bump_maps != true)
+	if (mat->bump_maps.type == TEXTURE_NONE)
 		return (0);
-	if (mat->texture.bumps_data == NULL)
+	if (mat->bump_maps.data == NULL)
 		return (0);
 	if (obj->get_uv == NULL)
 		return (printf("3"), 0);
 	if (obj->get_uv(obj, &hit_p, &c->uv) == false)
 		return (printf("4"), 0);
-	c->img = (t_texture_image *)mat->texture.bumps_data;
+	c->img = (t_texture_image *)mat->bump_maps.data;
 	c->obj = obj;
 	c->mat = mat;
 	c->hit_p = hit_p;
