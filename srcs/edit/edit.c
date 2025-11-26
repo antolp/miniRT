@@ -24,11 +24,11 @@ static int	handle_global_keys(int keycode, t_cli_var *var)
 {
 	if (handle_quit(keycode))
 		return (1);
+	if (handle_open_flags_menu(keycode, var->r))
+		return (1);
 	if (handle_edit_menu_keys_wrapper(keycode, var->r))
 		return (1);
 	if (handle_mode_switch(keycode, var->r))
-		return (1);
-	if (handle_open_flags_menu(keycode, var->r))
 		return (1);
 	if (handle_supersample_toggle(keycode, var->r))
 		return (1);

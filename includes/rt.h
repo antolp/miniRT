@@ -234,8 +234,11 @@ void	orient_normal(t_ray *ray, t_hit_info *hit);
 
 
 //=== EDIT MODE ===
-int		handle_open_flags_menu(int keycode, t_renderer *r);
-int		handle_edit_menu_keys_wrapper(int keycode, t_renderer *r);
+int			handle_open_flags_menu(int keycode, t_renderer *r);
+int			handle_edit_menu_keys_wrapper(int keycode, t_renderer *r);
+void		handle_menu_keys(int keycode, t_renderer *r);
+const char	*flag_get_name(int index);
+uint32_t	flag_get_bit(int index);
 
 //scene edition
 int		handle_scene_edit_active_keys(int keycode, t_cli_var *var);
@@ -243,15 +246,15 @@ int		handle_scene_edit_keys(int keycode, t_cli_var *var);
 void	editor_cycle_selection(t_renderer *r, t_scene *scene, int keycode);
 
 //misc
-int	handle_mode_switch(int keycode, t_renderer *r);
-int	handle_quit(int keycode);
-int	handle_supersample_toggle(int keycode, t_renderer *r);
+int		handle_mode_switch(int keycode, t_renderer *r);
+int		handle_quit(int keycode);
+int		handle_supersample_toggle(int keycode, t_renderer *r);
 
 //camera
-int	handle_camera_fov_out(int keycode, t_cli_var *var);
-int	handle_camera_fov_in(int keycode, t_cli_var *var);
-int	handle_camera_pitch(int keycode, t_cli_var *var);
-int	handle_camera_yaw(int keycode, t_cli_var *var);
+int		handle_camera_fov_out(int keycode, t_cli_var *var);
+int		handle_camera_fov_in(int keycode, t_cli_var *var);
+int		handle_camera_pitch(int keycode, t_cli_var *var);
+int		handle_camera_yaw(int keycode, t_cli_var *var);
 
 //print
 void	edit_print_sphere(t_object *obj);
@@ -262,6 +265,7 @@ void	edit_print_triangle(t_object *obj);
 void	editor_print_current_object(t_renderer *r);
 void	editor_print_current_light(t_renderer *r);
 void	editor_print_current(t_renderer *r);
+void	print_flags_table(uint32_t mask);
 
 //high-level props move
 void	editor_print_move(t_renderer *r, char *dir);

@@ -13,7 +13,7 @@ SRCS		= srcs/main.c srcs/init.c srcs/vector.c srcs/debug.c \
 			  srcs/texture/image_load.c srcs/texture/skybox.c \
 			  srcs/texture/bump_map.c srcs/texture/bump_map_tb.c srcs/texture/bump_map_utils.c \
 			  srcs/texture/bump_build.c \
-			  srcs/edit/edit.c srcs/edit/flag_menu.c \
+			  srcs/edit/edit.c srcs/edit/flag_menu.c srcs/edit/edit_flag.c \
 			  srcs/edit/translation/props_move.c srcs/edit/translation/translate.c \
 			  srcs/edit/translation/translate_obj.c \
 			  srcs/edit/rotation/props_rotate.c srcs/edit/rotation/rotate.c srcs/edit/rotation/rotate_obj_yaw.c \

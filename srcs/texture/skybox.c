@@ -68,7 +68,8 @@ t_color	get_background_color(t_vec3 dir)
 	t_texture_image *env;
 
 	sc = g_scene(NULL);
-	if (sc->skybox.type == TEXTURE_IMAGE && sc->skybox.data != NULL)
+	if ((g_renderer(NULL)->shading_flag & FLAG_TEXTURE) != 0u &&
+		sc->skybox.type == TEXTURE_IMAGE && sc->skybox.data != NULL)
 	{
 		env = (t_texture_image *)sc->skybox.data;
 		return (sample_skybox_dir(env, dir));
