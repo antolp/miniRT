@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/16 23:23:39 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/16 23:42:53 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/25 23:43:55 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ static void	default_mats(t_material *mat)
 		else
 			mat->ior = 1.00;
 	}
+	mat->bump_strength = 1.00;
 }
 
 void	parse_mats(t_material *mat, char **line)

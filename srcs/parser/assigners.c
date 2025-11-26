@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/16 22:57:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/25 02:02:15 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/26 01:05:54 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 t_property_rules	get_prop_rules(size_t type)
 {
 	static t_property_rules	props[] = {
-	[PROP_POSITION] = {PROP_POSITION, FLT_MIN, FLT_MAX},
+	[PROP_POSITION] = {PROP_POSITION, -FLT_MAX, FLT_MAX},
 	[PROP_DIRECTION] = {PROP_DIRECTION, -1, 1},
 	[PROP_COLOUR] = {PROP_COLOUR, 0, 255},
 	[PROP_RATIO] = {PROP_RATIO, 0.0, 1.0},
@@ -36,11 +36,16 @@ static void	parse_valset(void *valset[], t_property_type type, char *line)
 	ret_atof = 0;
 	while (*valset)
 	{
+		printf("Parse_Valset: Getting ready to parse param %s\n", line);
 		if (type == PROP_COLOUR)
 			ret_atof = ft_atoi2(line, *valset);
 		else if (type == PROP_POSITION || type == PROP_DIRECTION)
 			ret_atof = ft_atof(line, *valset);
-		if (ret_atof < 1 || !ft_strchr(";,\n\0", line[ret_atof]))
+		if (type == PROP_COLOUR)
+			printf("INT: Sum is now %d with len of %d\n", **(int **)valset, ret_atof);
+		else if (type == PROP_POSITION || type == PROP_DIRECTION)
+			printf("FLOAT: Sum is now %f with len of %d\n", **(double **)valset, ret_atof);
+		if (ret_atof < 1 || !ft_strchr(";,\n\0 ", line[ret_atof]))
 			put_err("Invalid data : Unexpected or Missing value\n");
 		if (type == PROP_COLOUR)
 			check_range(**(int **)valset, get_prop_rules(type));

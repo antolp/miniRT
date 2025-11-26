@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 18:10:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/25 01:24:16 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/26 01:21:26 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,8 @@ void	check_range(double val, t_property_rules range)
 {
 	if (val < range.min || val > range.max)
 	{
-		ft_dprintf(STDERR_FILENO, "Expecting value for type %u between [%f] and [%f]: ", range.type, range.min, range.max);
+		ft_dprintf(STDERR_FILENO, "Expecting value for type %u between [%f] and [%f] for value %f\n",
+			range.type, range.min, range.max, val);
 		put_err("Parameter has out of range value");
 	}
 }
@@ -122,7 +123,6 @@ void	parse_rtconfig(char *path)
 	t_parser	*parser;
 
 	parser = parser_data();
-	printf("Path %s of size %zu\n", path, ft_strlen(path));
 	if (ft_strlen(path) < 3 || !ft_strrnstr(path, ".rt", 3))
 		put_err("Invalid file name");
 	fd = open(path, O_RDONLY);
@@ -143,5 +143,4 @@ void	parse_rtconfig(char *path)
 		parser->word_arr = NULL;
 	}
 	check_scene_objects();
-	printf("Ceased to read file\n");
 }
