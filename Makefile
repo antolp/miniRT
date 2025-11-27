@@ -2,7 +2,8 @@ NAME		= miniRT
 OBJDIR		= .obj
 SRCS		= srcs/main.c srcs/init.c srcs/vector.c srcs/vector2.c \
 			  srcs/debug_scene.c srcs/debug_objects.c srcs/debug_props.c \
-			  srcs/parser/parser.c srcs/parser/shape_builder.c srcs/parser/assigners.c srcs/parser/materials.c srcs/parser/set_builder.c \
+			  srcs/parser/parser.c srcs/parser/shape_builder.c srcs/parser/assigners.c \
+			  srcs/parser/materials.c srcs/parser/set_builder.c \
 			  srcs/render/render.c \
 			  srcs/render/render_test.c srcs/render/ray_trace.c srcs/render/render_frame.c \
 			  srcs/render/supersample.c srcs/render/downsample.c srcs/cleaner.c \
@@ -11,7 +12,7 @@ SRCS		= srcs/main.c srcs/init.c srcs/vector.c srcs/vector2.c \
 			  srcs/shading/shading.c \
 			  srcs/shading/diffuse_lights.c  srcs/shading/specular_highlight.c srcs/shading/shadows.c \
 			  srcs/shading/shadow_utils.c srcs/shading/reflection.c srcs/shading/refraction.c \
-			  srcs/shading/shading_texture.c srcs/shading/shading_utils.c \
+			  srcs/shading/shading_texture.c srcs/shading/shading_utils.c srcs/shading/shading_fast.c \
 			  srcs/texture/texture.c \
 			  srcs/texture/image_load.c srcs/texture/image_sample.c srcs/texture/skybox.c \
 			  srcs/texture/uv_map/uv_cylinder.c srcs/texture/uv_map/uv_cone.c \

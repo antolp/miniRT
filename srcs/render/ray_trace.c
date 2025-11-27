@@ -6,7 +6,7 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/11/26 05:24:05 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/27 20:13:28 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,14 +67,10 @@ t_color	trace_ray(t_ray *ray, int depth)
 t_color	trace_fast_ray(t_ray *ray, int none)
 {
 	t_hit_info	hit;
-	t_vec3		v;
-	double		k;
 
 	(void)none;
 	if (!get_closest_hit(ray, &hit))
-		return (get_background_color(ray->direction));
+		return (g_scene(NULL)->background_color);
 	orient_normal(ray, &hit);
-	v = vec_normalize(vec_mul(ray->direction, -1.0));
-	k = 0.5 + 0.5 * vec_dot(hit.normal, v);
-	return (color_scale_clamped(hit.object->material.base_color, k));
+	return (shade_diffuse_fast(&hit));
 }

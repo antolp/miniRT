@@ -6,7 +6,7 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/11/26 05:23:38 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/27 19:48:29 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ int	render_loop(void *param)
 	if (r->should_quit == true)
 	{
 		printf("Exiting...\n");
+		clear_minirt();
 		exit(0);
 	}
 	if (r->mode == RENDER_TEST)

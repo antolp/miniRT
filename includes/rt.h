@@ -6,7 +6,7 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/11/27 01:46:16 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/27 20:13:01 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,10 +160,12 @@ void		compute_quad_cyl(t_quad *q, t_cyl_side_vars v, double radius);
 void		compute_quad_cone(t_quad *q, t_cone_side_vars v);
 
 //shading
+t_color		shade_pixel(t_ray *ray, t_hit_info *hit, int depth);
 t_color		surface_color(t_hit_info *hit);
 void		apply_bump(t_hit_info *hit);
 
-t_color		shade_pixel(t_ray *ray, t_hit_info *hit, int depth);
+t_color		shade_diffuse_fast(t_hit_info *hit);
+t_color		compute_ambient_light(t_color c, t_scene *scene);
 bool		is_in_shadow(t_vec3 point, t_vec3 light_pos);
 t_color		color_add(t_color a, t_color b);
 t_color		color_lerp(t_color c1, t_color c2, double t);

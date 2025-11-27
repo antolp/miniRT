@@ -6,7 +6,7 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 01:23:25 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/27 16:21:46 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/27 20:07:04 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,8 @@ void	clear_minirt(void)
 {
 	ft_lstclear(&g_scene(0)->objects, clear_content);
 	ft_lstclear(&g_scene(0)->lights, clear_lights);
+	if (g_scene(0)->skybox.data)
+		destroy_texture(g_renderer(0)->mlx, &g_scene(0)->skybox);
 	if (parser_data()->line)
 		free(parser_data()->line);
 	if (parser_data()->word_arr)

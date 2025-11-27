@@ -6,7 +6,7 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/11/27 16:21:22 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/27 20:03:42 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ int	handle_close(void *param)
 {
 	(void)param;
 	printf("Exiting...\n");
+	clear_minirt();
 	exit(0);
 	return (0);
 }
@@ -86,7 +87,7 @@ int	main(int argc, char	*argv[])
 	g_renderer(&renderer_g);
 	if (!init_renderer(&renderer_g, WIDTH, HEIGHT, "rt"))
 		put_err("Renderer init faillure");
-	init_scene(&scene_g);
+	// init_scene(&scene_g);
 	parse_rtconfig(argv[1]);
 	mlx_hook(renderer_g.win, KeyPress, KeyPressMask, key_hook, NULL);
 	mlx_loop_hook(renderer_g.mlx, render_loop, NULL);

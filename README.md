@@ -1,7 +1,7 @@
 # miniRT
 42 miniRT (slightly extended)
 
-some textures (temporary link) : https://we.tl/t-sZhykf5hoa
+some textures (temporary link) : https://we.tl/t-BPdeCJJHt8
 
 See the *.rt* file format spec :  [scene initialization guide](docs/sceneinit_guide.md)
 

@@ -1,7 +1,7 @@
 #	Fresnel showcase: matte vs glossy reflective sphere
 
 # Soft ambient so shadows aren’t pitch-black
-# A 0.20 255,255,255
+A 0.20 255,255,255
 
 # Camera facing +Z axis
 C 0.0,2.5,-10.0 0.0,-0.2,1.0 45.0
