@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/16 23:23:39 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/26 18:40:37 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/27 13:13:13 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void	parse_mats(t_material *mat, char **line)
 		{
 			len = ft_strlen(disp[i].key);
 			if (!ft_strncmp(disp[i].key, *line, len)
-				&& ft_strchr("=:", (*line)[len]))
+				&& (*line)[len] && ft_strchr("=:", *(*line + len)))
 				set_property(disp[i].processing_type, disp[i].val,
 					*line + ++len);
 			i++;
