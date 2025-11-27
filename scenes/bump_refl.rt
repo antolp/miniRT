@@ -1,0 +1,26 @@
+# Textured/bump-mapped sphere + 42-textured wall and floor
+
+# A 0.25 255,255,255
+
+C -44.35,3.84,4.30 0.41,0.05,0.9 60.0
+
+BG 10,10,40
+SB assets/citrus_orchard8k.xpm
+
+L -10.0,20.0,-80.0 0.8 255,255,255
+L 10.0,30.0,30.0 0.5 255,200,200
+
+# Ground plane (42 texture)
+pl 0.0,0.0,0.0 0.0,1.0,0.0 240,240,240 refl=1.0 idx_refr=1.025 spec=0.0 shine=0.0 refr=0.0 image=assets/42_500.xpm
+
+# Sphere 1: blue, bump-mapped with rock texture
+sp -31.0,7.2,20.0 7.2 60,60,255 refl=1.0 idx_refr=0.15 spec=1.0 shine=32.0 refr=0.0 bump=assets/aerial_rocks_02_diff_4k.xpm
+
+# Sphere 2: slightly refractive blue
+sp -40.0,7.7,40.0 7.7 60,60,255 refl=1.0 idx_refr=1.008 spec=1.0 shine=32.0 refr=0.35
+
+# # Triangle 1: 42 texture + grayscale bump, UV_FIT (uv=1)
+# tr -30.0,0.0,50.0 -55.0,0.0,50.0 -30.0,25.0,50.0 10,255,155 uv=1 refl=1.0 idx_refr=1.035 spec=1.3 shine=20.0 refr=0.9 image=assets/42_500.xpm bump=assets/earthgrayscale.xpm
+
+# # Triangle 2: same texture + bump, UV_FIT_OPPOSITE (uv=2)
+# tr -55.0,25.0,50.0 -30.0,25.0,50.0 -55.0,0.0,50.0 10,255,155 uv=2 refl=1.0 idx_refr=1.035 spec=1.3 shine=20.0 refr=0.9 image=assets/42_500.xpm bump=assets/earthgrayscale.xpm

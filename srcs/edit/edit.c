@@ -6,29 +6,36 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 02:29:21 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/11/26 02:48:07 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/27 01:50:19 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
-static int	handle_debug_keys(int keycode, t_renderer *r)
+static int	handle_debug_keys(int keycode, t_cli_var *var)
 {
+	if (keycode == XK_slash)
+		return (printf("shadign flag : %i\n", var->r->shading_flag), 1);
 	if (keycode == XK_b)
 	{
-		printf("flag : %i\n", r->shading_flag);
+		if (var->scale <= 0.1)
+			return (printf("Edit scale already minimum."), 1);
+		var->scale -= 0.1;
+		printf("N pressed, edit scale : %f\n", var->scale);
+		var->r->edit.edit_scale = var->scale;
+		return (1);
+	}
+	if (keycode == XK_n)
+	{
+		var->scale += 0.1;
+		printf("N pressed, edit scale : %f\n", var->scale);
+		var->r->edit.edit_scale = var->scale;
 		return (1);
 	}
 	if (keycode == XK_p)
-	{
-		print_scene();
-		return (1);
-	}
+		return (print_scene(), 1);
 	if (keycode == XK_h)
-	{
-		print_help();
-		return (1);
-	}
+		return (print_help(), 1);
 	return (0);
 }
 
@@ -63,7 +70,7 @@ static int	handle_edit_mode_keys(int keycode, t_cli_var *var)
 		return (1);
 	if (handle_camera_fov_out(keycode, var))
 		return (1);
-	if (handle_debug_keys(keycode, var->r))
+	if (handle_debug_keys(keycode, var))
 		return (1);
 	return (0);
 }
@@ -80,7 +87,7 @@ static int	init_cli_var(t_cli_var *var, void *param)
 	var->world_up.z = 0.0;
 	var->right = vec_normalize(vec_cross(
 				var->scene->camera.direction, var->world_up));
-	var->scale = 3.0;
+	var->scale = var->r->edit.edit_scale;
 	return (0);
 }
 

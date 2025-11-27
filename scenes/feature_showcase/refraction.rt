@@ -1,0 +1,27 @@
+# Glass / reflective spheres + mirror cylinder
+
+# A 0.2 255,255,255
+
+C -1.0,6.7,-6.9 -0.51,-0.51,1.0 70.0
+
+BG 10,10,40
+
+L -5.0,19.0,-12.0 0.9 255,255,255
+
+# Ground plane
+pl 0.0,-5.0,0.0 0.0,1.0,0.0 255,255,255 refl=1.0 idx_refr=1.0 spec=0.0 shine=0.0 refr=0.0
+
+# Sphere 1: greenish glass, strongly refractive
+sp -3.0,3.0,2.0 3.0 10,255,155 refl=1.0 idx_refr=1.015 spec=1.3 shine=20.0 refr=0.7
+
+# Sphere 2: small blue glass
+sp -3.0,3.9,-3.0 1.81 55,55,255 refl=1.0 idx_refr=1.015 spec=1.3 shine=20.0 refr=0.01
+
+# Sphere 3: shiny reflective pink
+sp -10.0,3.0,2.0 3.0 255,10,155 refl=0.9 idx_refr=2.3 spec=1.3 shine=20.0 refr=0.0
+
+# Sphere 4: matte white, no reflection
+sp -17.0,3.0,2.0 3.0 255,255,255 refl=0.0 idx_refr=1.02 spec=1.3 shine=20.0 refr=0.0
+
+# Cylinder: tilted mirror
+cy -13.0,-10.0,-33.0 0.2,1.0,0.1 12.0 30.0 75,50,255 refl=1.0 idx_refr=0.2 spec=1.3 shine=20.0 refr=0.0

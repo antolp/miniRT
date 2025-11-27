@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rt.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/11/26 18:30:31 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/27 01:46:16 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@ typedef struct s_edit_state
 	t_edit_target	target;
 	t_list			*current_obj;
 	t_list			*current_light;
+	double			edit_scale;
 }	t_edit_state;
 
 typedef struct s_renderer
@@ -184,14 +185,14 @@ bool		get_closest_hit_ignoring(t_ray *ray, double max_t,
 				t_object *ignore, t_hit_info *hit);
 
 //texture
-t_color	get_hit_color(t_hit_info *hit);
-bool	get_uv_plane(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
-bool	get_uv_sphere(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
-bool	get_uv_cylinder(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
-bool	get_uv_cone(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
-bool	get_uv_triangle(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
-void	init_cyl_uv_vars(t_cyl_uv_vars *v, t_object *obj);
-t_color	get_background_color(t_vec3 dir);
+t_color		get_hit_color(t_hit_info *hit);
+bool		get_uv_plane(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
+bool		get_uv_sphere(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
+bool		get_uv_cylinder(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
+bool		get_uv_cone(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
+bool		get_uv_triangle(t_object *obj, t_vec3 *hit, t_vec2 *out_uv);
+void		init_cyl_uv_vars(t_cyl_uv_vars *v, t_object *obj);
+t_color		get_background_color(t_vec3 dir);
 
 double		clamp01(double x);
 double		wrap01(double x);

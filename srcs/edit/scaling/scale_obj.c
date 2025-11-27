@@ -6,7 +6,7 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 02:30:10 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/11/26 02:30:10 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/27 16:50:22 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,8 @@ void	editor_scale_cone_angle(t_object *obj, double factor)
 
 	cone = (t_cone *)obj->shape;
 	cone->angle = cone->angle * factor;
-	if (cone->angle < 1.0)
-		cone->angle = 1.0;
-	if (cone->angle > 89.0)
-		cone->angle = 89.0;
+	if (cone->angle < 0.001)
+		cone->angle = 0.001;
+	if (cone->angle > (M_PI / 2) * 0.9)
+		cone->angle = (M_PI / 2) * 0.95;
 }

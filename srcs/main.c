@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/11/26 18:35:36 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/27 16:21:22 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,23 +44,54 @@ int	handle_close(void *param)
 	return (0);
 }
 
+// int	main(int argc, char	*argv[])
+// {
+// 	t_scene		scene_g;
+// 	t_renderer	renderer_g;
+
+// 	if (argc != 2)
+// 	{
+// 		ft_dprintf(2, "Insufficient parameter count :");
+// 		ft_dprintf(2, " .rt config file path might be missing\n");
+// 		exit(1);
+// 	}
+// 	g_scene(&scene_g);
+// 	scene_g = (t_scene){0};
+// 	g_renderer(&renderer_g);
+// 	if (!init_renderer(&renderer_g, WIDTH, HEIGHT, "rt"))
+// 		put_err("Renderer init faillure");
+// 	// parse_rtconfig(argv[1]);
+// 	init_scene(&scene_g);
+// 	// print_scene();
+// 	mlx_hook(renderer_g.win, KeyPress, KeyPressMask, key_hook, NULL);
+// 	mlx_loop_hook(renderer_g.mlx, render_loop, NULL);
+// 	mlx_hook(renderer_g.win, DestroyNotify, 0, handle_close, NULL);
+// 	mlx_loop(renderer_g.mlx);
+// 	(void)(argv);
+// 	return (0);
+// }
 int	main(int argc, char	*argv[])
 {
 	t_scene		scene_g;
 	t_renderer	renderer_g;
 
 	if (argc != 2)
-		put_err("Insufficient parameter count : .rt config file path might be missing");
+	{
+		ft_dprintf(2, "Insufficient parameter count :");
+		ft_dprintf(2, " .rt config file path might be missing\n");
+		exit(1);
+	}
 	g_scene(&scene_g);
 	scene_g = (t_scene){0};
 	g_renderer(&renderer_g);
 	if (!init_renderer(&renderer_g, WIDTH, HEIGHT, "rt"))
 		put_err("Renderer init faillure");
+	init_scene(&scene_g);
 	parse_rtconfig(argv[1]);
-	// print_scene();
 	mlx_hook(renderer_g.win, KeyPress, KeyPressMask, key_hook, NULL);
 	mlx_loop_hook(renderer_g.mlx, render_loop, NULL);
 	mlx_hook(renderer_g.win, DestroyNotify, 0, handle_close, NULL);
 	mlx_loop(renderer_g.mlx);
+	(void)(argv);
 	return (0);
 }

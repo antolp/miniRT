@@ -1,0 +1,44 @@
+#   Range and value tests
+#   Baseline: valid camera, ground, no skybox
+A 0.20 255,255,255
+C 0.0,2,5.0 0.0,-0.3,-1.0 60.0
+BG 10,10,40
+L -3.0,3.0,2.0 0.80 255,240,220
+pl 0.0,0.0,0.0 0.0,1.0,0.0 200,200,200
+sp 0.0,1.5,0.0 1.0 255,0,0 refl=1 idx_refr=1
+
+#   --- ERROR CASES (uncomment one at a time) ---
+
+#   ERROR: ambient ratio outside [0,1]
+# A 1.50 255,255,255
+
+#   ERROR: zero-length plane normal
+# pl 0.0,-0.5,0.0 0.0,0.0,0.1 255,255,255
+
+#   ERROR: color component out of [0,255]
+# sp 0.0,0.0,3.0 2.0 300,0,0
+
+#   ERROR: negative shininess
+# sp -3.0,0.0,3.0 2.0 255,255,255 spec=1.0 shine=-16.0
+
+#   ERROR: reflectivity outside [0,1]
+# sp 3.0,0.0,3.0 2.0 255,255,255 refl=1.50
+
+# ===== DOESN'T PASS (justifiable not explicit in subject)
+
+#   ERROR: light intensity outside [0,1]
+# L 1.0,4.0,0.0 1.20 255,255,200
+#(I like this one, interesting results)
+# L 1.0,4.0,0.0 -1.20 255,255,200 
+
+#   ERROR: negative sphere diameter
+# sp 2.0,0.0,0.0 -2.0 255,255,255
+
+#   ERROR: zero cylinder height
+# cy -2.0,-1.0,0.0 0.0,1.0,0.0 1.0 0.0 200,180,160
+
+#   ERROR: cone angle too large (>= 90)
+# co 0.0,0.0,-4.0 0.0,1.0,0.0 95.0 3.0 255,150,60
+
+#   ERROR: cone angle <= 0
+# co 0.0,0.0,-3.0 0.0,1.0,0.0 0.0 3.0 255,150,60

@@ -1,0 +1,62 @@
+#   Attribute and material tests
+#   Baseline: valid scene, no skybox, solid ground plane
+
+#   Valid ambient
+A 0.25 255,255,255
+
+#   Valid camera
+C 0.0,1.5,6.0 0.0,-0.1,-1.0 60.0
+
+#   Valid background-only environment
+BG 15,15,35
+
+#   Valid light
+L -4.0,5.0,3.0 0.70 255,240,220
+
+#   Solid ground with valid material keys
+pl 0.0,-1.0,0.0 0.0,1.0,0.0 210,210,210 spec=0.30 shine=32.0
+
+#   Sphere with valid image and bump keys
+sp 0.0,0.0,0.0 2.0 255,255,255 image=assets/grid10.xpm bump=assets/grid10.xpm spec=0.80 shine=64.0
+
+#   Cylinder with a harmless unknown key (should be accepted and ignored)
+cy 2.0,-1.0,-1.0 0.0,1.0,0.0 1.0 3.0 200,180,160 image=assets/wood.xpm spec=0.60 shine=64.0 unknown_key=1.0
+
+#   --- ERROR CASES (uncomment one at a time) ---
+
+#===== DOESNT PASS YET
+
+#   ERROR: attribute without '=' sign
+# sp 3.0,0.0,0.0 2.0 255,255,255 refl 0.5
+
+#   ERROR: key token only, no '=' and no value
+# sp -3.0,0.0,0.0 2.0 255,255,255 spec shine=32.0
+
+#   ERROR: malformed checker parameter list (missing one component)
+# pl 0.0,-0.5,0.0 0.0,1.0,0.0 255,255,255 checker=220,220,220;30,30,30;0.1
+
+#====== These pass 
+
+#	ERROR: empty token
+# sp 0.0,0.0,0.0 2.0 255,,255
+
+#	ERROR: wrong coordinate	
+# sp 0.0,0.0,0.02.0 255,255,255
+
+#	ERROR: tab instead of value
+# sp 0.0,0.0,0.0	.0	255,255,255
+
+#   ERROR: key with '=' but missing value (allowed ?)
+# sp 3.0,0.0,-3.0 2.0 255,255,255 refl=
+
+#	ERROR: key with two '='
+# sp 0.0,0.0,0.0 2.0 255,255,255 refl==0.5
+
+#   ERROR: integer/float mismatch in color (non-integer color component)
+# sp 0.0,0.0,3.0 2.0 255.5,0,0 spec=0.5 shine=32.0
+
+#   ERROR: faulty texture path (wrong extension)
+# sp 0.0,0.0,-3.0 2.0 255,255,255 image=assets/wood.png
+
+#   ERROR: wrong image path 
+# sp -3.0,0.0,-3.0 2.0 255,255,255 image=assets/notanimage.xpm
