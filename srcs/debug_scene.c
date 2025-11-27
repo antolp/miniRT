@@ -6,7 +6,7 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/11/26 05:17:44 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/26 20:13:37 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,4 +118,7 @@ void	print_scene(void)
 	print_camera(&s->camera);
 	print_scene1(curr, i);
 	printf("====================================\n");
+	print_color("amb_color", s->ambient_color);
+	print_color("bg_color", s->background_color);
+	printf("amb_ratio %.2f\n", s->ambient_ratio);
 }

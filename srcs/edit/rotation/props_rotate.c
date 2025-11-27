@@ -6,7 +6,7 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 02:29:57 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/11/26 02:51:34 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/27 01:49:23 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,9 @@ int	handle_props_rotate_yaw(int keycode, t_cli_var *var)
 	}
 	if (var->r->edit.target != EDIT_TARGET_OBJECT)
 		return (1);
-	angle = var->scale;
+	angle = var->scale * 7;
 	if (keycode == XK_k || keycode == XK_K)
-		angle = -var->scale;
+		angle = -var->scale * 7;
 	editor_rotate_object_yaw(var, angle);
 	return (1);
 }
@@ -81,11 +81,11 @@ int	handle_props_rotate_pitch(int keycode, t_cli_var *var)
 	}
 	if (var->r->edit.target != EDIT_TARGET_OBJECT)
 		return (1);
-	angle = var->scale;
+	angle = var->scale * 7;
 	if (keycode == XK_o || keycode == XK_O)
-		angle = var->scale;
+		angle = var->scale * 7;
 	else
-		angle = -var->scale;
+		angle = -var->scale * 7;
 	editor_rotate_object_pitch(var, angle);
 	return (1);
 }

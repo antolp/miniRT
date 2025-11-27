@@ -1,0 +1,38 @@
+#   VALID SCENE: basic coverage of valid constructs and keys
+#	featuring what's allowed
+#		- spaces between attribute in entry
+#		- newlines between entries
+#		- comments using #
+#		- unknown material keys
+#		- missing optional objects
+
+#	Ambient light: warm tones
+# A 0.2       255,200,210
+# SB assets/autumn_field_puresky_8k.xpm
+
+#	Camera with explicit FOV
+C 0.0,2.0,8.0 0.0,-0.2,-1.0 60.0
+
+#	Background color (no skybox no BG on purpose)
+#	initialised as BG 0,0,0 (black background)
+BG 0,0,0
+
+#	First light: warm key light
+L -4.0,22.0,4.0 0.8 255,240,220
+
+#	Second light: cooler fill light
+L       3.0,14.0,-2.0 0.1     190,210,255
+
+#	Ground plane with no material key
+#	initialized as mate plane with minimal specular highlight
+pl 0.0,-1.0,0.0 0.0,1.0,0.0 220,220,220
+
+#	Textured earth sphere with valid image texture
+sp -1.5,0.0,1.5 2.0 255,255,255 spec=0.90 shine=64.0 refl=1 idx_refr=0.9
+# image=assets/2k_earth_daymap.xpm
+
+# #	Wooden cylinder using same texture for color and bump (hard to see)
+# cy 2.5,-1.0,-1.0 0.0,1.0,0.0 1.2 3.0 200,180,160 image=assets/wood.xpm bump=assets/wood.xpm
+
+# #	Triangle with unknown material key (ignored, but allowed)
+# tr 0.0,0.0,0.0 2.0,0.0,0.0 0.0,2.0,0.0 255,255,100 spec=0.40 shine=32.0 foo=1.0

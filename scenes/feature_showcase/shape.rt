@@ -1,0 +1,67 @@
+# Ambient to soften shadows a bit
+# A 0.20 255,255,255
+# Camera looking towards +Z and a bit towards +X 
+C -2.99,2.31,-11.35 0.39,-0.12,0.91 40.0
+
+# Soft blue background
+BG 150,150,255
+SB assets/citrus_orchard8k.xpm
+
+# Single light above the camera
+L -2.40,2.60,-14.0 0.9 255,255,255
+L 0.0,6.0,-4.0 0.6 200,210,255
+
+# Big ground plane refractive at horizon (fresnel), grid texture
+pl 0.0,0.0,0.0 0.0,1.0,0.0 255,255,255 refl=1.0 idx_refr=1.0 image=assets/grid10.xpm
+
+# Big rectangular mirror facing front of camera
+tr -4.0,-1.0,0.0 4.0,-1.0,0.0 -4.0,5.0,0.0 255,255,255 refl=1.0 idx_refr=0.001 spec=1.0 shine=256.0
+tr 4.0,-1.0,0.0 4.0,5.0,0.0 -4.0,5.0,0.0 255,255,255 refl=1.0 idx_refr=0.001 spec=1.0 shine=256.0
+
+# ---- Shape line, all on one axis ⟂ camera direction, no clipping ----
+
+# red sphere
+sp -2.39,0.80,-5.50 0.72 255,80,80 spec=0.8 shine=64.0 refl=1.0 idx_refr=1.0
+
+# blue cylinder
+cy -0.28,0.23,-4.89 -0.39,0.92,-0.04 0.55 1.5 80,80,255 spec=0.8 shine=64.0 refl=1.0 idx_refr=1.0
+
+# orange cone
+co 1.36,1.62,-4.66 0.10,-0.91,0.41 0.39 1.3 255,180,60 spec=0.8 shine=64.0 refl=1.0 idx_refr=1.0
+
+# green triangle
+tr 1.84,1.05,-4.79 3.79,0.31,-4.76 2.96,1.62,-4.15 60,200,120 spec=0.6 shine=64.0 refl=1.0 idx_refr=1.0
+
+
+
+
+
+
+
+
+
+
+
+# # SHAPE SHOWCASE – STEP 1: camera + big frontal mirror
+
+# # A bit of ambient so we can see something
+# # A 0.20 255,255,255
+
+# # Camera looking towards +Z
+# C -2.40,2.60,-14.00 0.4,-0.1,1.0 60.0
+
+# SB assets/autumn_field_puresky_8k.xpm
+
+# # Soft blue background
+# BG 150,150,255
+
+# # Single light above the camera
+# L 0.0,6.0,-4.0 0.90 255,255,255
+
+# # Big ground plane refractive at horizon (fresnel), grid texture
+# pl 0,0,0 0,1,0 255,255,255 refl=1 idx_refr=1 image=assets/grid10.xpm
+
+# # Big rectangular mirror directly facing the camera
+# # Rectangle roughly from X = -4..4, Y = -1..5 at Z = 0
+# tr -4.0,-1.0,0.0   4.0,-1.0,0.0   -4.0,5.0,0.0   255,255,255 refl=1.0 idx_refr=0.0000001 spec=1.0 shine=256.0
+# tr  4.0,-1.0,0.0   4.0,5.0,0.0    -4.0,5.0,0.0   255,255,255 refl=1.0 idx_refr=0.0000001 spec=1.0 shine=256.0

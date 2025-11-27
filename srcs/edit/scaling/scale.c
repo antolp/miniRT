@@ -6,7 +6,7 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 02:30:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/11/26 02:51:59 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/27 16:45:26 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,9 @@ void	editor_scale_object_secondary(t_cli_var *var, double factor)
 	if (obj->type == OBJ_CYLINDER)
 		editor_scale_cylinder_height(obj, factor);
 	else if (obj->type == OBJ_CONE)
+	{
 		editor_scale_cone_angle(obj, factor);
+		printf("factor : %f\n", factor);
+	}
 	var->r->has_drawn_realtime = false;
 }

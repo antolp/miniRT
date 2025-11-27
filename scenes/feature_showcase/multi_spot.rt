@@ -1,0 +1,26 @@
+# Colored and multi-spot lights showcase (fixed radii & positions)
+# A 0.15 255,255,255
+
+# Camera looking toward the corner
+C 0.80,4.46,-13.34 0.22,-0.43,0.88 50
+
+# Slightly dark desaturated blue background
+BG 20,20,40
+
+# --- Colored lights (pink-ish dominant, more variety) ---
+# Warm red
+L 2.0,0,-3.0 0.80 255,10,50
+# Blue
+L 3.0,0,-4.0 0.70 200,180,255
+# Teal
+L 4.0,-0.5,1.0 0.60 160,220,255
+
+# --- ground + two walls forming a corner ---
+
+# Ground plane
+pl 0.0,-0.7,0.0 0.0,1.0,0.0 235,230,235 refl=1.0 idx_refr=0.7 spec=0.4 shine=64.0
+
+# Three reflective sphere
+sp -0.9,0.45,-3.5 1.1 170,90,255 spec=1.0 shine=256.0 refl=1.0 idx_refr=0.2
+sp 2.9,0.75,2.5 1.5 255,170,90 spec=1.0 shine=256.0 refl=1.0 idx_refr=0.1
+sp 8.0,1.60,-2.5 2.35 90,255,170 spec=1.0 shine=256.0 refl=1.0 idx_refr=0.0001

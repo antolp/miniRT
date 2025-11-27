@@ -6,7 +6,7 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 02:29:55 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/11/26 02:53:35 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/27 01:37:34 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,9 @@ static void	print_help1(void)
 	printf("Misc:\n");
 	printf("  Z          : Zoom in  (decrease FOV)\n");
 	printf("  X          : Zoom out (increase FOV)\n");
-	printf("  B          : Print shading_flag value\n");
+	printf("  X          : Zoom out (increase FOV)\n");
+	printf("  X          : Zoom out (increase FOV)\n");
+	printf("  /          : Print shading_flag value\n");
 	printf("  P          : Print the scene informations\n");
 }
 

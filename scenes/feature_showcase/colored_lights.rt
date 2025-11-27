@@ -1,0 +1,42 @@
+# Colored and multi-spot lights showcase (fixed radii & positions)
+# A 0.15 255,255,255
+
+# Camera looking toward the corner
+C 0.0,2.0,-10.0 0.0,-0.2,1.0 50.0
+
+# Slightly dark desaturated blue background
+BG 20,20,40
+
+# --- Colored lights (pink-ish dominant, more variety) ---
+# Warm pink
+L -3.0,4.0,-3.0 0.40 255,10,50
+# Soft lavender
+L 3.0,2.5,-4.0 0.30 200,180,255
+# Cool teal from right side
+L 4.0,1.5,1.0 0.20 160,220,255
+
+# --- lights close to ground, spheres around ---
+
+# Ground plane
+pl 0.0,-1.0,0.0 0.0,1.0,0.0 235,230,235 refl=1.0 idx_refr=0.7 spec=0.4 shine=64.0
+
+# Back wall
+pl 0.0,0.0,6.0 0.0,0.0,-1.0 230,210,230 spec=0.4 shine=64.0
+
+# Left wall
+pl -4.0,0.0,0.0 1.0,0.0,0.0 210,200,230 spec=0.4 shine=64.0
+
+# --- Objects: one big sphere + two small spheres + a cone ---
+
+# Big central glossy sphere (radius = 1.5), not intersecting any plane
+# bottom y = 0.6 - 1.5 = -0.9 > -1.0
+sp 0.0,0.6,0.5 1.5 255,210,230 spec=1.0 shine=128.0 refl=1.0 idx_refr=1.0
+
+# Small teal metallic-ish sphere on the left, tangent-ish to big sphere
+sp -2.32,0.3,4.32 1.35 120,220,210 spec=1.0 shine=96.0 refl=1.0 idx_refr=0.2
+
+# Small warm orange mirror-like sphere on the right
+sp 2.3,0.6,2.5 0.8 255,170,90 spec=1.0 shine=256.0 refl=1.0 idx_refr=0.1
+
+# Soft purple cone in the back-right, adding another shape and color
+co -0.29,2.15,3.38 -0.16,0.99,-0.01 0.6 3.0 200,140,255 spec=1.0 shine=96.0 refl=1.0 idx_refr=1.0

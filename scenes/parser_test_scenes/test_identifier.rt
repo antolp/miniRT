@@ -1,0 +1,35 @@
+#   identifier tests
+#   Baseline: valid scene with ground plane, solid background, one light and simple objects
+A 0.20 255,255,255
+C 0.0,2,5.0 0.0,-0.3,-1.0 60.0
+BG 10,10,40
+L -3.0,3.0,2.0 0.80 255,240,220
+pl 0.0,0.0,0.0 0.0,1.0,0.0 200,200,200
+sp 0.0,1.5,0.0 1.0 255,0,0 refl=1 idx_refr=1
+# SB assets/autumn_field_puresky_8k.xpm
+
+#   --- ERROR CASES (uncomment one at a time) ---
+
+#   ERROR: unknown identifier
+# Xx 0.0,0.0,0.0 0.0,0.0,1.0 10,10,10
+
+#   ERROR: misspelled sphere identifier
+# spere 0.0,0.0,0.0 2.0 255,255,255
+
+#   ERROR: misspelled plane identifier
+# pln 0.0,-1.0,0.0 0.0,1.0,0.0 100,100,100
+
+#   ERROR: second camera (duplicate C)
+# C 1.0,2.0,3.0 0.0,0.0,-1.0 45.0
+
+#   ERROR: second ambient (duplicate A)
+# A 0.10 100,100,100
+
+#   ERROR: second background (duplicate BG)
+# BG 0,0,0
+
+#   ERROR: skybox appears once (valid alone)
+# SB assets/autumn_field_puresky_8k.xpm
+
+#   ERROR: second skybox if both SB lines are present
+# SB assets/NightSky8K-HDR.xpm

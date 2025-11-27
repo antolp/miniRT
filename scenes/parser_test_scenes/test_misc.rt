@@ -1,0 +1,29 @@
+#   Miscellanious tests
+#   Baseline: valid scene with ground plane, solid background, one light and simple objects
+
+A 0.20 255,255,255
+C 0.0,2,5.0 0.0,-0.3,-1.0 60.0
+BG 10,10,40
+L -3.0,3.0,2.0 0.80 255,240,220
+pl 0.0,0.0,0.0 0.0,1.0,0.0 200,200,200
+sp 0.0,1.5,0.0 1.0 255,0,0 refl=1 idx_refr=1
+
+#   --- ERROR CASES (uncomment one at a time) ---
+
+#	too many coordinates
+# sp 0.0,0.0,0.0,0.0,0.0 0.0,1.0,0.0 255,255,255
+
+#	unterminated tokens (allowed ?)
+# L 0.0,4.0,0.0 0.8 255,255,
+# sp 0.0,0.0,0.0 2.0 255,255
+
+#	wrong order
+# sp spec=0.90 -1.5,0.0,1.5 2.0 255,255,255 shine=64.0 refl=1 idx_refr=0.9
+# pl 0.0,0.0,0.0 bump=assets/bumpgrunge.xpm 0.1,0.0,0.0 255,255,255
+
+#	utf-8 shenanigans
+# ��
+# sp 0.0,0.0,�.0 2.0 255,255,255 bump=assets/wood.xpm
+# sp 0ü0,0.0,0.0 2.0 255,255,255 image=assets/grünge.xpm
+
+

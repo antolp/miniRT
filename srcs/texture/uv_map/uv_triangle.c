@@ -6,7 +6,7 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/11/26 04:57:07 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/27 04:11:28 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,8 +114,8 @@ static bool	tri_uv_ortho(const t_triangle *tr, t_vec3 *hit, t_vec2 *out_uv)
 	if (build_triangle_basis(tr, &u, &u) == 0)
 		return (false);
 	d = vec_sub(*hit, tr->p0);
-	out_uv->x = vec_dot(d, u);
-	out_uv->y = vec_dot(d, v);
+	out_uv->x = vec_dot(d, u) / 10;
+	out_uv->y = vec_dot(d, v) / 10;
 	return (true);
 }
 

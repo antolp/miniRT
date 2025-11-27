@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cleaner.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/25 01:23:25 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/26 18:54:13 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/27 16:21:46 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@ static int	destroy_mlx(t_renderer *renderer)
 	renderer->mlx = NULL;
 	return (0);
 }
-
 
 //destroy mlx image and frees texture pointer
 void	destroy_texture(void *mlx, t_texture *tex)

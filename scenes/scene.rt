@@ -1,0 +1,34 @@
+# Scene equivalent to init_scene()
+
+# === AMBIENT ===
+# A 0.3 255,200,200
+
+# === CAMERA ===
+C 0,10,0 0,0,1 60
+
+# === BACKGROUND ===
+BG 10,10,40
+
+# === LIGHTS ===
+# In your C code, the first white light is overwritten by the second pink one.
+L 0,30,-60 1.0 255,180,195
+
+# === PLANES ===
+
+# checkerboard floor (reflective, checker texture)
+pl 0,0,0 0,1,0 255,255,255 checker=255,255,255;30,30,30;1.3;1.3 refl=1.0 spec=0.0 shine=0.0 idx_refr=0.2
+
+# far background plane
+pl 0,0,200 0,0,-1 255,255,255 refl=0.0 spec=0.0 shine=0.0 idx_refr=1.0
+
+# === SPHERES ===
+
+# mirror sphere
+sp -15,9,2 9.0 255,255,255 refl=0.99 spec=0.7 shine=64.0 idx_refr=0.01
+
+sp -5.50,3.00,1.50 2 255,255,255 refl=1 spec=0.9 shine=64.0 idx_refr=0.01
+
+# === CYLINDERS ===
+
+# red metallic cylinder
+cy 8,3,22 0.3,1.0,-0.2 2.0 8.0 200,50,50 refl=1.0 spec=0.8 shine=64.0 idx_refr=0.2

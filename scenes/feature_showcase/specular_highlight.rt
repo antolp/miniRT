@@ -1,0 +1,17 @@
+# Pure specular highlight showcase in total black void
+
+# No ambient light
+# (A omitted on purpose)
+
+# Camera facing +Z axis
+C 0.0,0.0,-6.0 0.0,0.0,1.0 45.0
+
+# Pure black background
+BG 0,0,0
+
+# Single strong white light above-left
+L -3.0,2.0,-1.5 0.50 255,255,255
+
+# Single red sphere with strong specular highlight
+sp 0.0,0.0,3.0 2.0 0,0,255 spec=1.8 shine=16.0
+

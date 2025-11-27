@@ -1,0 +1,22 @@
+#	Fresnel showcase: matte vs glossy reflective sphere
+
+# Soft ambient so shadows aren’t pitch-black
+# A 0.20 255,255,255
+
+# Camera facing +Z axis
+C 0.0,2.5,-10.0 0.0,-0.2,1.0 45.0
+
+# Dark blue background
+BG 10,10,40
+
+# Strong key light from above-left
+L -15.0,25.0,-35.0 1 255,250,240
+
+# White floor plane, slightly reflective to blend the scene
+pl 0.0,-2.0,0.0 0.0,1.0,0.0 255,255,255 idx_refr=0.9 refl=1.90 idx spec=0.20 shine=32.0
+
+# Left sphere: pure matte white, no Fresnel (idx_refr=0, no refl/refr)
+sp -2.5,0.0,4.0 2.0 255,255,255 spec=0.20 shine=32.0 idx_refr=0.0 refl=0.0 refr=0.0
+
+# Right sphere: glossy red, fully reflective with Fresnel (idx_refr=1, refl=1)
+sp 2.5,0.0,4.0 2.0 255,80,80 spec=1.00 shine=128.0 idx_refr=1.0 refl=1.0 refr=0.0

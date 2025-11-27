@@ -1,0 +1,27 @@
+A 0.5 250,90,120
+C -21.47,6.27,-7.19 0.81,0.0,0.59 35
+
+#dark blue background
+BG 20,10,40
+# SB assets/the_sky_is_on_fire_8k.xpm
+
+# some lights
+L -10.0,15.0,-10.0 0.7 255,220,200
+L 12.0,10.0,-5.0 0.5 200,220,255
+L 2.5,20.0,10.0 0.6 255,255,200
+
+# ground plane, checkered, lightly glossy
+pl 0.0,0.0,0.0 0.0,1.0,0.0 255,255,255 checker=220,220,220;30,30,30;0.1;0.1 spec=0.2 shine=16.0 idx_refr=1 refl=1
+
+#reflective, mirror sphere
+sp 0.18,4.98,5.50 4.62 255,255,255 refl=1.0 idx_refr=0.01 spec=1.0 shine=256.0
+#missing bump=assets/wood.xpm
+
+# orange refractive cone
+co -2.76,5.21,0.10 0.10,0.92,0.38 9.6 5.34 255,150,60 spec=0.8 shine=64.0 idx_refr=1 refr=0.69
+
+# wood solid narrow cylinder
+cy 5.10,-0.50,0.27 -0.17,0.94,-0.28 1.44 11.33 200,180,160 image=assets/wood.xpm spec=0.5 shine=64.0 
+
+# yellow slightly reflective triangle
+tr 23.24,6.90,11.77, -4.75,-1.86,25.95 3.50,15.96,22.60 236,255,125 idx_refr=0.2 refl=1

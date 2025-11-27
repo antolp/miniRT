@@ -6,7 +6,7 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 04:57:51 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/11/26 05:09:33 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/27 01:07:57 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,17 +15,17 @@
 void	print_vec3(char *s, t_vec3 v)
 {
 	if (ft_strlen(s) > 5)
-		printf("%s :\t(%.2f, %.2f, %.2f)\n", s, v.x, v.y, v.z);
+		printf("%s :\t(%.2f,%.2f,%.2f)\n", s, v.x, v.y, v.z);
 	else
-		printf("%s :\t\t(%.2f, %.2f, %.2f)\n", s, v.x, v.y, v.z);
+		printf("%s :\t\t(%.2f,%.2f,%.2f)\n", s, v.x, v.y, v.z);
 }
 
 void	print_color(char *s, t_color c)
 {
 	if (ft_strlen(s) > 5)
-		ft_printf("%s :\t(R: %d, G: %d, B: %d)\n", s, c.r, c.g, c.b);
+		ft_printf("%s :\t(%d,%d,%d)\n", s, c.r, c.g, c.b);
 	else
-		ft_printf("%s :\t\t(R: %d, G: %d, B: %d)\n", s, c.r, c.g, c.b);
+		ft_printf("%s :\t\t(%d,%d,%d)\n", s, c.r, c.g, c.b);
 }
 
 void	print_texture(char *s, t_texture tex)
