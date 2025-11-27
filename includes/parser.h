@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 18:28:52 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/25 23:24:01 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/26 19:04:22 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,8 +80,9 @@ bool		set_property(size_t type, void *dst, char *line);
 void		parse_mats(t_material *mat, char **line);
 
 //Utils
-void		check_range(double val, t_property_rules range);
-t_list		*add_content(void *content);
+void			check_range(double val, t_property_rules range);
+t_list			*add_content(void *content);
+t_asset_format	*get_asset_rules(char *type, t_object_type enm_type);
 
 //Shape builders
 void		build_sphere(t_object *obj, char **line);

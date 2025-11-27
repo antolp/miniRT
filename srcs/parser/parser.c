@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 18:10:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/26 18:40:20 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/27 12:43:28 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ t_parser	*parser_data(void)
 
 void	put_err(char *msg)
 {
-	perror(msg);
 	ft_dprintf(STDERR_FILENO, msg);
 	ft_putchar_fd('\n', STDERR_FILENO);
 	clear_minirt();
@@ -79,20 +78,6 @@ t_asset_format	*get_asset_rules(char *type, t_object_type enm_type)
 	return (put_err("Unidentified asset type"), NULL);
 }
 
-//CHECKS THAT ALL MANDATORY ASSETS ARE SET IN THE SCENE
-int	check_scene_objects(void)
-{
-	if (get_asset_rules(NULL, OBJ_CAMERA)->quantity != 1)
-		put_err("Invalid Camera count: expecting 1");
-	if (get_asset_rules(NULL, OBJ_AMBIANT_LIGHT)->quantity > 1)
-		put_err("Invalid Ambiant_Light count: one max");
-	if (get_asset_rules(NULL, OBJ_SKYBOX)->quantity > 1)
-		put_err("Invalid Skybox count: one max");
-	if (get_asset_rules(NULL, OBJ_BACKGROUND)->quantity > 1)
-		put_err("Invalid Background count: one max");
-	return (EXIT_SUCCESS);
-}
-
 void	parse_object(char **line)
 {
 	t_object		*object;
@@ -129,7 +114,8 @@ void	parse_rtconfig(char *path)
 	{
 		if (ft_strchr("#\n", *parser->line)) {
 			free(parser->line); 
-			continue ; }
+			continue ;
+		}
 		parser->word_arr = ft_split(parser->line, ' ');
 		if (!parser->word_arr)
 			put_err("Parsing : failled to malloc parser->word_arr");
@@ -138,5 +124,6 @@ void	parse_rtconfig(char *path)
 		free(parser->line);
 		parser->word_arr = NULL;
 	}
-	check_scene_objects();
+	if (get_asset_rules(NULL, OBJ_CAMERA)->quantity != 1)
+		put_err("Invalid Camera count: expecting 1");
 }
