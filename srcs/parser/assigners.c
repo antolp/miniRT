@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/16 22:57:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/28 17:15:26 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/28 19:24:27 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ t_property_rules	get_prop_rules(size_t type)
 }
 
 //Generic subparser mod that handles
-// both float and int assignations into a t_vec3 struct
+// both double and int assignations into a t_vec3 struct
 static void	parse_valset(void *valset[], t_property_type type, char *line)
 {
 	int	ret_atof;

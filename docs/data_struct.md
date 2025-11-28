@@ -48,7 +48,7 @@ class t_scene {
   objects: t_list*
   clights: t_list*
   ambient_color: t_color
-  ambient_ratio: float
+  ambient_ratio: double
   is_rendering: bool
   background_color: t_color
   skybox: t_texture

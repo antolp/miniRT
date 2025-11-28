@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 18:10:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/28 18:18:55 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/28 20:19:15 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@
 //if undefined OBJ, checks the char* against litteral ids
 t_obj_frmt	*get_asset_rules(char *type, t_object_type enmt)
 {
-	size_t					i;
+	size_t				i;
 	static t_obj_frmt	assets[] = {
 	[OBJ_AMBIANT_LIGHT] = {"A", 0, 0, 1, &build_ambiant_light, 0},
 	[OBJ_CAMERA] = {"C", 0, 1, 1, &build_camera, 0},
@@ -58,7 +58,7 @@ t_obj_frmt	*get_asset_rules(char *type, t_object_type enmt)
 
 static void	parse_object(char **line)
 {
-	t_object		*object;
+	t_object	*object;
 	t_obj_frmt	*rules;
 
 	rules = get_asset_rules(*line++, 0);
@@ -112,6 +112,7 @@ void	parse_rtconfig(char *path)
 	if (fd == -1)
 		return (put_err("Failled to open path"));
 	parser_repl(fd);
+	print_scene();
 	if (get_asset_rules(NULL, OBJ_CAMERA)->quantity != 1)
 		put_err("Invalid Camera count: expecting 1");
 }

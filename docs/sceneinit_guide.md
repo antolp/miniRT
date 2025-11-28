@@ -53,10 +53,10 @@ More precise description below.
 
 - **Color (RGB)**: integers **0–255**  
   Example: `255,0,21` (only accepts integer values)
-- **Vector (position/direction/axis)**: floats (e.g., `-12.5,0,3`)  
+- **Vector (position/direction/axis)**: double (e.g., `-12.5,0,3`)  
   - Directions/axes must be **non-zero vectors**.
 - **Angle** : degrees e.g. `60` (Camera FOV), radiant e.g. `0.35` (Cone half-angle).
-- **Ratios**: floats in **[0.0, 1.0]** (ambient ratio, light intensity).
+- **Ratios**: double in **[0.0, 1.0]** (ambient ratio, light intensity).
 - **Sizes**: strictly **> 0** (diameter, height).
 
 ---
@@ -89,7 +89,7 @@ Each section shows:
 
     C <x,y,z> <dx,dy,dz> [fov_deg]
 
-- Position `<x,y,z>` floats
+- Position `<x,y,z>` double
 - Direction `<dx,dy,dz>` **non-zero**
 - Optional `fov_deg` in `(10, 180)`; **defaults to 60** if omitted
 - **Exactly 1 per file**
@@ -105,7 +105,7 @@ Each section shows:
 
     L <x,y,z> <intensity> <R,G,B>
 
-- Position `<x,y,z>` floats
+- Position `<x,y,z>` double
 - `intensity` in `[0.0, 1.0]`
 - `R,G,B` integers `[0..255]`
 
@@ -149,7 +149,7 @@ Each section shows:
 
     sp <x,y,z> <diameter> <R,G,B> [material/texture keys...]
 
-- Center `<x,y,z>` floats
+- Center `<x,y,z>` double
 - `diameter > 0`  (internal radius = diameter/2)
 - Base color `<R,G,B>` integers `[0..255]`
 - Optional material/texture keys appended
@@ -165,7 +165,7 @@ Each section shows:
 
     pl <x,y,z> <nx,ny,nz> <R,G,B> [material/texture keys...]
 
-- Point on plane `<x,y,z>` floats
+- Point on plane `<x,y,z>` double
 - Normal `<nx,ny,nz>` **non-zero**
 - Base color `<R,G,B>` integers `[0..255]`
 - Optional material/texture keys appended
@@ -181,7 +181,7 @@ Each section shows:
 
     cy <x,y,z> <ax,ay,az> <diameter> <height> <R,G,B> [material/texture keys...]
 
-- Center `<x,y,z>` floats
+- Center `<x,y,z>` double
 - Axis `<ax,ay,az>` **non-zero**
 - `diameter > 0`, `height > 0`
 - Base color `<R,G,B>` integers `[0..255]`
@@ -197,7 +197,7 @@ Each section shows:
 
     co <x_apex,y_apex,z_apex> <ax,ay,az> <angleDeg> <height> <R,G,B> [material/texture keys...]
 
-- Apex position floats
+- Apex position double
 - Axis `<ax,ay,az>` **non-zero**
 - `angleDeg` = **half-angle** in degrees, `(0, 89.9]` recommended
 - `height > 0`
@@ -233,11 +233,11 @@ If you omit them, **defaults** apply (see 7. Defaults Table).
 
 ### Supported keys
 
-- `refl=<float>` — **reflectivity** in `[0,1]` (ignored if `refr>0`)
-- `refr=<float>` — **refractivity** in `[0,1]`; if `refr>0` the surface is transmissive
-- `idx_refr=<float>` — **index of refraction** (used by Fresnel/reflection/refraction)
-- `spec=<float>` — **specular strength** `[0,1(+)]` (Phong/Blinn-Phong amplitude)
-- `shine=<float>` — **shininess** (specular exponent, e.g., 16–256)
+- `refl=<double>` — **reflectivity** in `[0,1]` (ignored if `refr>0`)
+- `refr=<double>` — **refractivity** in `[0,1]`; if `refr>0` the surface is transmissive
+- `idx_refr=<double>` — **index of refraction** (used by Fresnel/reflection/refraction)
+- `spec=<double>` — **specular strength** `[0,1(+)]` (Phong/Blinn-Phong amplitude)
+- `shine=<double>` — **shininess** (specular exponent, e.g., 16–256)
 - `checker=R,G,B;R,G,B;s1;s2` — procedural checkerboard, the first two R,G,B are the colors of the tiles, s1 and s2 are the scale of each tile in u, v 2d coordinates
 - `image=assets/image.xpm` — XPM image texture
 - `bump=assets/image.xpm` — XPM image bump map

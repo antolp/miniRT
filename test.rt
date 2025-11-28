@@ -1,92 +1,27 @@
-# Soft ambient so shadows aren’t pitch-black
-A 3.9 255,255,255
+# A 0.5 250,90,120
+C -21.47,6.27,-7.19 0.81,0.0,0.05 35
 
-# Camera facing +Z axis
-C 0.0,2.5,-10.0 0.0,-0.2,1.0 45.0
+#dark blue background
+# BG 20,10,40
+# SB assets/the_sky_is_on_fire_8k.xpm
 
-# Dark blue background
-BG 10,10,40
+# some lights
+# L -10.0,15.0,-10.0 0.7 255,220,200
+L 12.0,10.0,-5.0 0.005 200,220,255
+# L 2.5,20.0,10.0 0.6 255,255,200
 
-# Strong key light from above-left
-L -15.0,25.0,-35.0 1 255,250,240
+# # # ground plane, checkered, lightly glossy
+# pl 0.0,0.0,0.0 0.0,0.2,0.0 255,255,255 checker=220,220,220;30,30,30;0.2;0.5 spec=0.2 shine=16.0 idx_refr=1 refl=1
 
-# White floor plane, slightly reflective to blend the scene
-pl 0.0,-2.0,0.0 0.0,1.0,0.0 255,255,255 idx_refr=0.9 refl=1.90 idx spec=0.20 shine=32.0
+# # #reflective, mirror sphere
+# sp 0.18,4.98,5.50 4.62 255,255,255 refl=1.0 idx_refr=0.01 spec=1.0 shine=256.0
+# # #missing bump=assets/wood.xpm
 
-# Left sphere: pure matte white, no Fresnel (idx_refr=0, no refl/refr)
-# sp -2.5,0.0,4.0 2.0 255,255,255 spec=0.20 shine=32.0 idx_refr=0.0 refl=0.0 refr=0.0
+# # # orange refractive cone
+# co -2.76,5.21,0.10 0.10,0.92,0.38 9.6 5.34 255,150,60 spec=0.8 shine=64.0 idx_refr=1 refr=1
 
-# Right sphere: glossy red, fully reflective with Fresnel (idx_refr=1, refl=1)
-# sp 2.5,0.0,4.0 2.0 255,80,80 spec=1.00 shine=128.0 idx_refr=1.0 refl=1.0 refr=0.0
-# pl 0.0,-1.0,0.0 0.0,1.0,0.0 210,210,210 spec=0.30 shine=32.0
+# # # wood solid narrow cylinder
+# cy 5.10,-0.50,0.27 -0.17,0.94,-0.28 1.44 11.33 200,180,160 spec=0.5 shine=64.0
 
-# BG 10,10,40
-# L -3.0,3.0,2.0 0.80 255,240,220
-# pl 0.0,0.0,0.0 0.0,1.0,0.0 200,200,200
-# sp 0.0,1.5,0.0 1.0 255,0,0
-
-#   --- ERROR CASES (UNCOMMENT ONE AT A TIME) ---
-
-#   ERROR: unknown identifier
-# Xx 0.0,0.0,0.0 0.0,0.0,1.0 10,10,10
-
-#   ERROR: misspelled sphere identifier
-# spere 0.0,0.0,0.0 2.0 255,255,255
-
-#   ERROR: misspelled plane identifier
-# pln 0.0,-1.0,0.0 0.0,1.0,0.0 100,100,100
-
-#   ERROR: second camera (duplicate C)
-# C 1.0,2.0,3.0 0.0,0.0,-1.0 45.0
-
-#   ERROR: second ambient (duplicate A)
-# A 0.10 100,100,100
-
-#   ERROR: second background (duplicate BG)
-# BG 0,0,0
-
-#   ERROR: skybox appears once (valid alone)
-#SB assets/autumn_field_puresky_8k.xpm
-
-#   ERROR: second skybox if both SB lines are present
-#SB assets/NightSky8K-HDR.xpm
-
-# A 0.25 255,255,255
-# C 0.0,1.5,6.0 0.0,-0.1,-1.0 60.0
-# BG 15,15,35
-# L -4.0,5.0,3.0 0.70 255,240,220
-
-# sp 3.0,0.0,0.0 2.0 255,255,255 refl 0.5
-# pl 0.0,-0.5,0.0 0.0,1.0,0.0 255,255,255 checker=220,220,220;30,30,30;0.1;0.2
-# pl 0.0,-1.0,0.0 0.0,1.0,0.0 210,210,210 spec=0.30 shine=32.0
-
-# BG 10,10,40
-# L -3.0,3.0,2.0 0.80 255,240,220
-# pl 0.0,0.0,0.0 0.0,1.0,0.0 200,200,200
-# sp 0.0,1.5,0.0 1.0 255,0,0
-
-#   --- ERROR CASES (UNCOMMENT ONE AT A TIME) ---
-
-#   ERROR: unknown identifier
-# Xx 0.0,0.0,0.0 0.0,0.0,1.0 10,10,10
-
-#   ERROR: misspelled sphere identifier
-# spere 0.0,0.0,0.0 2.0 255,255,255
-
-#   ERROR: misspelled plane identifier
-# pln 0.0,-1.0,0.0 0.0,1.0,0.0 100,100,100
-
-#   ERROR: second camera (duplicate C)
-# C 1.0,2.0,3.0 0.0,0.0,-1.0 45.0
-
-#   ERROR: second ambient (duplicate A)
-# A 0.10 100,100,100
-
-#   ERROR: second background (duplicate BG)
-# BG 0,0,0
-
-#   ERROR: skybox appears once (valid alone)
-#SB assets/autumn_field_puresky_8k.xpm
-
-#   ERROR: second skybox if both SB lines are present
-#SB assets/NightSky8K-HDR.xpm
+# # # yellow slightly reflective triangle
+# tr 23.24,6.90,11.77, -4.75,-1.86,25.95 3.50,15.96,22.60 236,255,125 0 idx_refr=0.2 refl=1
