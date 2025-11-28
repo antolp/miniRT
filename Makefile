@@ -2,7 +2,8 @@ NAME		= miniRT
 OBJDIR		= .obj
 SRCS		= srcs/main.c srcs/init.c srcs/vector.c srcs/vector2.c \
 			  srcs/debug_scene.c srcs/debug_objects.c srcs/debug_props.c \
-			  srcs/parser/parser.c srcs/parser/shape_builder.c srcs/parser/assigners.c \
+			  srcs/parser/parser.c srcs/parser/parser_utils.c \
+			  srcs/parser/shape_builder.c srcs/parser/assigners.c \
 			  srcs/parser/materials.c srcs/parser/set_builder.c \
 			  srcs/render/render.c \
 			  srcs/render/render_test.c srcs/render/ray_trace.c srcs/render/render_frame.c \

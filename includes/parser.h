@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 18:28:52 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/26 19:04:22 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/28 18:19:01 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@ typedef enum e_property_type
 	PROP_RATIO,
 	PROP_PATH,
 	PROP_ANGLE,
-	PROP_CHECKER
+	PROP_CHECKER,
+	PROP_UV
 }	t_property_type;
 
 typedef struct s_property_rules
@@ -50,7 +51,7 @@ typedef struct s_asset_format
 	size_t	qtmax;
 	void	(*shape_builder)();
 	size_t	type_enum;
-}	t_asset_format;
+}	t_obj_frmt;
 
 typedef enum e_material_keys
 {
@@ -80,9 +81,9 @@ bool		set_property(size_t type, void *dst, char *line);
 void		parse_mats(t_material *mat, char **line);
 
 //Utils
-void			check_range(double val, t_property_rules range);
-t_list			*add_content(void *content);
-t_asset_format	*get_asset_rules(char *type, t_object_type enm_type);
+void		check_range(double val, t_property_rules range);
+t_list		*add_content(void *content);
+t_obj_frmt	*get_asset_rules(char *type, t_object_type enm_type);
 
 //Shape builders
 void		build_sphere(t_object *obj, char **line);

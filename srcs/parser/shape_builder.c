@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 03:37:00 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/26 15:44:55 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/28 17:11:08 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ void	build_triangle(t_object *obj, char	**line)
 	set_property(PROP_POSITION, &shape->p1, *line++);
 	set_property(PROP_POSITION, &shape->p2, *line++);
 	set_property(PROP_COLOUR, &obj->material.base_color, *line++);
-	shape->uv_mode = TRI_UV_ORTHONORMAL;
+	set_property(PROP_UV, &shape->uv_mode, *line++);
 	parse_mats(&obj->material, line);
 	obj->intersect = intersect_triangle;
 	obj->get_normal = get_normal_triangle;

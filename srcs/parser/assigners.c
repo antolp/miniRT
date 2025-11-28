@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/16 22:57:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/28 02:17:44 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/28 17:15:26 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ t_property_rules	get_prop_rules(size_t type)
 	[PROP_RATIO] = {PROP_RATIO, 0.0, 1.0},
 	[PROP_ANGLE] = {PROP_ANGLE, 0, 180},
 	[PROP_SIZE] = {PROP_SIZE, 0, FLT_MAX},
-	[PROP_PATH] = {PROP_PATH, 4, FLT_MAX}
-	};
+	[PROP_PATH] = {PROP_PATH, 4, FLT_MAX},
+	[PROP_UV] = {PROP_UV, 0, 2}};
 
 	return (props[type]);
 }
@@ -36,17 +36,12 @@ static void	parse_valset(void *valset[], t_property_type type, char *line)
 	ret_atof = 0;
 	while (*valset)
 	{
-		// printf("Parsing line %s of size %ld, last char %d\n", line, ft_strlen(line), line[ft_strlen(line)]);
 		if (type == PROP_COLOUR)
-			ret_atof = ft_atoi2(line, *valset);		
+			ret_atof = ft_atoi2(line, *valset);
 		else if (type == PROP_POSITION || type == PROP_DIRECTION)
 			ret_atof = ft_atof(line, *valset);
 		if (ret_atof < 1 || !ft_strchr(";,\n\0 ", line[ret_atof]))
 			put_err("Invalid data : Unexpected or Missing value\n");
-		if (type == PROP_COLOUR)
-			printf("INT: Sum is now %d with len of %d\n", **(int **)valset, ret_atof);
-		else if (type == PROP_POSITION || type == PROP_DIRECTION)
-			printf("FLOAT: Sum is now %f with len of %d\n", **(double **)valset, ret_atof);
 		if (type == PROP_COLOUR)
 			check_range(**(int **)valset, get_prop_rules(type));
 		else if (type == PROP_POSITION || type == PROP_DIRECTION)
@@ -67,24 +62,20 @@ static void	checker_assigner(t_texture *dst, char *line)
 		put_err("Malloc faillure: t_checkerboard");
 	*cb = (t_checkerboard){0};
 	*dst = (t_texture){.type = TEXTURE_CHECKER, .data = cb};
-	printf("Parsing checker with line %s\n", line);
 	parse_valset((void *[]){&cb->color1.r, &cb->color1.g, &cb->color1.b, 0},
 		PROP_COLOUR, line);
 	line = ft_strchr(line, ';');
 	if (!line || *line != ';')
 		put_err(ERR_CHECKER_FORMAT);
-	printf("Parsing checker with line %s\n", line);
 	parse_valset((void *[]){&cb->color2.r, &cb->color2.g, &cb->color2.b, 0},
 		PROP_COLOUR, ++line);
 	line = ft_strchr(line, ';');
 	if (!line || *line != ';')
 		put_err(ERR_CHECKER_FORMAT);
-	printf("Parsing checker with line %s\n", line);
 	set_property(PROP_SIZE, &cb->scale_u, ++line);
 	line = ft_strchr(line, ';');
 	if (!line || *line != ';')
 		put_err(ERR_CHECKER_FORMAT);
-	printf("Parsing checker with line %s\n", line);
 	set_property(PROP_SIZE, &cb->scale_v, ++line);
 }
 

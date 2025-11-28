@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rt.h                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/11/27 20:13:01 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/28 18:21:59 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,11 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <limits.h>
-# include <float.h>
 # include <fcntl.h>
 # include <stdbool.h>
 # include <math.h>
+# include <stdio.h>
+# include <float.h>
 
 # include "mlx.h"
 # include "scene.h"
@@ -37,10 +38,6 @@
 //e.g., DBL_EPSILON from limits.h : next smallest value after (double)0.0;
 //(thats how i understand it)
 # define SHADOW_EPS 0.001
-
-// A SUPPR
-# include <stdio.h>
-# include <sys/time.h>
 
 typedef struct s_hit_info
 {
