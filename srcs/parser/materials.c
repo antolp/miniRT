@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/16 23:23:39 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/27 13:13:13 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/27 17:31:34 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,10 @@ static void	default_mats(t_material *mat)
 	mat->bump_strength = 1.00;
 }
 
+//Assigns all ptrs of the provided instance of t_material
+// to a dispatcher for their incoming automatic parsing
+//Warning: nothing yet prevents a material to be parsed twice;
+// left as such since values will just "atoi" convert over one another
 void	parse_mats(t_material *mat, char **line)
 {
 	size_t					len;

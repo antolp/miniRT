@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/16 22:57:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/27 13:44:40 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/28 02:17:44 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,10 @@ bool	set_property(size_t type, void *dst, char *line)
 	else if (type == PROP_CHECKER)
 		checker_assigner(dst, line);
 	else
+	{
 		if (ft_atof(line, (double *)dst) < 1)
 			put_err("[Atof-Atoi2] : Overflow or parsing error");
+		check_range(*(double *)dst, get_prop_rules(type));
+	}
 	return (EXIT_SUCCESS);
 }

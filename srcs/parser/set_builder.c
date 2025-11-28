@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/18 09:34:39 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/27 01:18:35 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/28 02:29:15 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,6 @@
 
 void	build_ambiant_light(t_scene *set, char **line)
 {
-	printf("Scene color values %d, %d, %d\n With ptrs %p, %p, %p\n",
-		 set->ambient_color.r, set->ambient_color.g, set->ambient_color.b,
-		 &set->ambient_color.r, &set->ambient_color.g, &set->ambient_color.b);
 	if (get_asset_rules(NULL, OBJ_AMBIANT_LIGHT)->quantity > 0)
 		put_err("Invalid Ambiant_Light count: one max");
 	set_property(PROP_RATIO, &set->ambient_ratio, *line++);

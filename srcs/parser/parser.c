@@ -6,11 +6,29 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 18:10:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/27 12:43:28 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/28 02:40:55 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
+
+//	***Sometime, Someday***
+// For a fully autonomous dispatcher struct assigner
+// Meant to replace the set_builder.c utilities
+// At its core, a static array of stored "proceedures"
+//  specified as an array of enums for a specified OBJ_TYPE
+// Can also use a nested array / struct to store a flag
+// for further complex behavior such as for an optional property
+// !!!The following static array is completly disfunctional
+// !!! and is there solely for illustration purposes
+// static int	prop_format[][10][2] = {
+// 	// [OBJ_CAMERA] = {{PROP_SIZE, true}, {PROP_COLOUR, true}},
+// 	[OBJ_PLANE] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_COLOUR, true}},
+// 	[OBJ_SPHERE] = {{PROP_POSITION, true}, {PROP_SIZE, true}, {PROP_COLOUR, true}},
+// 	[OBJ_CYLINDER] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_SIZE, true}, {PROP_SIZE, true}, {PROP_COLOUR, true}},
+// 	[OBJ_CONE] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_SIZE, true}, {PROP_COLOUR, true}},
+// 	[OBJ_TRIANGLE] = {{PROP_POSITION, true}, {PROP_POSITION, true}, {PROP_POSITION, true}, {PROP_COLOUR, true}}
+// };
 
 t_parser	*parser_data(void)
 {
@@ -28,25 +46,21 @@ void	put_err(char *msg)
 }
 
 //Check a given property against a range of values
+//Cleaner print for future float / double handling in printf:
+//ft_dprintf(STDERR_FILENO, "Expecting value for type %u
+//between [%f] and [%f] for value %f\n",
+//range.type, range.min, range.max, val);
 void	check_range(double val, t_property_rules range)
 {
 	if (val < range.min || val > range.max)
 	{
-		ft_dprintf(STDERR_FILENO, "Expecting value for type %u between [%f] and [%f] for value %f\n",
-			range.type, range.min, range.max, val);
-		put_err("Parameter has out of range value");
+		ft_dprintf(STDERR_FILENO, "Out of range value.. Expected [min], [max] pairs:\n");
+		ft_dprintf(STDERR_FILENO, " [POSITION] — -FLT_MAX, FLT_MAX\n [DIRECTION] — -1, 1\n");
+		ft_dprintf(STDERR_FILENO, " [COLOUR] — 0, 255\n [RATIO] — 0.0, 1.0\n");
+		ft_dprintf(STDERR_FILENO, " [ANGLE] — 0, 180\n [SIZE] — 0, FLT_MAX\n [PATH] — MIN: 4");
+		put_err("");
 	}
 }
-
-// Will validate the integrity of user provided parameters for the specified shape
-// static int	prop_format[][10][2] = {
-// 	// [OBJ_CAMERA] = {{PROP_SIZE, true}, {PROP_COLOUR, true}},
-// 	[OBJ_PLANE] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_COLOUR, true}},
-// 	[OBJ_SPHERE] = {{PROP_POSITION, true}, {PROP_SIZE, true}, {PROP_COLOUR, true}},
-// 	[OBJ_CYLINDER] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_SIZE, true}, {PROP_SIZE, true}, {PROP_COLOUR, true}},
-// 	[OBJ_CONE] = {{PROP_POSITION, true}, {PROP_DIRECTION, true}, {PROP_SIZE, true}, {PROP_COLOUR, true}},
-// 	[OBJ_TRIANGLE] = {{PROP_POSITION, true}, {PROP_POSITION, true}, {PROP_POSITION, true}, {PROP_COLOUR, true}}
-// };
 
 //Returns a *rule corresponding to a specific scene object
 //Checks prop for a known object ENUM, 
