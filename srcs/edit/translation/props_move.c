@@ -6,7 +6,7 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/26 02:30:14 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/11/26 02:52:15 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/28 21:35:06 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	editor_print_move(t_renderer *r, char *dir)
 
 //props can be cameras, objects or lights
 //function here print the accurate message
-//calculate the right delta 
+//calculate the right delta
 //and then call the general translatation function
 //
 //move prop forward backward
@@ -79,14 +79,14 @@ int	handle_props_move_tg(int keycode, t_cli_var *var)
 	if (keycode == XK_t)
 	{
 		editor_print_move(var->r, "up");
-		delta = vec_mul(var->world_up, var->scale * 0.075);
+		delta = vec_mul(var->world_up, var->scale * 0.1);
 		editor_translate(var, delta);
 		return (1);
 	}
 	if (keycode == XK_g)
 	{
 		editor_print_move(var->r, "down");
-		delta = vec_mul(var->world_up, -var->scale * 0.075);
+		delta = vec_mul(var->world_up, -var->scale * 0.1);
 		editor_translate(var, delta);
 		return (1);
 	}

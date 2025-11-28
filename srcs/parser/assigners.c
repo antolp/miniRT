@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   assigners.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/16 22:57:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/28 19:24:27 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/28 22:08:35 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,17 @@ static void	assign_path(t_texture *img, char *line)
 		put_err("XPM image loading: faillure");
 }
 
-//Rooter charged to determine the relevant assigner 
+static void assign_uv_mode(t_tri_uv_mode *uv_mode, char *line)
+{
+	if (strncmp("0", line, 1))
+		*uv_mode = TRI_UV_ORTHONORMAL;
+	if (strncmp("1", line, 1))
+		*uv_mode = TRI_UV_FIT;
+	if (strncmp("2", line, 1))
+		*uv_mode = TRI_UV_FIT_OPPOSITE;
+}
+
+//Rooter charged to determine the relevant assigner
 //and assert the integrity of and for a given property value
 bool	set_property(size_t type, void *dst, char *line)
 {
@@ -103,7 +113,7 @@ bool	set_property(size_t type, void *dst, char *line)
 			&((t_vec3 *)dst)->z, 0}, type, line);
 		if (type == PROP_DIRECTION && (!((t_vec3 *)dst)->x
 				&& !((t_vec3 *)dst)->y && !((t_vec3 *)dst)->z))
-			put_err("Invalid vector dimensions : one axis should not be 0");
+			put_err("Invalid vector dimensions : vector cannot be NULL");
 	}
 	else if (type == PROP_COLOUR)
 		parse_valset((void *[]){&((t_color *)dst)->r, &((t_color *)dst)->g,
@@ -112,6 +122,8 @@ bool	set_property(size_t type, void *dst, char *line)
 		assign_path(dst, line);
 	else if (type == PROP_CHECKER)
 		checker_assigner(dst, line);
+	else if (type == PROP_UV)
+		assign_uv_mode((t_tri_uv_mode *)dst, line);
 	else
 	{
 		if (ft_atof(line, (double *)dst) < 1)

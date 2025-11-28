@@ -6,13 +6,13 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/11/27 20:03:23 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/28 22:12:27 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "rt.h"
 
-//NOTE: Valgrind may falsely report uninitialized bytes here 
+//NOTE: Valgrind may falsely report uninitialized bytes here
 //consequence of X11 internals writev call
 //Known issue, check 42 discord !!! may need a .supp file to feed to valgrind
 bool	init_renderer(t_renderer *r, int width, int height, char *title)
@@ -59,6 +59,8 @@ t_list	*add_content(void *content)
 // // --- FEATURE HIGHLIGHT : texture and shape UV mapping ---
 // // two reflective spheres
 // //
+//	s->ambient_color = (t_color){255,200,200};
+//	s->ambient_ratio = 0.15;
 // t_plane			*plane;
 // t_sphere		*sphere;
 // t_cylinder		*cyl;
@@ -93,7 +95,5 @@ t_list	*add_content(void *content)
 // ft_lstadd_back(&s->objects, add_content(obj));
 bool	init_scene(t_scene *s)
 {
-	s->ambient_color = (t_color){255,200,200};
-	s->ambient_ratio = 0.15;
 	return (1);
 }

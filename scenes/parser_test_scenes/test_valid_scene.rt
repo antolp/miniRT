@@ -31,8 +31,8 @@ pl 0.0,-1.0,0.0 0.0,1.0,0.0 220,220,220 refl=0.1
 #	Textured earth sphere with bumps
 sp -1.5,1.0,1.5 2.0 255,255,255 spec=0.90 shine=64.0 refl=1 idx_refr=1.1 image=assets/2k_earth_daymap.xpm bump=assets/earthgrayscale.xpm
 
-# #	Wooden cylinder 
+# #	Wooden cylinder
 # cy 2.5,-1.0,-1.0 0.0,1.0,0.0 1.2 3.0 200,180,160 image=assets/wood.xpm
 
 # #	Triangle with unknown material key (ignored, but allowed)
-tr 0.0,0.0,0.0 2.0,0.0,0.0 0.0,2.0,0.0 255,255,100 spec=0.40 shine=32.0 foo=1.0
+tr 0.0,0.0,0.0 2.0,0.0,0.0 0.0,2.0,0.0 255,255,100 0 spec=0.40 shine=32.0 foo=1.0
