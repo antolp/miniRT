@@ -6,7 +6,7 @@
 /*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/16 22:57:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/28 22:08:35 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/28 22:27:48 by anle-pag         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,11 +84,19 @@ static void	assign_path(t_texture *img, char *line)
 	strstripchr(line, "\n", ft_strlen(line));
 	if (ft_strlen(line) < 4
 		|| !ft_strnstr(line + ft_strlen(line) - 4, ".xpm", 4))
-		put_err("Invalid file name: expecting *.xpm");
+	{
+		img->type = TEXTURE_NONE;
+		img->data = NULL;
+		printf("Invalid file name: expecting *.xpm");
+		return ;
+	}
 	img->type = TEXTURE_IMAGE;
 	img->data = load_xpm_image(g_renderer(NULL)->mlx, line);
 	if (!img->data)
-		put_err("XPM image loading: faillure");
+	{
+		img->type = TEXTURE_NONE;
+		printf("Parser : couldn't load image.\n");
+	}
 }
 
 static void assign_uv_mode(t_tri_uv_mode *uv_mode, char *line)
