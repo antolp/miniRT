@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/22 18:10:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/28 22:26:15 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/29 15:03:27 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,7 @@ void	parse_rtconfig(char *path)
 	if (fd == -1)
 		return (put_err("Failled to open path"));
 	parser_repl(fd);
+	print_scene();
 	if (get_asset_rules(NULL, OBJ_CAMERA)->quantity != 1)
 		put_err("Invalid Camera count: expecting 1");
 }

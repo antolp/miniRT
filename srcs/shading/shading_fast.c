@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shading_fast.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/27 17:19:02 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/11/27 20:16:07 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/29 14:51:53 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 
 static void	apply_diffuse_fast(t_color *out, t_hit_info *hit, t_light *light)
 {
-	t_vec3	L;
+	t_vec3	vec;
 	double	diff;
 
-	L = vec_normalize(vec_sub(light->position, hit->hit_point));
-	diff = vec_dot(hit->normal, L);
+	vec = vec_normalize(vec_sub(light->position, hit->hit_point));
+	diff = vec_dot(hit->normal, vec);
 	if (diff > 0.0)
 	{
 		diff = diff * light->intensity;

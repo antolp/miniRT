@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/11/28 18:21:59 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/29 18:40:39 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,8 @@ typedef struct s_hit_shadow_var
 //see mlx_put_image_to_window() in mlx docs
 typedef struct s_img
 {
-	void	*img;			//image pointer
-	char	*addr;			//pixel data
+	void	*img;
+	char	*addr;
 	int		bits_per_pixel;
 	int		line_length;
 	int		endian;
@@ -103,7 +103,7 @@ typedef struct s_renderer
 	t_edit_state	edit;
 	int				resolution_scale;
 	bool			should_quit;
-	bool			is_rendering;		//(redundant on single threaded logic)
+	bool			is_rendering;
 	bool			render_done;
 	bool			has_drawn_realtime;
 	bool			supersampled;
@@ -112,7 +112,6 @@ typedef struct s_renderer
 }	t_renderer;
 
 bool		init_renderer(t_renderer *r, int width, int height, char *title);
-bool		init_scene(t_scene *s);
 int			key_hook(int keycode, void *param);
 t_renderer	*g_renderer(t_renderer *set);
 t_scene		*g_scene(t_scene *set);
