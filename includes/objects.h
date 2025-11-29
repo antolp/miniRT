@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/11/26 18:26:55 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/29 14:50:34 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include "types.h"
 
 //This header is used to declare all objects and their components
-//(textures, material properties)
+// (textures, material properties)
 
 //see uv_triangle.c
 typedef enum e_tri_uv_mode
@@ -29,14 +29,14 @@ typedef enum e_tri_uv_mode
 //like so_long, XPM ONLY
 typedef struct s_texture_image
 {
-	void		*mlx_img;		// handle from mlx_xpm_file_to_image
-	char		*addr;			// from mlx_get_data_addr
+	void		*mlx_img;
+	char		*addr;
 	int			bpp;
 	int			line_len;
 	int			endian;
 	int			width;
 	int			height;
-	int			bgra;			// 1 if BGRA ordering, happens sometimes
+	int			bgra;
 }	t_tex_img;
 
 //parametric checker texture
@@ -53,7 +53,7 @@ typedef struct s_checkerboard
 typedef struct s_texture
 {
 	t_texture_type	type;
-	void			*data; // texture image or procedural config
+	void			*data;
 }	t_texture;
 
 //reflectance and refractance mutually exclusive because it's a pain in the ass
@@ -114,10 +114,9 @@ typedef struct s_object
 	t_object_type	type;
 	void			*shape;
 	t_material		material;
-	bool			(*intersect)(struct s_object *, t_ray *, double *t);
-	void			(*get_normal)(struct s_object *obj, t_vec3 *hit,
-			t_vec3 *out_normal);
-	bool			(*get_uv)(struct s_object *, t_vec3 * hit, t_vec2 * out_uv);
+	bool			(*intersect)();
+	void			(*get_normal)();
+	bool			(*get_uv)();
 }	t_object;
 
 #endif

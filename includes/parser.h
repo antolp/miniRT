@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/12 18:28:52 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/28 18:19:01 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/29 19:12:14 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ void		put_err(char *msg);
 t_parser	*parser_data(void);
 
 //Parser modules
-bool		set_property(size_t type, void *dst, char *line);
+void		set_property(size_t type, void *dst, char *line);
 void		parse_mats(t_material *mat, char **line);
 
 //Utils

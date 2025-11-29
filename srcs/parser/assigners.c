@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   assigners.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anle-pag <anle-pag@student.42.fr>          +#+  +:+       +#+        */
+/*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/16 22:57:46 by epinaud           #+#    #+#             */
-/*   Updated: 2025/11/28 22:27:48 by anle-pag         ###   ########.fr       */
+/*   Updated: 2025/11/29 18:02:28 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,23 +95,13 @@ static void	assign_path(t_texture *img, char *line)
 	if (!img->data)
 	{
 		img->type = TEXTURE_NONE;
-		printf("Parser : couldn't load image.\n");
+		put_err("Parser : couldn't load image.\n");
 	}
-}
-
-static void assign_uv_mode(t_tri_uv_mode *uv_mode, char *line)
-{
-	if (strncmp("0", line, 1))
-		*uv_mode = TRI_UV_ORTHONORMAL;
-	if (strncmp("1", line, 1))
-		*uv_mode = TRI_UV_FIT;
-	if (strncmp("2", line, 1))
-		*uv_mode = TRI_UV_FIT_OPPOSITE;
 }
 
 //Rooter charged to determine the relevant assigner
 //and assert the integrity of and for a given property value
-bool	set_property(size_t type, void *dst, char *line)
+void	set_property(size_t type, void *dst, char *line)
 {
 	if (!line)
 		put_err("Invalid data : missing parameter");
@@ -130,13 +120,12 @@ bool	set_property(size_t type, void *dst, char *line)
 		assign_path(dst, line);
 	else if (type == PROP_CHECKER)
 		checker_assigner(dst, line);
-	else if (type == PROP_UV)
-		assign_uv_mode((t_tri_uv_mode *)dst, line);
 	else
 	{
-		if (ft_atof(line, (double *)dst) < 1)
-			put_err("[Atof-Atoi2] : Overflow or parsing error");
+		if (type == PROP_UV && ft_atoi2(line, dst) < 1)
+			put_err("[Atoi2] : Overflow or parsing error");
+		else if (type != PROP_UV && ft_atof(line, dst) < 1)
+			put_err("[Atof] : Overflow or parsing error");
 		check_range(*(double *)dst, get_prop_rules(type));
 	}
-	return (EXIT_SUCCESS);
 }

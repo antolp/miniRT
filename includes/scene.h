@@ -6,7 +6,7 @@
 /*   By: epinaud <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/15 20:10:12 by anle-pag          #+#    #+#             */
-/*   Updated: 2025/11/28 01:56:55 by epinaud          ###   ########.fr       */
+/*   Updated: 2025/11/29 14:51:02 by epinaud          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,8 @@ typedef struct s_camera
 typedef struct s_scene
 {
 	t_camera	camera;
-	t_list		*objects;		//list of t_object*
-	t_list		*lights;		//list of t_light*
+	t_list		*objects;
+	t_list		*lights;
 	t_color		ambient_color;
 	double		ambient_ratio;
 	bool		is_rendering;
